@@ -24,7 +24,7 @@
 ### 2.1 什么时候建 Issue
 
 - 每个**独立可交付的功能点 / Bug / 需求**开一个 Issue。
-- 一个 Issue 对应一个小而完整的业务动作（例如"新增 `PlusChargeRelic` 抽象基类""修复宝珠被动钩子未分发"）。
+- 一个 Issue 对应一个小而完整的业务动作（例如"新增 `PlusChargeRelic` 抽象基类""修复充能球被动钩子未分发"）。
 - 批量 / 大块需求先拆成多个 Issue，避免超大 PR。
 
 ### 2.2 Title 规范
@@ -36,7 +36,7 @@
 实际风格示例（动词开头、一句话、可带编号）：
 
 - `[Feature] 新增充能遗物抽象基类 PlusChargeRelic`
-- `[Bug] 宝珠被动钩子异常未被捕获导致战斗流程中断`
+- `[Bug] 充能球被动钩子异常未被捕获导致战斗流程中断`
 - `[Doc] 钩子系统补充 Pipeline/Product/Sum 语义说明`
 - `[Refactor] PlusHooks 分发器统一日志与异常捕获`
 
@@ -105,7 +105,7 @@
 ### 5.2 Title
 
 ```
-feat(hook): 新增宝珠被动钩子 Plus_BeforeOrbPassive (Issue #12)
+feat(hook): 新增充能球被动钩子 Plus_BeforeOrbPassive (Issue #12)
 ```
 
 同提交信息风格：`<type>(<scope>): <摘要> (Issue #N)`。

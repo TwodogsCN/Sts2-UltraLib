@@ -27,7 +27,7 @@
 | `PlusHooks` | 静态分发器：从当前 run/combat 状态收集钩子监听者并应用。 |
 | `HookPatches/*` | 触发钩子的 Harmony 补丁（`ChargeRelicUiPatch`、`GoldPatch`、`OrbHooksPatches`、`RandomPositionFixPatch`、`RandomRoomRolledPatch`、`RelicObtainPatch`、`RelicRightClickPatch`）。 |
 
-**覆盖的钩子类别**（见 `IPlusHooks`）：房间 · 手牌 · 卡牌 · 能力 · 遗物 · 充能 · 金币 · 宝珠 · 同构 · 抽到时施放 · 卡牌返回 · 赋能。对于任何可修改值 `X`，通常有三个钩子：`Plus_ModifyX`（pipeline）、`Plus_ModifyXMultiplicative`（product）、`Plus_ModifyXAddictive`（sum）。
+**覆盖的钩子类别**（见 `IPlusHooks`）：房间 · 手牌 · 卡牌 · 能力 · 遗物 · 充能 · 金币 · 充能球 · 同构 · 抽到时施放 · 卡牌返回 · 赋能。对于任何可修改值 `X`，通常有三个钩子：`Plus_ModifyX`（pipeline）、`Plus_ModifyXMultiplicative`（product）、`Plus_ModifyXAddictive`（sum）。
 
 ## 3. 工具辅助类 — `Base/Utils`
 
@@ -43,7 +43,7 @@
 | `CardExporter` |（另见 `Base/Exporter/CardExporter`）卡牌导出支持。 |
 | `CreatureHelper` | 生物相关操作。 |
 | `PowerHelper` | 能力创建/施加辅助。 |
-| `OrbHelper` | 宝珠辅助（充能、触发、被动）。 |
+| `OrbHelper` | 充能球辅助（充能、触发、被动）。 |
 | `ActionQueueHelper` | 排队自定义动作。 |
 | `AttackHelper` | 攻击相关辅助。 |
 | `AncientEventHelper` | 古老事件互动。 |
@@ -94,7 +94,7 @@
 |------|----------|
 | `Base/Scripts/NSimpleRelicSelectScreen` | 一个简单的遗物选择界面场景/脚本。 |
 | `Base/Exporter/CardExporter` | 卡牌导出辅助。 |
-| `Base/Patches/OrbChannelPatch` | 宝珠充能的 Harmony 补丁。 |
+| `Base/Patches/OrbChannelPatch` | 充能球充能的 Harmony 补丁。 |
 | `HoverTip/PlusHoverTips` | 悬浮提示支持集成。 |
 | `Test/TestCards` | 展示用法的示例/测试卡牌。 |
 | `UltraLibCode/MainFile` | 模组入口：`ModId`、`Logger`、Harmony 初始化 + `PatchAll`。 |

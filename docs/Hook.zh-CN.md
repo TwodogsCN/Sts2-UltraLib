@@ -2,7 +2,7 @@
 
 [English](Hook.md) · [中文](Hook.zh-CN.md)
 
-**钩子系统（Hook System)** 是 UltraLib 最主要的扩展点。它让你的模组能够响应游戏事件(遗物获得、宝珠触发、卡牌返回、金币变化、充能遗物充满等),并能以可组合的方式**修改数值**(金币损失/获得、充能、卡牌效果等)。
+**钩子系统（Hook System)** 是 UltraLib 最主要的扩展点。它让你的模组能够响应游戏事件(遗物获得、充能球触发、卡牌返回、金币变化、充能遗物充满等),并能以可组合的方式**修改数值**(金币损失/获得、充能、卡牌效果等)。
 
 需要理解三个组成部分:
 
@@ -37,7 +37,7 @@
 - **能力:** `Plus_PowerRightClick(PowerModel, NPower)`
 - **遗物:** `Plus_RelicRightClick(RelicModel, NRelicInventoryHolder?)`, `Plus_AfterRelicObtain(IRunState, RelicModel, Player)`, `Plus_BeforeRelicObtain(IRunState, RelicModel, Player)`, `Plus_CardRightClick(CardModel, NCardHolder)`
 - **充能:** `Plus_AfterChargeSpend`, `Plus_AfterChargeGain`, `Plus_OnChargeFullyCharged`, `Plus_OnChargeNoLongerFullyCharged`, `Plus_OnChargeChanged(int old, int new, ...)`, `Plus_AfterChargeEffected`, `Plus_AfterChargeTotallyEffected`, `Plus_BeforeChargeEffected`, `Plus_BeforeChargeTotallyEffected`
-- **宝珠:** `Plus_AfterOrbEvokeRemoved`, `Plus_BeforeOrbEvoke`, `Plus_BeforeOrbPassive`, `Plus_AfterOrbPassive`
+- **充能球:** `Plus_AfterOrbEvokeRemoved`, `Plus_BeforeOrbEvoke`, `Plus_BeforeOrbPassive`, `Plus_AfterOrbPassive`
 - **关键词 / 卡牌:** `Plus_BeforeIsomorphism(CardModel)`, `Plus_AfterIsomorphism(CardModel)`, `Plus_BeforeCastWhenDrawn(...)`, `Plus_AfterCastWhenDrawn(...)`
 - **动态变量:** `Plus_BeforeCardReturn(CardModel)`, `Plus_AfterCardReturn(CardModel)`
 - **赋能:** `Plus_BeforeCardEmpower(CardModel, EmpowerVar, List<Creature>)`, `Plus_AfterCardEmpower(...)`

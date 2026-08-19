@@ -12,8 +12,8 @@
   - `PlusRelicModel` — 带等级、出现池与标签的遗物模型
   - `PlusPowerModel` / `PlusSingletonModel` — 能力与单例模型基类
   - `PlusChargeRelic` — 充能式遗物支持
-- **统一的钩子系统** — `IPlusHooks` 接口（带默认实现）与 `PlusHooks` 静态分发器。修改器采用可组合的 `Pipeline` / `Product` / `Sum` 语义，事件钩子以安全、有序的方式分发。覆盖遗物、能力、卡牌、宝珠、金币、充能、房间等场景。
-- **丰富的工具库**（位于 `Base/Utils`）— 卡牌、能力、遗物、宝珠、发现、奖励、手牌 UI、本地化、悬浮提示、动态变量等。
+- **统一的钩子系统** — `IPlusHooks` 接口（带默认实现）与 `PlusHooks` 静态分发器。修改器采用可组合的 `Pipeline` / `Product` / `Sum` 语义，事件钩子以安全、有序的方式分发。覆盖遗物、能力、卡牌、充能球、金币、充能、房间等场景。
+- **丰富的工具库**（位于 `Base/Utils`）— 卡牌、能力、遗物、充能球、发现、奖励、手牌 UI、本地化、悬浮提示、动态变量等。
 - **Harmony 补丁基础设施** — 加载时自动扫描 `[HarmonyPatch]` 类；单个补丁失败时记录警告而不会让模组崩溃。
 - **多人模式支持** — `Net/` 与 `Base/Multiplayer` 提供同步动作辅助。
 - **本地化脚手架** — 结构化的 `eng` / `zhs` JSON 键文件，并已接入模组分析器。

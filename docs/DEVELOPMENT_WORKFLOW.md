@@ -36,7 +36,7 @@ Global rules:
 Practical examples (verb-first, one sentence, may carry an ID):
 
 - `[Feature] 新增充能遗物抽象基类 PlusChargeRelic`
-- `[Bug] 宝珠被动钩子异常未被捕获导致战斗流程中断`
+- `[Bug] 充能球被动钩子异常未被捕获导致战斗流程中断`
 - `[Doc] 钩子系统补充 Pipeline/Product/Sum 语义说明`
 - `[Refactor] PlusHooks 分发器统一日志与异常捕获`
 
@@ -106,7 +106,7 @@ Project practical style: **`<type>(<scope>): <summary> (Issue #N: key points)`**
 ### 5.2 Title
 
 ```
-feat(hook): 新增宝珠被动钩子 Plus_BeforeOrbPassive (Issue #12)
+feat(hook): 新增充能球被动钩子 Plus_BeforeOrbPassive (Issue #12)
 ```
 
 Same style as the commit message: `<type>(<scope>): <summary> (Issue #N)`.
