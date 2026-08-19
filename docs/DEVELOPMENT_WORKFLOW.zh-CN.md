@@ -1,0 +1,150 @@
+# UltraLib 开发流程规范
+
+[English](DEVELOPMENT_WORKFLOW.md) · [中文](DEVELOPMENT_WORKFLOW.zh-CN.md)
+
+本页定义 **UltraLib** 的贡献开发流程。它维护在仓库的 `docs/DEVELOPMENT_WORKFLOW.md`，并计划同步到项目的 Wiki。
+
+---
+
+## 1. 全局原则
+
+一切改动走闭环：
+
+**Issue → 分支 → 提交 → PR → Review → 合并**
+
+全局原则：
+
+- 每个需求（功能）/ Bug 都有一个 GitHub **Issue**。
+- 每个 **PR** 都关联一个（或多个）Issue。
+- 每次状态迁移（Issue ↔ PR ↔ 合并）都有留痕。
+
+## 2. Issue 规范
+
+### 2.1 什么时候建 Issue
+
+- 每个**独立可交付的功能点 / Bug / 需求**开一个 Issue。
+- 一个 Issue 对应一个小而完整的业务动作（例如"新增 `PlusChargeRelic` 抽象基类""修复宝珠被动钩子未分发"）。
+- 批量 / 大块需求先拆成多个 Issue，避免超大 PR。
+
+### 2.2 Title 规范
+
+```
+[标题前缀] 一句话说明
+```
+
+实际风格示例（动词开头、一句话、可带编号）：
+
+- `[Feature] 新增充能遗物抽象基类 PlusChargeRelic`
+- `[Bug] 宝珠被动钩子异常未被捕获导致战斗流程中断`
+- `[Doc] 钩子系统补充 Pipeline/Product/Sum 语义说明`
+- `[Refactor] PlusHooks 分发器统一日志与异常捕获`
+
+推荐前缀：`[Feature]` / `[Bug]` / `[Doc]` / `[Refactor]` / `[Test]` / `[Infra]`。
+
+### 2.3 Body 规范（模板）
+
+```
+### 背景 / 目标
+(为什么要做，要实现什么功能，举例说明)
+
+### 需求清单
+- [ ] 子任务 1
+- [ ] 子任务 2
+
+### 验收口径（尽量可测）
+
+### 关联
+- 依赖的 Issue / PR
+```
+
+## 3. 分支规范
+
+### 3.1 命名
+
+一律 `feat/<slug>`。slug 用短横线小写、含义清晰即可（项目实际风格，不强绑定 Issue 号，但建议关联，如 `feat/plus-charge-relic`）。
+
+### 3.2 生命周期
+
+- 分支从最新 `main` 拉出，尽早合并 `main`，避免长期分支冲突。
+- 功能完成 → 推送 → 提 PR → review 通过 → 合并后**删除远端分支**。
+- 未合并前保持小步提交、可读历史。
+
+### 3.3 禁止
+
+- 禁止直接在 `main` 上开发或直接 push 到 `main`。
+
+## 4. 提交信息规范（Commit Message）
+
+项目实际风格：**`<type>(<scope>): <摘要> (Issue #N: 要点)`**。它同时承担「给人类看 + 给 AI/回溯用」的双重作用，信息密度要高。
+
+### 4.1 格式
+
+```
+<type>(<scope>): <一句话摘要> (Issue #N: 关键要点)
+```
+
+- **type**（必填）：`feat` / `fix` / `refactor` / `docs` / `test` / `ci` / `chore`
+- **scope**（可选但推荐）：业务域，如 `core`（核心库 Base/）/ `hook`（钩子系统）/ `patch`（Harmony 补丁）/ `base` / `net`（多人/网络）/ `variables`（动态变量）/ `localization`（本地化）/ `cfg`（工程配置/清单）
+- **摘要**：动宾结构，做了什么
+- **Issue 引用 + 要点**：关联 Issue 号，并用冒号后列关键点（便于回溯）
+
+### 4.2 原则
+
+- **一条提交只做一件事**（与 §6 对应）。
+- **信息密度高**：摘要里就把"做了啥 + 关联 Issue + 验收证据"写清楚，方便回溯与喂给 AI。
+- 动词用祈使句：`feat(...): 新增...`、`fix(...): 修复...`、`test(...): 补用例...`。
+- 涉及验收编号（Issue #N、A0x/B0x）时，在提交里带出，便于对验收矩阵。
+
+## 5. PR 规范
+
+### 5.1 前提
+
+- 一个 PR **只解决一个主题**（通常一个或多个关联 Issue），小而可评审。
+
+### 5.2 Title
+
+```
+feat(hook): 新增宝珠被动钩子 Plus_BeforeOrbPassive (Issue #12)
+```
+
+同提交信息风格：`<type>(<scope>): <摘要> (Issue #N)`。
+
+### 5.3 PR 描述模板（推荐）
+
+套餐结构，便于 Reviewer 与 AI 快速理解：
+
+```
+## 变更内容
+（一句话 + 覆盖的 Issue/验收编号）
+
+### 新增
+- 文件 / 能力（逐个）
+
+### 修改
+- 文件 / 行为变化（逐个）
+
+### 修复（如有）
+- Bug/缺陷
+
+## 验收口径 / 与文档一致性
+- 不崩溃容错 / 钩子分发 / 本地化同步如何满足
+- 涉及哪些已有文档需同步（Wiki）
+
+## 验证
+- 跑了哪些检查：构建结果（如 `dotnet build` BUILD SUCCESS）、游戏内加载冒烟验证、`eng`/`zhs` 本地化一致性
+- 本地 / CI 情况
+```
+
+### 5.4 关联 Issue（Development 面板）
+
+在 PR 描述里用**触发词**关联 Issue，让 GitHub 自动建立 Development 关联：
+
+- `Closes #12` → 合并后**自动关闭** Issue（完整实现该 Issue 时用）。
+- `Fixes #xx` / `Resolves #xx` → 同上（修复类）。
+- `Part of #xx` → 仅关联，**不自动关闭**（该 Issue 还有其他子任务时用）。
+
+> 注意：GitHub 只认英文触发词（`closes` / `fixes` / `resolves` / `part of`），中文"关联"不生效。
+
+---
+
+*第 10 节（Wiki 维护规范）暂缓，后续再补充。*
