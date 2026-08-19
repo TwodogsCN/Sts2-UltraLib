@@ -17,6 +17,7 @@ Global rules:
 - Every requirement / feature / bug has one GitHub **Issue**.
 - Every **PR** is linked to one (or more) Issue(s).
 - Every **state transition** (Issue ↔ PR ↔ merge) leaves a trace.
+- **No bypassing.** Never develop or push directly to `main`, and never open a PR that is not linked to an Issue. Unlinked / rushed PRs will be closed without review.
 
 ## 2. Issue conventions
 
@@ -145,6 +146,13 @@ Use trigger words in the PR description so GitHub auto-creates the Development l
 - `Part of #xx` → links only, **does not auto-close** (use when the Issue has other subtasks).
 
 > Note: GitHub only recognizes English trigger words (`closes` / `fixes` / `resolves` / `part of`); the Chinese word "关联" does not work.
+
+### 5.5 Review is mandatory — no merge without approval
+
+- A PR is **only merged after at least one reviewer approves it** and there are **no unresolved requested changes**.
+- Authors do not merge their own PR unless they are the sole maintainer and reviewers are unavailable.
+- A PR with a failing build / check, unresolved review threads, or no linked Issue is blocked.
+- Rushed, unrelated, or unlinked "drive-by" PRs are **closed without review** — open an Issue and follow the loop instead.
 
 ---
 

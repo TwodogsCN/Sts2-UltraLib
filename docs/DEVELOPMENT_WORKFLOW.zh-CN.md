@@ -17,6 +17,7 @@
 - 每个需求（功能）/ Bug 都有一个 GitHub **Issue**。
 - 每个 **PR** 都关联一个（或多个）Issue。
 - 每次状态迁移（Issue ↔ PR ↔ 合并）都有留痕。
+- **禁止绕过流程。** 不得直接在 `main` 上开发或 push 到 `main`；不得提交未关联 Issue 的 PR。未关联 / 仓促提交的 PR 一律直接关闭，不予审查。
 
 ## 2. Issue 规范
 
@@ -144,6 +145,13 @@ feat(hook): 新增宝珠被动钩子 Plus_BeforeOrbPassive (Issue #12)
 - `Part of #xx` → 仅关联，**不自动关闭**（该 Issue 还有其他子任务时用）。
 
 > 注意：GitHub 只认英文触发词（`closes` / `fixes` / `resolves` / `part of`），中文"关联"不生效。
+
+### 5.5 Review 为强制性 —— 未经批准不得合并
+
+- 一个 PR 只有在**至少一位 Reviewer 批准**、且**没有未解决的 requested changes** 之后才能合并。
+- 除非作者是唯一的维护者且没有可用 Reviewer，否则作者**不得合并自己的 PR**。
+- 构建/检查失败、存在未解决的评审讨论、或未关联 Issue 的 PR 一律被**阻塞**。
+- 仓促、无关或未关联的"顺手 PR"**直接关闭、不予审查**——请先建 Issue 并遵循闭环流程。
 
 ---
 
