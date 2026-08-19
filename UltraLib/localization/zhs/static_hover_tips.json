@@ -1,0 +1,37 @@
+﻿{
+  "ULTRALIB-RETURN.base.title": "返回 X",
+  "ULTRALIB-RETURN.base.description": "这张牌在每回合前[blue]X[/blue]次打出时，会返回你的手牌。",
+  "ULTRALIB-RETURN.title": "返回 {Return:cond:>1?{Return}|}",
+  "ULTRALIB-RETURN.description": "这张牌在每回合前{Return:cond:>1?[blue]{Return}[/blue]|}{Return:plural:次|次}打出时，会返回你的手牌。",
+  "ULTRALIB-RETURN.card.title": "[gold]返回[/gold] {ReturnDesc}。",
+
+  "ULTRALIB-EMPOWER.base.title": "赋能 X 能力",
+  "ULTRALIB-EMPOWER.base.description": "当你打出这张牌时，使目标获得[blue]X[/blue]能力。",
+  "ULTRALIB-EMPOWER.card.title": "赋能 {EmpowerDesc}。",
+
+  "ULTRALIB-MOVE.base.title": "移动",
+  "ULTRALIB-MOVE.base.description": "改变牌在[gold]手牌[/gold]中的位置。",
+
+  "ULTRALIB-STOLEN.base.title": "窃取",
+  "ULTRALIB-STOLEN.base.description": "使目标获得相应层数的减益效果后，自己获得目标实际获得减益效果层数的增益效果。",
+
+  "ULTRALIB-REWIND.base.title": "回溯",
+  "ULTRALIB-REWIND.base.description": "使状态重置到上个回合结束时的状态。",
+
+  "ULTRALIB-HP.base.title": "生命",
+  "ULTRALIB-HP.base.description": "你的最大生命值和当前生命值。",
+
+  "ULTRALIB-POWERS.base.title": "能力",
+  "ULTRALIB-POWERS.base.description": "你的所有能力。",
+
+  "ULTRALIB-ONLY_POWER.base.title": "能力",
+  "ULTRALIB-ONLY_POWER.base.description": "能力。",
+
+  "ULTRALIB-CHARGE.base.title": "充能",
+  "ULTRALIB-CHARGE.base.description": "充能会在进入房间后进行，充能满后你可以主动使用这个遗物。",
+
+  "ULTRALIB-SET.base.title": "套装",
+  "ULTRALIB-SET.base.description": "这是一个套装，套装会在集齐一定数量的套装遗物后获得。",
+
+  "POWER.base.title": "能力"
+}

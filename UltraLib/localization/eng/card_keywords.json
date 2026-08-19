@@ -1,0 +1,14 @@
+{
+  "ULTIMATEPLUS-ISOMORPHISM.title": "Isomorphism",
+  "ULTIMATEPLUS-ISOMORPHISM.description": "When there is only one card between two cards with [gold]Isomorphism[/gold], trigger [gold]Isomorphism[/gold] and automatically play the middle card.",
+  "ULTIMATEPLUS-CASTWHENDRAWN.title": "Play When Drawn",
+  "ULTIMATEPLUS-CASTWHENDRAWN.description": "When you draw this card, automatically play it.Then draw a card.",
+  "ULTIMATEPLUS-DULL.title": "Dull",
+  "ULTIMATEPLUS-DULL.description": "This card cannot be discarded during your turn.",
+  "ULTIMATEPLUS-HUNGER.title": "Hunger",
+  "ULTIMATEPLUS-HUNGER.description": "After you use this in combat, you cannot use it again until a non-[gold]Minion[/gold] enemy is killed.",
+  "ULTIMATEPLUS-INTEST.title": "In Test",
+  "ULTIMATEPLUS-INTEST.description": "You can try this card here; it currently has no way to be obtained.",
+  "ULTIMATEPLUS-DISCARDWHENDRAWN.title": "Discard When Drawn",
+  "ULTIMATEPLUS-DISCARDWHENDRAWN.description": "When you draw this card, discard it."
+}

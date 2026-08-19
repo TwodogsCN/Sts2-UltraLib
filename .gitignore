@@ -1,0 +1,16 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+
+# IDE & editor
+.idea/
+.vscode/
+*.DotSettings.user
+
+# Godot local cache (regenerated; do not commit)
+.godot/
+
+# Godot generated UID sidecar files (regenerated on import)
+*.uid

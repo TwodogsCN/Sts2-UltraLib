@@ -1,0 +1,19 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraLib", "UltraLib.csproj", "{CF8B87DA-E82C-4876-913B-C3BF5C1BA23F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		ExportDebug|Any CPU = ExportDebug|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF8B87DA-E82C-4876-913B-C3BF5C1BA23F}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{CF8B87DA-E82C-4876-913B-C3BF5C1BA23F}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{CF8B87DA-E82C-4876-913B-C3BF5C1BA23F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF8B87DA-E82C-4876-913B-C3BF5C1BA23F}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{CF8B87DA-E82C-4876-913B-C3BF5C1BA23F}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{CF8B87DA-E82C-4876-913B-C3BF5C1BA23F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal

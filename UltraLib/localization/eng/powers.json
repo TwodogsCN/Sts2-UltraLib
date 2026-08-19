@@ -1,0 +1,8 @@
+﻿{
+  "TEMPORARY_POWER_UP.title": "Temporary Power",
+  "TEMPORARY_POWER_UP.description": "Before the end of this turn, gain [gold]{Power}[/gold].",
+  "TEMPORARY_POWER_UP.smartDescription": "Before the end of this turn, gain [blue]{Amount}[/blue][gold] stacks of {Power}[/gold].",
+  "TEMPORARY_POWER_DOWN.title": "Temporary Power Down",
+  "TEMPORARY_POWER_DOWN.description": "Before the end of this turn, lose [gold]{Power}[/gold].",
+  "TEMPORARY_POWER_DOWN.smartDescription": "Before the end of this turn, lose [blue]{Amount}[/blue][gold] stacks of {Power}[/gold]."
+}

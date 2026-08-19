@@ -1,0 +1,14 @@
+{
+  "ULTRALIB-ISOMORPHISM.title": "同构",
+  "ULTRALIB-ISOMORPHISM.description": "两张具有[gold]同构[/gold]的牌中间只剩一张牌时，触发[gold]同构[/gold]，并将中间的牌自动打出。",
+  "ULTRALIB-CASTWHENDRAWN.title": "抽到后打出",
+  "ULTRALIB-CASTWHENDRAWN.description": "当你抽到该牌后，自动打出该牌，后抽一张牌。",
+  "ULTRALIB-DULL.title": "迟钝",
+  "ULTRALIB-DULL.description": "该牌在你的回合无法被丢弃。",
+  "ULTRALIB-HUNGER.title": "饥渴",
+  "ULTRALIB-HUNGER.description": "在每场战斗使用后，你必须在一名非[gold]爪牙[/gold]敌人被击杀后才能再次使用。",
+  "ULTRALIB-INTEST.title": "测试中卡牌",
+  "ULTRALIB-INTEST.description": "你可以在这里试用这张卡牌，它目前没有途径可以获取。",
+  "ULTRALIB-DISCARDWHENDRAWN.title": "抽到后丢弃",
+  "ULTRALIB-DISCARDWHENDRAWN.description": "当你抽到该牌后，丢弃该牌。"
+}

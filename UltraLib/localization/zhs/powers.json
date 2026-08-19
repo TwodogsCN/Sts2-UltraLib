@@ -1,0 +1,7 @@
+﻿{
+  "TEMPORARY_POWER_UP.title": "临时能力",
+  "TEMPORARY_POWER_UP.description": "在本回合结束前获得[gold]{Power}[/gold]。",
+  "TEMPORARY_POWER_UP.smartDescription": "在本回合结束前获得[blue]{Amount}[/blue][gold]层{Power}[/gold]。",
+  "TEMPORARY_POWER_DOWN.description": "在本回合结束前失去[gold]{Power}[/gold]。",
+  "TEMPORARY_POWER_DOWN.smartDescription": "在本回合结束前失去[blue]{Amount}[/blue][gold]层{Power}[/gold]。"
+}

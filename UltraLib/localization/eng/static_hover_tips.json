@@ -1,0 +1,37 @@
+﻿{
+  "ULTRALIB-RETURN.base.title": "Return X",
+  "ULTRALIB-RETURN.base.description": "The first [blue]X[/blue] {X:plural:time|times} this card is played each turn, it returns to your Hand.",
+  "ULTRALIB-RETURN.title": "Return {Return:cond:>1? {Return}|}",
+  "ULTRALIB-RETURN.description": "The first {Return:cond:>1?[blue]{Return}[/blue]|}{Return:plural: time| times} this card is played each turn, it returns to your Hand.",
+  "ULTRALIB-RETURN.card.title": "[gold]Return[/gold] {ReturnDesc}.",
+
+  "ULTRALIB-EMPOWER.base.title": "Empower X",
+  "ULTRALIB-EMPOWER.base.description": "When you play this card, grant the target [blue]X[/blue] Power.",
+  "ULTRALIB-EMPOWER.card.title": "Empower {EmpowerDesc}.",
+
+  "ULTRALIB-MOVE.base.title": "Reorder",
+  "ULTRALIB-MOVE.base.description": "Change the position of this card within your [gold]Hand[/gold].",
+
+  "ULTRALIB-STOLEN.base.title": "Steal",
+  "ULTRALIB-STOLEN.base.description": "Apply layers of a debuff to a target, then gain layers of a corresponding buff equal to the actual amount of debuff layers applied.",
+
+  "ULTRALIB-REWIND.base.title": "Rewind",
+  "ULTRALIB-REWIND.base.description": "Reset the state to how it was at the end of the previous turn.",
+
+  "ULTRALIB-HP.base.title": "HP",
+  "ULTRALIB-HP.base.description": "Your Max HP and current HP.",
+
+  "ULTRALIB-POWERS.base.title": "Powers",
+  "ULTRALIB-POWERS.base.description": "All of your active Powers.",
+
+  "ULTRALIB-ONLY_POWER.base.title": "Power",
+  "ULTRALIB-ONLY_POWER.base.description": "Power.",
+
+  "ULTRALIB-CHARGE.base.title": "Charge",
+  "ULTRALIB-CHARGE.base.description": "Charges are gained upon entering a room. Once fully charged, you can actively use this relic.",
+
+  "ULTRALIB-SET.base.title": "Set",
+  "ULTRALIB-SET.base.description": "This is a Relic Set. Set bonuses are granted after collecting a certain number of relics belonging to this set.",
+
+  "POWER.base.title": "Power"
+}
