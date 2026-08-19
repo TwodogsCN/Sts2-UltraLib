@@ -80,6 +80,17 @@
 ## 7. 文档注释
 
 - **所有公共 API 成员**都要有 `/// <summary>` XML 文档注释。现有代码注释为中文；编辑既有文件时保持同一种语言，并在每个文件内保持语言一致。
+- **新增功能（新的公共类型 / 方法 / 钩子 / 辅助类）必须带双语的 `<summary>`** 说明其用途和用法——同时提供英文与简体中文描述，例如：
+  ```csharp
+  /// <summary>
+  /// Channels an orb of the given type for the player.
+  /// </summary>
+  /// <remarks>
+  /// 为玩家生成一个指定类型的充能球。
+  /// </remarks>
+  public static async Task<T?> Channel<T>(...) where T : OrbModel => ...;
+  ```
+  这样能直接喂给双语的 Wiki/API 文档与 CHM 参考，无需二次翻译，保持一致。
 - 在能增加清晰度的地方使用 `<para>`、`<list type="bullet">`、`<see cref="…"/>`、`<c>…</c>` 等标签（参见 `MainFile.cs`）。
 - 在成员文档中说明任何非显而易见的约束、生命周期要求或默认行为。
 

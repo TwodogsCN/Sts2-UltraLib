@@ -80,6 +80,17 @@ The hook system is the core extension point. Understand these pieces before writ
 ## 7. Documentation comments
 
 - **All public API members** get `/// <summary>` XML doc comments. The existing code comments are in Chinese; keep the same language when editing existing files, and choose one language and stay consistent within each file.
+- **New functionality (new public types / methods / hooks / helpers) must ship with a bilingual `/summary`** explaining its purpose and usage — provide both an English and a 简体中文 description, e.g.:
+  ```csharp
+  /// <summary>
+  /// Channels an orb of the given type for the player.
+  /// </summary>
+  /// <remarks>
+  /// 为玩家生成一个指定类型的充能球。
+  /// </remarks>
+  public static async Task<T?> Channel<T>(...) where T : OrbModel => ...;
+  ```
+  This feeds the bilingual Wiki/API docs and the CHM reference, keeping generated/foreign documentation consistent without a second translation pass.
 - Use `<para>`, `<list type="bullet">`, `<see cref="…"/>`, and `<c>…</c>` tags where they add clarity (see `MainFile.cs`).
 - Document any non-obvious invariant, lifecycle requirement, or default behavior in the member docs.
 
