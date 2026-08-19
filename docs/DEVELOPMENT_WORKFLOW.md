@@ -156,4 +156,49 @@ Use trigger words in the PR description so GitHub auto-creates the Development l
 
 ---
 
-*Section 10 (Wiki maintenance) is deferred — to be discussed and added later.*
+## 10. Wiki & documentation maintenance
+
+> Applies when your change ends with **new functionality** or **revised behavior/content**.
+
+### 10.1 Rule: keep docs in sync with code
+
+- When you add a **new feature** or **fix/change existing behavior**, the change is not complete until the documentation is updated (if docs apply).
+- UltraLib maintains **two** online/offline surfaces that must stay in sync:
+  - **GitHub Wiki** (online, bilingual) — the primary human-readable documentation.
+  - **CHM document** (offline, compiled from the same Markdown) — distributable reference for mod authors.
+
+### 10.2 What triggers a docs update
+
+| Change | Update Wiki? | Update CHM? |
+|--------|--------------|-------------|
+| New public type / method / hook / helper | **Yes** | **Yes** (new feature) |
+| Behavior change of an existing feature | **Yes (if user-facing)** | **Yes** |
+| Internal refactor with no visible change | No | No |
+| Bug fix that changes how something works | Yes | Yes |
+| Docs-only change (typography, wording) | Yes | Yes |
+
+- **New functionality is always synced into the CHM** — the CHM is the offline reference that mod authors consult, so it must include any new API/feature.
+
+### 10.3 How to update the Wiki
+
+- Wiki pages live in `docs/` in this repository; the GitHub Wiki is kept in sync with them.
+- Edit the matching Markdown source in `docs/`, e.g.:
+  - `docs/API_INDEX.md` / `.zh-CN.md` — add new types/helpers to the index.
+  - `docs/Hook.md` / `docs/Utils.md` / `.zh-CN.md` — add descriptions for new methods/hooks.
+- Follow the [link conventions](CODE_CONVENTIONS.md): bilingual, `[Page] / [页面]`-style, Wiki page names without `.md` suffix.
+- Push the `docs/` changes; mirror them to the GitHub Wiki so the Wiki stays current.
+
+### 10.4 How to update the CHM
+
+- The CHM is compiled from the same `docs/` Markdown by `tools/chm/build-chm.bat` (see [tools/chm/README.md](../tools/chm/README.md)).
+- After updating docs for a new feature:
+  1. If the change adds a **new page**, register it in the `pages` array of `tools/chm/build-chm.js`.
+  2. Rebuild: run `tools/chm/build-chm.bat` on Windows (requires Node.js + HTML Help Workshop).
+  3. Verify the rebuild succeeds and the new page appears in the TOC; attach/republish the `.chm` with the release.
+
+### 10.5 Checklist for PRs that change code
+
+- [ ] `docs/` updated for the change (new API/feature documented).
+- [ ] Wiki mirrored to match `docs/`.
+- [ ] CHM rebuilt (new features) and page list updated in `build-chm.js`.
+- [ ] Bilingual (EN + 中文) where applicable.
