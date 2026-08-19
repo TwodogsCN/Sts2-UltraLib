@@ -166,6 +166,7 @@ Use trigger words in the PR description so GitHub auto-creates the Development l
 - UltraLib maintains **two** online/offline surfaces that must stay in sync:
   - **GitHub Wiki** (online, bilingual) — the primary human-readable documentation.
   - **CHM document** (offline, compiled from the same Markdown) — distributable reference for mod authors.
+- **Mandatory:** every new public type / method / hook / helper must carry a **bilingual `<summary>`** in its XML doc comment (an English description + a 简体中文 description). This is the single source that feeds the bilingual Wiki and the CHM, so no separate translation step is needed. See [Code conventions §7](CODE_CONVENTIONS.md).
 
 ### 10.2 What triggers a docs update
 
@@ -201,4 +202,5 @@ Use trigger words in the PR description so GitHub auto-creates the Development l
 - [ ] `docs/` updated for the change (new API/feature documented).
 - [ ] Wiki mirrored to match `docs/`.
 - [ ] CHM rebuilt (new features) and page list updated in `build-chm.js`.
+- [ ] **New functionality ships with a bilingual XML `<summary>`** (EN + 中文) on all new public types / methods / hooks / helpers, explaining purpose and usage.
 - [ ] Bilingual (EN + 中文) where applicable.
