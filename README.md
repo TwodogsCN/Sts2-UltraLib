@@ -1,5 +1,7 @@
 # UltraLib
 
+[English](README.md) · [中文](README.zh-CN.md)
+
 A **base / utility library mod** for *Slay the Spire 2* (StS2), built on top of [BaseLib](https://github.com/Alchyr/BaseLib-StS2). It provides reusable abstract models, a unified event/hook system, helper utilities, and localization scaffolding for other mods that depend on it.
 
 > UltraLib itself is a *dependency mod*, not a content mod: it adds the reusable framework that other mods consume.

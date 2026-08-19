@@ -1,0 +1,95 @@
+# UltraLib 代码规范
+
+[English](CODE_CONVENTIONS.md) · [中文](CODE_CONVENTIONS.zh-CN.md)
+
+本文档是为 **UltraLib** 贡献代码、以及编写依赖本库的模组时的风格与架构准则。它维护在仓库的 `docs/CODE_CONVENTIONS.md`；你也可以把本页内容粘贴到项目的 Wiki 中。
+
+以下规范是从现有代码中归纳出来的，目的是让新代码保持一致。
+
+---
+
+## 1. 工程布局与命名空间
+
+- **命名空间与文件夹路径一一对应。** `Base/Utils/CardHelper.cs` 中的类型位于 `namespace UltraLib.Base.Utils;`。使用**文件级命名空间**（单独的 `namespace UltraLib.X;` 行，不加花括号）。
+- 根命名空间始终是 `UltraLib`。
+- 目录职责划分：
+  - `UltraLibCode/` — 仅存放模组入口（`MainFile.cs`）。这里不放任何业务逻辑。
+  - `Base/` — 可复用库（抽象模型、辅助、标签、补丁、脚本、单例、多人）。
+  - `Hook/` — 钩子契约（`IPlusHooks`）、分发器（`PlusHooks`），以及 `HookPatches/`（触发钩子的 Harmony 补丁）。
+  - `Variables/` — 自定义动态变量及 `VariablePatches/`。
+  - `Net/` — 网络/同步。`GameActions/` — 自定义动作。`HoverTip/` — 悬浮提示。`Test/` — 示例卡牌。
+- **每个文件一个主公共类型**，以文件名命名。
+
+## 2. 命名
+
+- **类型、方法、属性、常量：** `PascalCase`。
+- **私有字段：** `_camelCase`（下划线开头），例如 `_internalData`。
+- **局部变量 / 参数：** `camelCase`。
+- **本库提供的自定义“扩展”基类**使用 **`Plus` 前缀**（如 `PlusRelicModel`、`PlusPowerModel`、`PlusChargeRelic`）。新增的基类模型 / 辅助类应保持该前缀。
+- **钩子事件方法**使用 `Plus_<EventName>` 命名（`Plus_AfterRelicObtain`、`Plus_BeforeOrbEvoke`，…）。
+- **返回布尔值 / 能力类成员**在合适时读起来像提问（`IsX`、`CanDoY`）。
+
+## 3. 语言特性与风格
+
+- `ImplicitUsings` **已启用**，`Nullable` **已启用**（重视告警——可为空的值要标注 `?`）。
+- 集合写法：使用**集合表达式**（`[]`、`[a, b]`），如同现有 `HashSet` 初始化中的写法。
+- 当类型不明显时避免用 `var`；在公共 API 边界处优先使用显式类型。
+- 单行访问器/返回值使用**表达式体成员**（expression-bodied members）。
+- 保持文件聚焦；把逻辑抽取到 `Base/Utils/*Helper.cs`，而不是堆进模型里。
+- 与游戏的模型 API 保持一致使用显式 `Task` 异步；无操作的异步默认返回 `Task.CompletedTask`。
+
+## 4. 钩子系统
+
+钩子系统是核心扩展点。在编写新钩子前先理解这些部分：
+
+- **`IPlusHooks`**（`Hook/IPlusHooks.cs`）声明契约。使用**默认接口实现**，这样实现者不必实现每个成员。
+- **`PlusHooks`**（`Hook/PlusHooks.cs`）是静态分发器，监听者通过它订阅。它从当前 run/combat 状态收集钩子监听者，并应用以下四种模式之一：
+  - `Dispatch` — 按顺序触发异步事件钩子（例如 `Plus_AfterRelicObtain`）。
+  - `Pipeline` — 修改一个值，将结果依次传递给每个监听者（“set/replace”型修改器）。
+  - `Product` — 将各修改器相乘（`…Multiplicative` 变体，恒等元 `1m`）。
+  - `Sum` — 累加各加法修改器（`…Addictive` 变体，恒等元 `0m`）。
+
+  > 修改器约定：对于任何可修改的值 `X`，暴露三个钩子——`Plus_ModifyX`（pipeline）、`Plus_ModifyXMultiplicative`（product）、`Plus_ModifyXAddictive`（sum），以便任意组合都能复合。
+- **具体内容模型**（如 `PlusRelicModel`）实现 `IPlusHooks` 并提供空默认覆写，因此子类只需覆写自己需要的部分。
+- 新增一个钩子时：在 `IPlusHooks` 中添加该成员（带默认实现），在 `PlusHooks` 中添加分发方法，在每个实现了它的 `Plus*Model` 中添加空覆写，并在正确的生命周期点从相关的 `HookPatches/*` Harmony 补丁中触发它。
+
+## 5. Harmony 补丁
+
+- 将补丁放在 `Hook/HookPatches/`（属于相应子系统时放在 `Base/Patches/`、`Variables/VariablePatches/`）。
+- 补丁类是**标注了 `[HarmonyPatch]` 的静态类**，由 `MainFile.Initialize()` 通过 `PatchAll` 对程序集自动应用。
+- 失败的补丁**绝不能**让模组崩溃。对可能存在风险的补丁应用/方法体做包裹处理，使失败时只记录警告（参见 `MainFile.Initialize`）。
+- 转发到钩子系统的补丁方法应调用对应的 `Plus_Trigger…` / `Plus_…` 分发器。
+
+## 6. 日志与错误处理
+
+- 使用库的日志器（`MainFile.Logger`）或 `Log.*` 进行诊断。**不要**在发布的代码中使用 `Console.WriteLine`。
+- 优先使用安全分发：可能抛异常的钩子代码应被捕获并记录日志（参见 `Plus_TriggerRelicRightClick`），而不是让其传播并破坏一个游戏动作。
+- 用简短的 `//` 注释标注非显而易见的决策；公共 API 含义依靠 XML 文档注释表达，而不是逐行叙述语句。
+
+## 7. 文档注释
+
+- **所有公共 API 成员**都要有 `/// <summary>` XML 文档注释。现有代码注释为中文；编辑既有文件时保持同一种语言，并在每个文件内保持语言一致。
+- 在能增加清晰度的地方使用 `<para>`、`<list type="bullet">`、`<see cref="…"/>`、`<c>…</c>` 等标签（参见 `MainFile.cs`）。
+- 在成员文档中说明任何非显而易见的约束、生命周期要求或默认行为。
+
+## 8. 本地化
+
+- 不要在代码中硬编码面向用户的字符串。在 `UltraLib/localization/{eng,zhs}/` 的对应文件中添加键（`cards.json`、`powers.json`、`card_keywords.json`、`static_hover_tips.json`）。
+- 保持 `eng` 与 `zhs` 键集合同步。
+- `UltraLib/localization/**/*.json` 文件已注册为分析器输入（见 `UltraLib.csproj` 的 `AdditionalFiles`），因此请保持它们是有效的 JSON，并遵循既有键结构。
+
+## 9. 版本与清单
+
+- 保持 `UltraLib.json` 同步：发布时提升 `version`；新增/更新 `dependencies`（目前要求 `BaseLib >= 3.3.0`）。
+- 保持 `MainFile.cs` 中的 `ModId` 常量与清单 `id`（`UltraLib`）一致——它用于 Harmony 实例与日志前缀。
+
+## 10. Pull Request 检查清单
+
+- [ ] 命名空间 = 文件夹路径；每文件一个公共类型
+- [ ] 新基类模型/辅助使用 `Plus` 前缀；私有字段使用 `_camelCase`
+- [ ] 公共 API 有 XML 文档注释（与文件语言一致）
+- [ ] 新修改器遵循 `Pipeline` / `Multiplicative` / `Addictive` 三件套约定
+- [ ] 新钩子已接入 `IPlusHooks`、`PlusHooks` 和对应的 `*Model`
+- [ ] 无 `Console` 日志；使用 `MainFile.Logger` / `Log.*`
+- [ ] 没有硬编码新的面向用户字符串——同时为 `eng` 和 `zhs` 添加本地化键
+- [ ] 构建通过；如有需要已提升 `UltraLib.json` 版本

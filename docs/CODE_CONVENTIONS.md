@@ -1,5 +1,7 @@
 # UltraLib Code Conventions
 
+[English](CODE_CONVENTIONS.md) · [中文](CODE_CONVENTIONS.zh-CN.md)
+
 This is the style and architecture guideline for contributing to **UltraLib** and for mods that consume it. It is maintained in the repository at `docs/CODE_CONVENTIONS.md`; you can paste this page into the project's Wiki.
 
 The conventions below are distilled from the existing codebase so new code stays consistent.
