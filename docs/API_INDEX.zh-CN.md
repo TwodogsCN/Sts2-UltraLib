@@ -17,6 +17,8 @@
 
 ## 2. 钩子系统 — `Hook`
 
+> 📘 详细指南: [Hook.md](Hook.md) · [钩子系统（中文）](Hook.zh-CN.md)
+
 最主要的扩展点。修改器采用可组合的 `Pipeline` / `Product` / `Sum` 语义；事件钩子安全、有序地分发。
 
 | 类型 | 提供能力 |
@@ -28,6 +30,8 @@
 **覆盖的钩子类别**（见 `IPlusHooks`）：房间 · 手牌 · 卡牌 · 能力 · 遗物 · 充能 · 金币 · 宝珠 · 同构 · 抽到时施放 · 卡牌返回 · 赋能。对于任何可修改值 `X`，通常有三个钩子：`Plus_ModifyX`（pipeline）、`Plus_ModifyXMultiplicative`（product）、`Plus_ModifyXAddictive`（sum）。
 
 ## 3. 工具辅助类 — `Base/Utils`
+
+> 📘 详细指南: [Utils.md](Utils.md) · [工具辅助类（中文）](Utils.zh-CN.md)
 
 静态 `*Helper` 类，按你操作的对象挑选。
 

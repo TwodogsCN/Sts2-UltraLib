@@ -17,6 +17,8 @@ The building blocks for content mods. Inherit these and override the members you
 
 ## 2. Hook system — `Hook`
 
+> 📘 Detailed guide: [Hook.md](Hook.md) · [钩子系统（中文）](Hook.zh-CN.md)
+
 The main extension point. Modifiers use composable `Pipeline` / `Product` / `Sum` semantics; event hooks dispatch safely and in order.
 
 | Type | What it gives you |
@@ -28,6 +30,8 @@ The main extension point. Modifiers use composable `Pipeline` / `Product` / `Sum
 **Hook categories covered** (see `IPlusHooks`): Room · Hand · Card · Power · Relic · Charge · Gold · Orb · Isomorphism · CastWhenDrawn · CardReturn · Empower. For any modifiable value `X` there are typically three hooks: `Plus_ModifyX` (pipeline), `Plus_ModifyXMultiplicative` (product), `Plus_ModifyXAddictive` (sum).
 
 ## 3. Utility helpers — `Base/Utils`
+
+> 📘 Detailed guide: [Utils.md](Utils.md) · [工具辅助类（中文）](Utils.zh-CN.md)
 
 Static `*Helper` classes for common operations. Pick by what you're touching.
 

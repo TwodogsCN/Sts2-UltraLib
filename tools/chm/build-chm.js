@@ -195,6 +195,10 @@ function main() {
     ['CODE_CONVENTIONS.zh-CN.md', '代码规范（中文）', path.join(srcDir, 'CODE_CONVENTIONS.zh-CN.md')],
     ['DEVELOPMENT_WORKFLOW.md', 'Development Workflow', path.join(srcDir, 'DEVELOPMENT_WORKFLOW.md')],
     ['DEVELOPMENT_WORKFLOW.zh-CN.md', '开发流程（中文）', path.join(srcDir, 'DEVELOPMENT_WORKFLOW.zh-CN.md')],
+    ['Hook.md', 'Hook System', path.join(srcDir, 'Hook.md')],
+    ['Hook.zh-CN.md', '钩子系统（中文）', path.join(srcDir, 'Hook.zh-CN.md')],
+    ['Utils.md', 'Utils Helper', path.join(srcDir, 'Utils.md')],
+    ['Utils.zh-CN.md', '工具辅助类（中文）', path.join(srcDir, 'Utils.zh-CN.md')],
   ];
 
   const tocItems = []; // <li> items (flat; hhc supports nesting via <ul>)
