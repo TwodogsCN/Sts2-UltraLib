@@ -8,6 +8,17 @@
 
 ---
 
+## Wiki / 文档链接规范（link conventions）
+
+这些规范在编写在线文档和 Wiki 页面时适用（同样适用于 [DEVELOPMENT_WORKFLOW.zh-CN.md](DEVELOPMENT_WORKFLOW.zh-CN.md) 与 API 指南）：
+
+- 每个页面顶部的**语言切换**用 `[English](页面) · [中文](页面.zh-CN)` 格式。
+- **导航链接**（侧边栏、首页索引、交叉引用）在同一行用 `/` 配对中英两种语言：
+  `- [Utils Helper](Utils) / [工具辅助类](Utils.zh-CN)`
+- 在 **GitHub Wiki** 中，链接指向 **Wiki 页面名**（不加 `.md` 后缀，空格用连字符代替，如 `Code-Conventions`、`Hook-System`）。在**仓库 `docs/`** 中，链接保留 `.md` 后缀，因为它们指向仓库文件。
+
+---
+
 ## 1. 工程布局与命名空间
 
 - **命名空间与文件夹路径一一对应。** `Base/Utils/CardHelper.cs` 中的类型位于 `namespace UltraLib.Base.Utils;`。使用**文件级命名空间**（单独的 `namespace UltraLib.X;` 行，不加花括号）。

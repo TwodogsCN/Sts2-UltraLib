@@ -8,6 +8,17 @@ The conventions below are distilled from the existing codebase so new code stays
 
 ---
 
+## Wiki / Documentation link conventions (链接规范)
+
+These apply when writing online documentation and Wiki pages (they also apply to [DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md) and API guides):
+
+- **Language switcher** at the top of each page uses the `[English](Page) · [中文](Page.zh-CN)` format.
+- **Navigation links** (sidebar, home index, cross-references) pair both languages on one line with `/`:
+  `- [Utils Helper](Utils) / [工具辅助类](Utils.zh-CN)`
+- In the **GitHub Wiki**, links point to the **Wiki page name** (no `.md` suffix, hyphens for spaces, e.g. `Code-Conventions`, `Hook-System`). In the **repository `docs/`**, links keep the `.md` suffix since they target repo files.
+
+---
+
 ## 1. Project layout & namespaces
 
 - **Namespaces mirror folder paths.** A type in `Base/Utils/CardHelper.cs` lives in `namespace UltraLib.Base.Utils;`. Use **file-scoped namespaces** (`namespace UltraLib.X;` on its own line, no braces).
