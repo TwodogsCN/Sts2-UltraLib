@@ -73,22 +73,28 @@
 
 ## 6. 日志与错误处理
 
-- 使用库的日志器（`MainFile.Logger`）或 `Log.*` 进行诊断。**不要**在发布的代码中使用 `Console.WriteLine`。
-- 优先使用安全分发：可能抛异常的钩子代码应被捕获并记录日志（参见 `Plus_TriggerRelicRightClick`），而不是让其传播并破坏一个游戏动作。
+- **使用 Godot 原生日志** —— `GD.Print` / `GD.PrintErr` / `GD.PrintPush` 进行诊断。这会直接写入 Godot 控制台，并在游戏内可见、便于快速审查（例如 `GD.PrintErr` 会标记一条 "ERR"，在游戏 UI 里能直接看到）。**不要**在发布的代码中使用 `Console.WriteLine`。
+- **每条日志都必须以 `[UltraLib]` 标签开头**，以便过滤和归属到本模组，例如 `GD.PrintErr($"[UltraLib] ...")`。
+- **日志内容必须中英双语**，让同一行日志对中英文使用者都可读，例如：
+  ```csharp
+  GD.PrintErr($"[UltraLib] [{cardModel.Id}] 渲染出空白，请检查资源路径 / render produced blank image, check resource path");
+  GD.Print($"[UltraLib] [{cardModel.Id}] 保存成功 / save succeeded");
+  ```
+- 优先使用安全分发：可能抛异常的钩子代码应被捕获并记录日志，而不是让其传播并破坏一个游戏动作。
 - 用简短的 `//` 注释标注非显而易见的决策；公共 API 含义依靠 XML 文档注释表达，而不是逐行叙述语句。
 
 ## 7. 文档注释
 
 - **所有公共 API 成员**都要有 `/// <summary>` XML 文档注释。现有代码注释为中文；编辑既有文件时保持同一种语言，并在每个文件内保持语言一致。
-- **新增功能（新的公共类型 / 方法 / 钩子 / 辅助类）必须带双语的 `<summary>`** 说明其用途和用法——同时提供英文与简体中文描述，例如：
+- **新增功能（新的公共类型 / 方法 / 钩子 / 辅助类）必须带双语的 `<summary>`** 说明其用途和用法。标准双语布局为**英文放在 `<summary>`，简体中文放在紧邻的 `<remarks>`**，例如：
   ```csharp
   /// <summary>
-  /// Channels an orb of the given type for the player.
+  /// Generate an image of a card and save it to the specified path.
   /// </summary>
   /// <remarks>
-  /// 为玩家生成一个指定类型的充能球。
+  /// 生成一个卡牌的图像并保存到指定路径。
   /// </remarks>
-  public static async Task<T?> Channel<T>(...) where T : OrbModel => ...;
+  public static async Task<Error> RenderCardToImage(CardModel cardModel, string savePath = "");
   ```
   这样能直接喂给双语的 Wiki/API 文档与 CHM 参考，无需二次翻译，保持一致。
 - 在能增加清晰度的地方使用 `<para>`、`<list type="bullet">`、`<see cref="…"/>`、`<c>…</c>` 等标签（参见 `MainFile.cs`）。

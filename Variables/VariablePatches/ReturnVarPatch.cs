@@ -10,13 +10,16 @@ using UltraLib.Variables;
 namespace UltraLib.Variables.VariablePatches;
 
 /// <summary>
+/// Return dynamic value — core effect patch: sends the card from discard pile back to the hand.
+/// </summary>
+/// <remarks>
 /// 返回动态值——核心效果 Patch：卡牌打出后弃牌堆 → 手牌。
 /// <para>
 /// 通过 Transpiler 在 GetResultPileTypeAndPositionForCardPlay 末尾插入检查，
 /// 若原定去 Discard 且卡牌有 Return 标记，则改为 Hand。
 /// 使用 Prepare() 在方法不存在时静默跳过。
 /// </para>
-/// </summary>
+/// </remarks>
 [HarmonyPatch(typeof(CardModel))]
 public static class ReturnVarEffectPatch
 {
@@ -33,8 +36,11 @@ public static class ReturnVarEffectPatch
     }
 
     /// <summary>
-    /// 如果所有目标方法都不存在，返回 false 跳过此 Patch。
+    /// If no target method exists, returns false to skip this patch.
     /// </summary>
+    /// <remarks>
+    /// 如果所有目标方法都不存在，返回 false 跳过此 Patch。
+    /// </remarks>
     static bool Prepare()
     {
         if (TargetMethod != null) return true;
@@ -55,9 +61,13 @@ public static class ReturnVarEffectPatch
     }
 
     /// <summary>
+    /// If the card has a Return marker and is going to the discard pile, sends it to hand instead.
+    /// This method is inserted by the transpiler and has lower priority than the Exhaust check.
+    /// </summary>
+    /// <remarks>
     /// 如果卡牌有 Return 标记且要去弃牌堆，改为去手牌。
     /// 此方法在 Transpiler 插入后，优先级低于 Exhaust 检查。
-    /// </summary>
+    /// </remarks>
     static PileType NormalOrReturn(PileType dest, CardModel model)
     {
         if (dest == PileType.Discard && IsReturn(model))
@@ -70,7 +80,12 @@ public static class ReturnVarEffectPatch
         return dest;
     }
 
-    /// <summary>判断卡牌是否有生效的返回效果。</summary>
+    /// <summary>
+    /// Returns whether the card has an active return effect.
+    /// </summary>
+    /// <remarks>
+    /// 判断卡牌是否有生效的返回效果。
+    /// </remarks>
     public static bool IsReturn(CardModel card)
     {
         var persist = card.DynamicVars.TryGetValue(ReturnVar.Key, out var v) ? v.IntValue : 0;
@@ -79,8 +94,11 @@ public static class ReturnVarEffectPatch
 }
 
 /// <summary>
-/// 返回动态值——UI 描述 Patch：在卡牌描述中追加返回次数文本。
+/// Return dynamic value — UI description patch: appends the return-count text to the card description.
 /// </summary>
+/// <remarks>
+/// 返回动态值——UI 描述 Patch：在卡牌描述中追加返回次数文本。
+/// </remarks>
 [HarmonyPatch]
 public static class ReturnVarDescriptionPatch
 {

@@ -9,14 +9,20 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
+/// Power-related helper methods.
+/// </summary>
+/// <remarks>
 /// 能力（Power）相关辅助方法。
 /// 提供能力施加、获取、移除、修改层数等便捷操作。
-/// </summary>
+/// </remarks>
 public static class PowerHelper
 {
     /// <summary>
-    /// 为目标添加指定类型的能力。
+    /// Applies a power of the given type to a target.
     /// </summary>
+    /// <remarks>
+    /// 为目标添加指定类型的能力。
+    /// </remarks>
     public static async Task<T?> Apply<T>(
         PlayerChoiceContext choiceContext,
         Creature target,
@@ -30,8 +36,11 @@ public static class PowerHelper
     }
 
     /// <summary>
-    /// 为多个目标添加指定类型的能力。
+    /// Applies a power of the given type to multiple targets.
     /// </summary>
+    /// <remarks>
+    /// 为多个目标添加指定类型的能力。
+    /// </remarks>
     public static async Task<IReadOnlyList<T>> Apply<T>(
         PlayerChoiceContext choiceContext,
         IEnumerable<Creature> targets,
@@ -45,8 +54,11 @@ public static class PowerHelper
     }
 
     /// <summary>
-    /// 使用指定的 PowerModel 实例施加能力（必须为 Mutable）。
+    /// Applies a power using a specific PowerModel instance (must be mutable).
     /// </summary>
+    /// <remarks>
+    /// 使用指定的 PowerModel 实例施加能力（必须为 Mutable）。
+    /// </remarks>
     public static async Task Apply(
         PlayerChoiceContext choiceContext,
         PowerModel power,
@@ -60,8 +72,11 @@ public static class PowerHelper
     }
 
     /// <summary>
-    /// 获取能力的悬浮提示。
+    /// Gets the hover tip for a power.
     /// </summary>
+    /// <remarks>
+    /// 获取能力的悬浮提示。
+    /// </remarks>
     public static IHoverTip? GetPowerTip(PowerModel power)
     {
         var method = typeof(HoverTipFactory).GetMethod("FromPower",
@@ -75,8 +90,11 @@ public static class PowerHelper
     }
 
     /// <summary>
-    /// 刷新能力拥有者的视觉显示。
+    /// Refreshes the owning creature's visual display for this power.
     /// </summary>
+    /// <remarks>
+    /// 刷新能力拥有者的视觉显示。
+    /// </remarks>
     public static void RefreshVisuals(this PowerModel power)
     {
         if (power?.Owner == null) return;
@@ -88,16 +106,22 @@ public static class PowerHelper
     }
 
     /// <summary>
-    /// 从生物身上获取指定类型的能力。
+    /// Gets a power of the given type from a creature.
     /// </summary>
+    /// <remarks>
+    /// 从生物身上获取指定类型的能力。
+    /// </remarks>
     public static T? GetPower<T>(Creature creature) where T : PowerModel
     {
         return creature.GetPower<T>();
     }
 
     /// <summary>
-    /// 移除并清理指定能力。
+    /// Removes and cleans up the given power.
     /// </summary>
+    /// <remarks>
+    /// 移除并清理指定能力。
+    /// </remarks>
     public static async Task Remove(PowerModel? power)
     {
         if (power == null)
@@ -108,16 +132,22 @@ public static class PowerHelper
     }
 
     /// <summary>
-    /// 减少能力层数（减 1）。
+    /// Decrements a power's stacks by 1.
     /// </summary>
+    /// <remarks>
+    /// 减少能力层数（减 1）。
+    /// </remarks>
     public static async Task Decrement(PowerModel power)
     {
         int num = await ModifyAmount(new ThrowingPlayerChoiceContext(), power, -1M, null, null);
     }
 
     /// <summary>
-    /// 修改能力层数。
+    /// Modifies a power's stack amount.
     /// </summary>
+    /// <remarks>
+    /// 修改能力层数。
+    /// </remarks>
     public static async Task<int> ModifyAmount(
         PlayerChoiceContext choiceContext,
         PowerModel power,

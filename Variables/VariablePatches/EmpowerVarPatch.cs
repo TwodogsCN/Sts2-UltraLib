@@ -13,8 +13,11 @@ using UltraLib.Variables;
 namespace UltraLib.Variables.VariablePatches;
 
 /// <summary>
-/// 赋能动态值——核心效果 Patch：打出卡牌时为指定目标施加能力。
+/// Empower dynamic value — core effect patch: applies the power to the target when the card is played.
 /// </summary>
+/// <remarks>
+/// 赋能动态值——核心效果 Patch：打出卡牌时为指定目标施加能力。
+/// </remarks>
 [HarmonyPatch(typeof(CardModel), nameof(CardModel.OnPlayWrapper))]
 public static class EmpowerVarEffectPatch
 {
@@ -60,8 +63,11 @@ public static class EmpowerVarEffectPatch
 }
 
 /// <summary>
-/// 赋能动态值——HoverTip Patch：在卡牌悬浮提示中插入能力的提示。
+/// Empower dynamic value — HoverTip patch: inserts the power's tip into the card's hover tips.
 /// </summary>
+/// <remarks>
+/// 赋能动态值——HoverTip Patch：在卡牌悬浮提示中插入能力的提示。
+/// </remarks>
 [HarmonyPatch(typeof(CardModel), "get_HoverTips")]
 public static class EmpowerVarHoverTipPatch
 {
@@ -79,8 +85,11 @@ public static class EmpowerVarHoverTipPatch
 }
 
 /// <summary>
-/// 赋能动态值——描述文本 Patch：在卡牌描述中追加赋能文本。
+/// Empower dynamic value — description patch: appends the empower text to the card description.
 /// </summary>
+/// <remarks>
+/// 赋能动态值——描述文本 Patch：在卡牌描述中追加赋能文本。
+/// </remarks>
 [HarmonyPatch]
 public static class EmpowerVarDescriptionPatch
 {

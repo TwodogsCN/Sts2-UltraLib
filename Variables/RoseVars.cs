@@ -1,4 +1,4 @@
-﻿using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Hooks;
@@ -10,6 +10,10 @@ using UltraLib.Hook;
 namespace UltraLib.Variables;
 
 /// <summary>
+/// Base class for the Rose-family dynamic variables, providing the shared rose-value
+/// modification pipeline.
+/// </summary>
+/// <remarks>
 /// 玫瑰（Rose）系列动态变量的基类 —— 提供通用的玫瑰值修正管线。
 /// <para>
 /// 玫瑰值的最终数值 = (基础值 + 加算修正) × 乘算修正 → 管线修正。
@@ -17,12 +21,15 @@ namespace UltraLib.Variables;
 /// <see cref="PlusHooks.Plus_TriggerModifyRoseCardMultiplicative"/> 和
 /// <see cref="PlusHooks.Plus_TriggerModifyRoseCard"/> 三个 Hook 实现。
 /// </para>
-/// </summary>
+/// </remarks>
 public static class RoseHelper
 {
     /// <summary>
-    /// 对指定数额执行玫瑰值修正管线。
+    /// Runs the rose-value modification pipeline on the given amount.
     /// </summary>
+    /// <remarks>
+    /// 对指定数额执行玫瑰值修正管线。
+    /// </remarks>
     /// <param name="amount">原始数值。</param>
     /// <param name="card">关联的卡牌。</param>
     /// <returns>修正后的数值。</returns>
@@ -36,22 +43,43 @@ public static class RoseHelper
 }
 
 /// <summary>
-/// 玫瑰格挡值动态变量。
+/// Rose block dynamic variable.
 /// </summary>
+/// <remarks>
+/// 玫瑰格挡值动态变量。
+/// </remarks>
 public class RoseBlockVar : DynamicVar
 {
-    /// <summary>默认变量名。</summary>
+    /// <summary>
+    /// Default variable name.
+    /// </summary>
+    /// <remarks>
+    /// 默认变量名。
+    /// </remarks>
     public const string DefaultName = "RoseBlock";
 
-    /// <summary>格挡值的属性标记。</summary>
+    /// <summary>
+    /// Property flags of the block value.
+    /// </summary>
+    /// <remarks>
+    /// 格挡值的属性标记。
+    /// </remarks>
     public ValueProp Props { get; }
 
-    /// <summary>玫瑰基础值（修正前）。</summary>
+    /// <summary>
+    /// Rose base value (before modification).
+    /// </summary>
+    /// <remarks>
+    /// 玫瑰基础值（修正前）。
+    /// </remarks>
     public decimal RoseBaseValue { get; set; }
 
     /// <summary>
-    /// 创建玫瑰格挡值动态变量。
+    /// Creates a rose block dynamic variable.
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰格挡值动态变量。
+    /// </remarks>
     public RoseBlockVar(string name, decimal block, ValueProp props)
         : base(name, block)
     {
@@ -88,19 +116,35 @@ public class RoseBlockVar : DynamicVar
 }
 
 /// <summary>
-/// 玫瑰卡牌数动态变量。
+/// Rose card-count dynamic variable.
 /// </summary>
+/// <remarks>
+/// 玫瑰卡牌数动态变量。
+/// </remarks>
 public class RoseCardsVar : DynamicVar
 {
-    /// <summary>默认变量名。</summary>
+    /// <summary>
+    /// Default variable name.
+    /// </summary>
+    /// <remarks>
+    /// 默认变量名。
+    /// </remarks>
     public const string DefaultName = "RoseCards";
 
-    /// <summary>玫瑰基础值（修正前）。</summary>
+    /// <summary>
+    /// Rose base value (before modification).
+    /// </summary>
+    /// <remarks>
+    /// 玫瑰基础值（修正前）。
+    /// </remarks>
     public decimal RoseBaseValue { get; set; }
 
     /// <summary>
-    /// 创建玫瑰卡牌数动态变量。
+    /// Creates a rose card-count dynamic variable.
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰卡牌数动态变量。
+    /// </remarks>
     public RoseCardsVar(string name, int cards)
         : base(name, cards) { }
 
@@ -118,16 +162,27 @@ public class RoseCardsVar : DynamicVar
 }
 
 /// <summary>
-/// 玫瑰通用数值动态变量。
+/// Rose generic numeric dynamic variable.
 /// </summary>
+/// <remarks>
+/// 玫瑰通用数值动态变量。
+/// </remarks>
 public class RoseDynamicVar : DynamicVar
 {
-    /// <summary>玫瑰基础值（修正前）。</summary>
+    /// <summary>
+    /// Rose base value (before modification).
+    /// </summary>
+    /// <remarks>
+    /// 玫瑰基础值（修正前）。
+    /// </remarks>
     public decimal RoseBaseValue { get; set; }
 
     /// <summary>
-    /// 创建玫瑰通用数值动态变量。
+    /// Creates a rose generic numeric dynamic variable.
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰通用数值动态变量。
+    /// </remarks>
     public RoseDynamicVar(string name, decimal amount)
         : base(name, amount) { }
 
@@ -145,25 +200,44 @@ public class RoseDynamicVar : DynamicVar
 }
 
 /// <summary>
-/// 玫瑰召唤值动态变量。
+/// Rose summon dynamic variable.
 /// </summary>
+/// <remarks>
+/// 玫瑰召唤值动态变量。
+/// </remarks>
 public class RoseSummonVar : DynamicVar
 {
-    /// <summary>默认变量名。</summary>
+    /// <summary>
+    /// Default variable name.
+    /// </summary>
+    /// <remarks>
+    /// 默认变量名。
+    /// </remarks>
     public const string DefaultName = "RoseSummon";
 
-    /// <summary>玫瑰基础值（修正前）。</summary>
+    /// <summary>
+    /// Rose base value (before modification).
+    /// </summary>
+    /// <remarks>
+    /// 玫瑰基础值（修正前）。
+    /// </remarks>
     public decimal RoseBaseValue { get; set; }
 
     /// <summary>
-    /// 创建玫瑰召唤值动态变量。
+    /// Creates a rose summon dynamic variable.
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰召唤值动态变量。
+    /// </remarks>
     public RoseSummonVar(decimal summonAmount)
         : base("Summon", summonAmount) { }
 
     /// <summary>
-    /// 创建玫瑰召唤值动态变量（自定义名称）。
+    /// Creates a rose summon dynamic variable (with a custom name).
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰召唤值动态变量（自定义名称）。
+    /// </remarks>
     public RoseSummonVar(string name, decimal summonAmount)
         : base(name, summonAmount) { }
 
@@ -185,22 +259,43 @@ public class RoseSummonVar : DynamicVar
 }
 
 /// <summary>
-/// 玫瑰黑檀伤害动态变量。
+/// Rose ebony damage dynamic variable.
 /// </summary>
+/// <remarks>
+/// 玫瑰黑檀伤害动态变量。
+/// </remarks>
 public class RoseOstyDamageVar : DynamicVar
 {
-    /// <summary>默认变量名。</summary>
+    /// <summary>
+    /// Default variable name.
+    /// </summary>
+    /// <remarks>
+    /// 默认变量名。
+    /// </remarks>
     public const string DefaultName = "RoseOstyDamage";
 
-    /// <summary>伤害属性标记。</summary>
+    /// <summary>
+    /// Damage property flags.
+    /// </summary>
+    /// <remarks>
+    /// 伤害属性标记。
+    /// </remarks>
     public ValueProp Props { get; set; }
 
-    /// <summary>玫瑰基础值（修正前）。</summary>
+    /// <summary>
+    /// Rose base value (before modification).
+    /// </summary>
+    /// <remarks>
+    /// 玫瑰基础值（修正前）。
+    /// </remarks>
     public decimal RoseBaseValue { get; set; }
 
     /// <summary>
-    /// 创建玫瑰黑檀伤害动态变量。
+    /// Creates a rose ebony damage dynamic variable.
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰黑檀伤害动态变量。
+    /// </remarks>
     public RoseOstyDamageVar(decimal damage, ValueProp props)
         : base("OstyDamage", damage)
     {
@@ -208,8 +303,11 @@ public class RoseOstyDamageVar : DynamicVar
     }
 
     /// <summary>
-    /// 创建玫瑰黑檀伤害动态变量（自定义名称）。
+    /// Creates a rose ebony damage dynamic variable (with a custom name).
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰黑檀伤害动态变量（自定义名称）。
+    /// </remarks>
     public RoseOstyDamageVar(string name, decimal damage, ValueProp props)
         : base(name, damage)
     {
@@ -247,23 +345,37 @@ public class RoseOstyDamageVar : DynamicVar
 }
 
 /// <summary>
-/// 玫瑰能力赋予动态变量（泛型）。
+/// Rose power-grant dynamic variable (generic).
 /// </summary>
+/// <remarks>
+/// 玫瑰能力赋予动态变量（泛型）。
+/// </remarks>
 /// <typeparam name="T">要赋予的能力类型。</typeparam>
 public class RosePowerVar<T> : DynamicVar where T : PowerModel
 {
-    /// <summary>玫瑰基础值（修正前）。</summary>
+    /// <summary>
+    /// Rose base value (before modification).
+    /// </summary>
+    /// <remarks>
+    /// 玫瑰基础值（修正前）。
+    /// </remarks>
     public decimal RoseBaseValue { get; set; }
 
     /// <summary>
-    /// 创建玫瑰能力赋予动态变量。
+    /// Creates a rose power-grant dynamic variable.
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰能力赋予动态变量。
+    /// </remarks>
     public RosePowerVar(decimal powerAmount)
         : base(typeof(T).Name, powerAmount) { }
 
     /// <summary>
-    /// 创建玫瑰能力赋予动态变量（自定义名称）。
+    /// Creates a rose power-grant dynamic variable (with a custom name).
     /// </summary>
+    /// <remarks>
+    /// 创建玫瑰能力赋予动态变量（自定义名称）。
+    /// </remarks>
     public RosePowerVar(string name, decimal powerAmount)
         : base(name, powerAmount) { }
 

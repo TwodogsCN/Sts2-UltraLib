@@ -1,11 +1,13 @@
 ﻿using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Modding;
 
 namespace UltraLib.UltraLibCode;
 
 /// <summary>
+/// Main entry point of the UltraLib mod.
+/// </summary>
+/// <remarks>
 /// UltraLib 模组主入口。
 /// <para>
 /// 框架职责：
@@ -15,23 +17,31 @@ namespace UltraLib.UltraLibCode;
 ///   <item>注册模组元数据（模组 ID、依赖等）由 <c>UltraLib.json</c> 管理。</item>
 /// </list>
 /// </para>
-/// </summary>
+/// </remarks>
 [ModInitializer(nameof(Initialize))]
 public partial class MainFile : Node
 {
     /// <summary>
-    /// 模组唯一标识符。
-    /// <para>当前用途：Harmony 实例 ID 和日志前缀。</para>
+    /// Unique identifier of the mod.
     /// </summary>
+    /// <remarks>
+    /// 模组唯一标识符。当前用途：Harmony 实例 ID 和日志前缀。
+    /// </remarks>
     public const string ModId = "UltraLib";
 
     /// <summary>
-    /// 全局日志记录器，供 UltraLib 内部各模块使用。
+    /// Global logger for internal use by UltraLib modules.
     /// </summary>
+    /// <remarks>
+    /// 全局日志记录器，供 UltraLib 内部各模块使用。
+    /// </remarks>
     public static MegaCrit.Sts2.Core.Logging.Logger Logger { get; } =
         new(ModId, MegaCrit.Sts2.Core.Logging.LogType.Generic);
 
     /// <summary>
+    /// Mod initialization entry, called automatically by the game on load.
+    /// </summary>
+    /// <remarks>
     /// 模组初始化入口，由游戏在加载时自动调用。
     /// <para>
     /// 初始化流程：
@@ -39,7 +49,7 @@ public partial class MainFile : Node
     /// 2. 执行 PatchAll 扫描本程序集中所有 [HarmonyPatch] 标记的类。
     /// 3. Patch 失败时仅记录警告，不会导致整个模组崩溃。
     /// </para>
-    /// </summary>
+    /// </remarks>
     public static void Initialize()
     {
         // 创建 Harmony 实例，所有 Patch 类将自动被扫描
@@ -54,9 +64,9 @@ public partial class MainFile : Node
         catch (System.Exception ex)
         {
             // 某个 Patch 失败时记录警告但不阻塞初始化
-            Log.Warn($"[{ModId}] 部分 Patch 注入失败: {ex.Message}");
+            GD.PrintErr($"[{ModId}] 部分 Patch 注入失败: {ex.Message} / some patches failed to apply: {ex.Message}");
         }
 
-        Log.Info($"[{ModId}] 模组初始化完成！");
+        GD.Print($"[{ModId}] 模组初始化完成！ / mod initialization complete.");
     }
 }

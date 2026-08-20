@@ -20,7 +20,11 @@ public static class PlusHooks
     {
         RunState? runState = RunManager.Instance.DebugOnlyGetState();
         CombatState? combatState = CombatManager.Instance.DebugOnlyGetState();
-        if (runState == null) return [];
+        if (runState == null)
+        {
+            return [];
+        }
+
         return runState.IterateHookListeners(combatState);
     }
 
@@ -31,7 +35,10 @@ public static class PlusHooks
     {
         foreach (var listener in GetPlusHookListeners())
         {
-            if (listener != null) await action(listener);
+            if (listener != null)
+            {
+                await action(listener);
+            }
         }
     }
 
@@ -39,7 +46,10 @@ public static class PlusHooks
     {
         decimal current = initial;
         foreach (var listener in GetPlusHookListeners())
+        {
             current = action(listener, current);
+        }
+
         return current;
     }
 
@@ -47,7 +57,10 @@ public static class PlusHooks
     {
         decimal total = initial;
         foreach (var listener in GetPlusHookListeners())
+        {
             total += action(listener);
+        }
+
         return total;
     }
 
@@ -55,7 +68,10 @@ public static class PlusHooks
     {
         decimal total = initial;
         foreach (var listener in GetPlusHookListeners())
+        {
             total *= action(listener);
+        }
+
         return total;
     }
 
@@ -186,7 +202,11 @@ public static class PlusHooks
 
     public static async Task Plus_TriggerRelicRightClick(RelicModel relic, NRelicInventoryHolder? holder)
     {
-        if (relic == null) return;
+        if (relic == null)
+        {
+            return;
+        }
+
         try { await Dispatch(h => h.Plus_RelicRightClick(relic, holder)); }
         catch (Exception ex) { Log.Error($"[UltraLib] Relic right click hook error: {ex.Message}"); }
     }

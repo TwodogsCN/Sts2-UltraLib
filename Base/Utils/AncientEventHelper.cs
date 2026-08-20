@@ -5,14 +5,21 @@ using MegaCrit.Sts2.Core.Models;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
-/// 远古事件（AncientEvent）相关辅助方法。
+/// Ancient-event (AncientEvent) related helpers.
 /// </summary>
+/// <remarks>
+/// 远古事件（AncientEvent）相关辅助方法。
+/// </remarks>
 public static class AncientEventHelper
 {
     /// <summary>
+    /// Creates a relic event option for the given relic type by reflecting the private
+    /// <c>RelicOption</c> method of <c>AncientEventModel</c>.
+    /// </summary>
+    /// <remarks>
     /// 通过反射调用 AncientEventModel 的私有方法 RelicOption，
     /// 为指定遗物类型 T 创建一个事件选项。
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">遗物模型类型。</typeparam>
     /// <param name="instance">远古事件模型实例。</param>
     /// <returns>生成的事件选项。</returns>

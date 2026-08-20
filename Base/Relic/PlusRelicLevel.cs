@@ -1,9 +1,11 @@
 namespace UltraLib.Base.Relic;
 
 /// <summary>
-/// 遗物等级枚举。
-/// 用于控制遗物在不同游戏阶段的出现权重和效果强度。
+/// Relic level enum.
 /// </summary>
+/// <remarks>
+/// 遗物等级枚举，用于控制遗物在不同游戏阶段的出现权重和效果强度。
+/// </remarks>
 public enum PlusRelicLevel
 {
     Curse,

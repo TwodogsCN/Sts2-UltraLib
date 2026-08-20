@@ -10,30 +10,56 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
+/// Creature operation helpers.
+/// </summary>
+/// <remarks>
 /// 生物（Creature）操作辅助工具。
 /// 封装 CreatureCmd 的常用操作，提供格挡、伤害、治疗、动画触发等便捷方法。
-/// </summary>
+/// </remarks>
 public static class CreatureHelper
 {
-    /// <summary>触发生物的指定动画。</summary>
+    /// <summary>
+    /// Triggers the specified animation on a creature.
+    /// </summary>
+    /// <remarks>
+    /// 触发生物的指定动画。
+    /// </remarks>
     public static async Task TriggerAnim(Creature creature, string triggerName, float waitTime)
         => await CreatureCmd.TriggerAnim(creature, triggerName, waitTime);
 
-    /// <summary>触发玩家的施法动画。</summary>
+    /// <summary>
+    /// Triggers the player's card-cast animation.
+    /// </summary>
+    /// <remarks>
+    /// 触发玩家的施法动画。
+    /// </remarks>
     public static async Task CastCardOnCreature(Player player)
         => await CreatureCmd.TriggerAnim(player.Creature, "Cast", player.Character.CastAnimDelay);
 
-    /// <summary>为生物增加格挡值。</summary>
+    /// <summary>
+    /// Adds block to a creature.
+    /// </summary>
+    /// <remarks>
+    /// 为生物增加格挡值。
+    /// </remarks>
     public static async Task<decimal> GainBlock(Creature creature, BlockVar blockVar, CardPlay? cardPlay, bool fast = false)
         => await CreatureCmd.GainBlock(creature, blockVar.BaseValue, blockVar.Props, cardPlay, fast);
 
-    /// <summary>为生物增加格挡值（直接指定数值）。</summary>
+    /// <summary>
+    /// Adds block to a creature (specifying the amount directly).
+    /// </summary>
+    /// <remarks>
+    /// 为生物增加格挡值（直接指定数值）。
+    /// </remarks>
     public static async Task<decimal> GainBlock(Creature creature, decimal amount, ValueProp props, CardPlay? cardPlay, bool fast = false)
         => await CreatureCmd.GainBlock(creature, amount, props, cardPlay, fast);
 
     /// <summary>
-    /// 对指定生物造成伤害。
+    /// Deals damage to a target creature.
     /// </summary>
+    /// <remarks>
+    /// 对指定生物造成伤害。
+    /// </remarks>
     /// <param name="choiceContext">玩家选择上下文。</param>
     /// <param name="target">伤害目标。</param>
     /// <param name="amount">伤害数值。</param>
@@ -55,8 +81,11 @@ public static class CreatureHelper
     }
 
     /// <summary>
-    /// 对指定生物列表造成伤害（使用 DamageVar）。
+    /// Deals damage to a list of target creatures (using a DamageVar).
     /// </summary>
+    /// <remarks>
+    /// 对指定生物列表造成伤害（使用 DamageVar）。
+    /// </remarks>
     /// <param name="choiceContext">玩家选择上下文。</param>
     /// <param name="targets">伤害目标列表。</param>
     /// <param name="damageVar">伤害变量（含基础值和属性标记）。</param>
@@ -76,8 +105,11 @@ public static class CreatureHelper
     }
 
     /// <summary>
-    /// 增加最大生命值，并可选择是否回血。
+    /// Increases max HP, optionally healing the creature.
     /// </summary>
+    /// <remarks>
+    /// 增加最大生命值，并可选择是否回血。
+    /// </remarks>
     /// <exception cref="ArgumentException">如果 amount 为负数。</exception>
     public static async Task GainMaxHpAndHeal(Creature creature, decimal amount, bool isHeal = true)
     {
@@ -94,7 +126,12 @@ public static class CreatureHelper
             await CreatureCmd.Heal(creature, gained);
     }
 
-    /// <summary>治疗生物。</summary>
+    /// <summary>
+    /// Heals a creature.
+    /// </summary>
+    /// <remarks>
+    /// 治疗生物。
+    /// </remarks>
     public static async Task Heal(Creature creature, decimal amount)
         => await CreatureCmd.Heal(creature, amount);
 }

@@ -8,13 +8,19 @@ using MegaCrit.Sts2.Core.Models;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
-/// 牌堆操作辅助工具，封装 <see cref="CardPileCmd"/> 的常用操作。
+/// Card pile operation helpers, wrapping common <see cref="CardPileCmd"/> operations.
 /// </summary>
+/// <remarks>
+/// 牌堆操作辅助工具，封装 <see cref="CardPileCmd"/> 的常用操作。
+/// </remarks>
 public static class CardPileHelper
 {
     /// <summary>
-    /// 将指定卡牌添加到指定牌堆的指定位置。
+    /// Adds a card to the given pile at the given position.
     /// </summary>
+    /// <remarks>
+    /// 将指定卡牌添加到指定牌堆的指定位置。
+    /// </remarks>
     /// <param name="card">要添加的卡牌。</param>
     /// <param name="pile">目标牌堆类型。</param>
     /// <param name="position">在牌堆中的位置（顶部/底部/随机）。</param>
@@ -23,8 +29,11 @@ public static class CardPileHelper
         => await CardPileCmd.Add(card, pile, position);
 
     /// <summary>
-    /// 使用游戏 RNG 随机打乱指定牌堆的顺序。
+    /// Randomly shuffles the given pile using the game RNG.
     /// </summary>
+    /// <remarks>
+    /// 使用游戏 RNG 随机打乱指定牌堆的顺序。
+    /// </remarks>
     /// <param name="cardPile">要打乱的牌堆类型。</param>
     /// <param name="player">牌堆的所属玩家。</param>
     public static void RandomizeOrderForPile(PileType cardPile, Player player)
@@ -32,8 +41,11 @@ public static class CardPileHelper
             player, player.RunState.Rng.Shuffle, CombatManager.Instance.DebugOnlyGetState());
 
     /// <summary>
-    /// 从抽牌堆抽牌。
+    /// Draws cards from the draw pile.
     /// </summary>
+    /// <remarks>
+    /// 从抽牌堆抽牌。
+    /// </remarks>
     /// <param name="choiceContext">玩家选择上下文。</param>
     /// <param name="count">抽牌数量。</param>
     /// <param name="player">抽牌的玩家。</param>

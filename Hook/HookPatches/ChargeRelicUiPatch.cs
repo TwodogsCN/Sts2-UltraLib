@@ -8,6 +8,9 @@ using UltraLib.Base.Abstract;
 namespace UltraLib.Hook.HookPatches;
 
 /// <summary>
+/// Harmony patch for charge-relic UI display.
+/// </summary>
+/// <remarks>
 /// 充能遗物 UI 显示 Patch。
 /// <para>
 /// 为具有 <see cref="PlusChargeRelic.UseChargeBarDisplay"/> 的充能遗物，
@@ -17,7 +20,7 @@ namespace UltraLib.Hook.HookPatches;
 /// 进度条采用尖塔复古风格，颜色随充能层数变化：
 /// 未满时绿色渐变，过载时金色→血红→邪能紫→幽冥蓝。
 /// </para>
-/// </summary>
+/// </remarks>
 [HarmonyPatch(typeof(NRelicInventoryHolder))]
 public static class ChargeRelicUiPatch
 {

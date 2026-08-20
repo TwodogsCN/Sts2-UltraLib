@@ -1,7 +1,6 @@
 using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Rewards;
 using MegaCrit.Sts2.Core.Nodes.Screens.Overlays;
@@ -10,11 +9,14 @@ using MegaCrit.Sts2.Core.Rewards;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
+/// Reward screen helpers.
+/// </summary>
+/// <remarks>
 /// 奖励（Reward）界面辅助工具。
 /// <para>
 /// 提供获取当前奖励界面中玩家数据的高效方法。
 /// </para>
-/// </summary>
+/// </remarks>
 public static class RewardHelper
 {
     private static FieldInfo? _rewardButtonsField;
@@ -62,7 +64,7 @@ public static class RewardHelper
         }
         catch (Exception ex)
         {
-            Log.Error($"[RewardHelper] GetCurrentRewards error: {ex.Message}");
+            GD.PrintErr($"[UltraLib] 获取当前奖励出错: {ex.Message} / GetCurrentRewards error: {ex.Message}");
         }
 
         return result;
@@ -94,7 +96,7 @@ public static class RewardHelper
         }
         catch (Exception ex)
         {
-            Log.Error($"[RewardHelper] Reflection init failed: {ex.Message}");
+            GD.PrintErr($"[UltraLib] 反射初始化失败: {ex.Message} / reflection init failed: {ex.Message}");
         }
     }
 

@@ -9,22 +9,31 @@ using MegaCrit.Sts2.Core.Models;
 namespace UltraLib.Variables;
 
 /// <summary>
+/// Return dynamic variable.
+/// </summary>
+/// <remarks>
 /// 返回（Return）动态变量。
 /// <para>
 /// 使卡牌在每回合前 N 次打出时返回手牌，而非进入弃牌堆。
 /// 计数值随每回合的打出次数递减。
 /// </para>
-/// </summary>
+/// </remarks>
 public class ReturnVar : DynamicVar
 {
     /// <summary>
-    /// 在 CardModel.DynamicVars 中使用的键名。
+    /// Key name used in <c>CardModel.DynamicVars</c>.
     /// </summary>
+    /// <remarks>
+    /// 在 CardModel.DynamicVars 中使用的键名。
+    /// </remarks>
     public const string Key = "Return";
 
     /// <summary>
-    /// 创建一个返回动态变量。
+    /// Creates a return dynamic variable.
     /// </summary>
+    /// <remarks>
+    /// 创建一个返回动态变量。
+    /// </remarks>
     /// <param name="returnCount">每回合可以返回的次数。</param>
     public ReturnVar(decimal returnCount) : base(Key, returnCount)
     {
@@ -44,8 +53,11 @@ public class ReturnVar : DynamicVar
     }
 
     /// <summary>
-    /// 计算当前剩余的返回次数（基础次数 - 本回合已打出次数）。
+    /// Computes the remaining return count (base count minus plays this turn).
     /// </summary>
+    /// <remarks>
+    /// 计算当前剩余的返回次数（基础次数 - 本回合已打出次数）。
+    /// </remarks>
     /// <param name="card">要计算的卡牌。</param>
     /// <param name="basePersist">基础返回次数。</param>
     /// <returns>剩余的返回次数，最少为 0。</returns>

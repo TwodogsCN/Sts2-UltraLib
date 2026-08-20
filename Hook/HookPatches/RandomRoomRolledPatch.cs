@@ -6,9 +6,12 @@ using MegaCrit.Sts2.Core.Runs;
 namespace UltraLib.Hook.HookPatches;
 
 /// <summary>
+/// Harmony patch that fires after a random room type is rolled.
+/// </summary>
+/// <remarks>
 /// 随机房间 Roll 点完成后的 Hook Patch。
 /// 在 UnknownMapPointOdds.Roll 返回结果后触发 Plus_AfterRandomRoomRolled。
-/// </summary>
+/// </remarks>
 [HarmonyPatch(typeof(UnknownMapPointOdds), nameof(UnknownMapPointOdds.Roll), new[] { typeof(IEnumerable<RoomType>), typeof(IRunState) })]
 public static class RandomRoomRolledPatch
 {

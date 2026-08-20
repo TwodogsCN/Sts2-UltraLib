@@ -8,8 +8,12 @@ using MegaCrit.Sts2.Core.Runs;
 namespace UltraLib.Hook.HookPatches;
 
 /// <summary>
-/// PlayerCmd.GainGold 的 Hook Patch：拦截金币获得，注入 Plus 加算/乘算/管线修正。
+/// Harmony patch on <c>PlayerCmd.GainGold</c>: intercepts gold gain and injects Plus
+/// additive / multiplicative / pipeline modifiers.
 /// </summary>
+/// <remarks>
+/// PlayerCmd.GainGold 的 Hook Patch：拦截金币获得，注入 Plus 加算/乘算/管线修正。
+/// </remarks>
 [HarmonyPatch(typeof(PlayerCmd), nameof(PlayerCmd.GainGold), new[] { typeof(decimal), typeof(Player), typeof(bool) })]
 public static class PlayerCmdGainGoldPatch
 {
@@ -51,8 +55,12 @@ public static class PlayerCmdGainGoldPatch
 }
 
 /// <summary>
-/// PlayerCmd.LoseGold 的 Hook Patch：拦截金币损失，注入 Plus 加算/乘算/管线修正。
+/// Harmony patch on <c>PlayerCmd.LoseGold</c>: intercepts gold loss and injects Plus
+/// additive / multiplicative / pipeline modifiers.
 /// </summary>
+/// <remarks>
+/// PlayerCmd.LoseGold 的 Hook Patch：拦截金币损失，注入 Plus 加算/乘算/管线修正。
+/// </remarks>
 [HarmonyPatch(typeof(PlayerCmd), nameof(PlayerCmd.LoseGold), new[] { typeof(decimal), typeof(Player), typeof(GoldLossType) })]
 public static class PlayerCmdLoseGoldPatch
 {
