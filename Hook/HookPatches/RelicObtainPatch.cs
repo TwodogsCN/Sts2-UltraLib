@@ -12,9 +12,13 @@ using MegaCrit.Sts2.Core.Saves;
 namespace UltraLib.Hook.HookPatches;
 
 /// <summary>
+/// Harmony patch on <c>RelicCmd.Obtain</c>: injects Before/After hooks around relic
+/// acquisition while retaining the full original flow.
+/// </summary>
+/// <remarks>
 /// RelicCmd.Obtain 的 Hook Patch：在遗物获取前后注入 Before/After Hook。
 /// 保留原版完整逻辑（添加到玩家、更新抓包、播动画、保存等）。
-/// </summary>
+/// </remarks>
 [HarmonyPatch(typeof(RelicCmd), nameof(RelicCmd.Obtain), new[] { typeof(RelicModel), typeof(Player), typeof(int) })]
 public static class RelicCmdObtainPatch
 {

@@ -20,13 +20,19 @@ using UltraLib.Variables;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
-/// 卡牌操作辅助工具，封装 CardCmd / CardPileCmd 的常用操作。
+/// Card operation helpers, wrapping common <c>CardCmd</c> / <c>CardPileCmd</c> operations.
 /// </summary>
+/// <remarks>
+/// 卡牌操作辅助工具，封装 CardCmd / CardPileCmd 的常用操作。
+/// </remarks>
 public static class CardHelper
 {
     /// <summary>
-    /// 带有预览的生成卡牌到战斗方法
+    /// Adds a generated card to combat with a preview.
     /// </summary>
+    /// <remarks>
+    /// 带有预览的生成卡牌到战斗方法。
+    /// </remarks>
     public static async Task PreviewAddGeneratedCardToCombat(CardModel card, PileType pile, Player? player, CardPilePosition position,
         CardPreviewStyle style = CardPreviewStyle.HorizontalLayout)
     {
@@ -35,16 +41,22 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 预览一个牌堆添加的结果
+    /// Previews the result of a pile add.
     /// </summary>
+    /// <remarks>
+    /// 预览一个牌堆添加的结果。
+    /// </remarks>
     public static void PreviewCardPileAddResult(CardPileAddResult result)
     {
         CardCmd.PreviewCardPileAdd(result);
     }
 
     /// <summary>
-    /// 消耗一个牌或一个列表的牌
+    /// Exhausts a card or a list of cards.
     /// </summary>
+    /// <remarks>
+    /// 消耗一个牌或一个列表的牌。
+    /// </remarks>
     public static async Task Exhaust(List<CardModel> cardList, PlayerChoiceContext? playerChoiceContext = null)
     {
         playerChoiceContext ??= new BlockingPlayerChoiceContext();
@@ -55,8 +67,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 消耗一个牌或一个列表的牌
+    /// Exhausts a card or a list of cards.
     /// </summary>
+    /// <remarks>
+    /// 消耗一个牌或一个列表的牌。
+    /// </remarks>
     public static async Task Exhaust(CardModel card, PlayerChoiceContext? playerChoiceContext = null)
     {
         playerChoiceContext ??= new BlockingPlayerChoiceContext();
@@ -64,16 +79,22 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 升级一个牌或一个列表的牌
+    /// Upgrades a card.
     /// </summary>
+    /// <remarks>
+    /// 升级一个牌或一个列表的牌。
+    /// </remarks>
     public static void Upgrade(CardModel card)
     {
         CardCmd.Upgrade(card);
     }
 
     /// <summary>
-    /// 降级一个牌或一个列表的牌
+    /// Downgrades a list of cards.
     /// </summary>
+    /// <remarks>
+    /// 降级一个牌或一个列表的牌。
+    /// </remarks>
     public static void Downgrade(List<CardModel> cardList)
     {
         foreach (var card in cardList)
@@ -83,16 +104,22 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 降级一个牌或一个列表的牌
+    /// Downgrades a card.
     /// </summary>
+    /// <remarks>
+    /// 降级一个牌或一个列表的牌。
+    /// </remarks>
     public static void Downgrade(CardModel card)
     {
         CardCmd.Downgrade(card);
     }
 
     /// <summary>
-    /// 升级一个牌或一个列表的牌
+    /// Upgrades a list of cards.
     /// </summary>
+    /// <remarks>
+    /// 升级一个牌或一个列表的牌。
+    /// </remarks>
     public static void Upgrade(List<CardModel> cardList)
     {
         foreach (var card in cardList)
@@ -102,9 +129,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 生成卡牌进入战斗 触发生成卡牌Hook
-    /// 返回CardPileAddResult
+    /// Adds a generated card to combat, triggering the generated-card hook, and returns the add result.
     /// </summary>
+    /// <remarks>
+    /// 生成卡牌进入战斗，触发生成卡牌 Hook，返回 CardPileAddResult。
+    /// </remarks>
     public static async Task<CardPileAddResult> AddGeneratedCardToCombat(CardModel card, PileType pile, Player? player, CardPilePosition position,
         CardPreviewStyle style = CardPreviewStyle.HorizontalLayout)
     {
@@ -112,9 +141,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 将指定卡添加至卡堆 带预览设置
-    /// 不能触发生成卡牌Hook
+    /// Adds a card to a pile with preview settings (does not trigger the generated-card hook).
     /// </summary>
+    /// <remarks>
+    /// 将指定卡添加至卡堆，带预览设置，不能触发生成卡牌 Hook。
+    /// </remarks>
     public static async Task AddToPile(CardModel card, PileType pile, CardPilePosition position, bool isPreview = true,
         CardPreviewStyle style = CardPreviewStyle.HorizontalLayout)
     {
@@ -125,9 +156,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 将指定卡牌列表添加至卡堆 带预览设置
-    /// 不能触发生成卡牌Hook
+    /// Adds a list of cards to a pile with preview settings (does not trigger the generated-card hook).
     /// </summary>
+    /// <remarks>
+    /// 将指定卡牌列表添加至卡堆，带预览设置，不能触发生成卡牌 Hook。
+    /// </remarks>
     public static async Task AddToPile(List<CardModel> cardList, PileType pile, CardPilePosition position,
         bool isPreview = true,
         CardPreviewStyle style = CardPreviewStyle.HorizontalLayout)
@@ -142,8 +175,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 传入卡牌 返回一个原版模型 如需使用需要ToMutable()
+    /// Returns the canonical model of a card (use <c>ToMutable()</c> to work with it).
     /// </summary>
+    /// <remarks>
+    /// 传入卡牌，返回一个原版模型，如需使用需要 ToMutable()。
+    /// </remarks>
     public static CardModel GetModelDb(CardModel cardModel)
     {
         var type = cardModel.GetType();
@@ -153,8 +189,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 克隆一个卡牌 返回复制的卡
+    /// Clones a card and returns the copy.
     /// </summary>
+    /// <remarks>
+    /// 克隆一个卡牌，返回复制的卡。
+    /// </remarks>
     public static CardModel Clone(CardModel cardModel)
     {
         CardModel card = cardModel.CreateClone();
@@ -162,8 +201,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 克隆一个卡牌的原始版本 返回原始版本的复制卡
+    /// Clones a card's origin version and returns the copy.
     /// </summary>
+    /// <remarks>
+    /// 克隆一个卡牌的原始版本，返回原始版本的复制卡。
+    /// </remarks>
     public static CardModel CloneOrigin(CardModel cardModel, Player player, ICombatState combatState)
     {
         CardModel card = combatState.CreateCard(GetModelDb(cardModel), player);
@@ -171,16 +213,22 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 给一个卡牌添加关键词
+    /// Applies keywords to a card.
     /// </summary>
+    /// <remarks>
+    /// 给一个卡牌添加关键词。
+    /// </remarks>
     public static void ApplyKeyword(CardModel card, params CardKeyword[] keywordsList)
     {
         CardCmd.ApplyKeyword(card, keywordsList);
     }
 
     /// <summary>
-    /// 给一列表卡牌添加关键词
+    /// Applies keywords to a list of cards.
     /// </summary>
+    /// <remarks>
+    /// 给一列表卡牌添加关键词。
+    /// </remarks>
     public static void ApplyKeyword(List<CardModel> cardList, params CardKeyword[] keywordsList)
     {
         foreach (var card in cardList)
@@ -190,16 +238,22 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 给一张卡牌移除关键词
+    /// Removes keywords from a card.
     /// </summary>
+    /// <remarks>
+    /// 给一张卡牌移除关键词。
+    /// </remarks>
     public static void RemoveKeyword(CardModel card, params CardKeyword[] keywordsList)
     {
         CardCmd.RemoveKeyword(card, keywordsList);
     }
 
     /// <summary>
-    /// 给一列表卡牌移除关键词
+    /// Removes keywords from a list of cards.
     /// </summary>
+    /// <remarks>
+    /// 给一列表卡牌移除关键词。
+    /// </remarks>
     public static void RemoveKeyword(List<CardModel> cardList, params CardKeyword[] keywordsList)
     {
         foreach (var card in cardList)
@@ -209,8 +263,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 给指定卡添加返回效果
+    /// Adds a return effect to the given card.
     /// </summary>
+    /// <remarks>
+    /// 给指定卡添加返回效果。
+    /// </remarks>
     public static void AddReturnVar(this CardModel card, decimal value)
     {
         var varsDict = GetVarsDict(card);
@@ -230,8 +287,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 给指定卡添加赋能效果
+    /// Adds an empower effect to the given card.
     /// </summary>
+    /// <remarks>
+    /// 给指定卡添加赋能效果。
+    /// </remarks>
     public static void AddEmpowerVar(this CardModel card, PowerModel power, decimal value)
     {
         var varsDict = GetVarsDict(card);
@@ -249,8 +309,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 移除卡牌的返回
+    /// Removes the return effect from a card.
     /// </summary>
+    /// <remarks>
+    /// 移除卡牌的返回。
+    /// </remarks>
     public static bool RemoveReturnVar(this CardModel card)
     {
         var dict = GetVarsDict(card);
@@ -260,8 +323,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 移除卡牌的赋能
+    /// Removes the empower effect from a card.
     /// </summary>
+    /// <remarks>
+    /// 移除卡牌的赋能。
+    /// </remarks>
     public static bool RemoveEmpowerVar(this CardModel card)
     {
         var dict = GetVarsDict(card);
@@ -274,19 +340,23 @@ public static class CardHelper
     {
         if (varObj == null) return 0m;
 
-        // 针对你模组变量的快速判断
-        if (varObj is ReturnVar rv) return rv.IntValue;
-
-        // 针对原版 DynamicVar 的处理
-        if (varObj is MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar dVar)
-            return Convert.ToDecimal(dVar.IntValue);
-
-        return decimal.TryParse(varObj.ToString(), out var d) ? d : 0m;
+        switch (varObj)
+        {
+            case ReturnVar rv:
+                return rv.IntValue;
+            case MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar dVar:
+                return Convert.ToDecimal(dVar.IntValue);
+            default:
+                return decimal.TryParse(varObj.ToString(), out var d) ? d : 0m;
+        }
     }
 
     /// <summary>
-    /// 刷新一个卡牌的悬浮提示
+    /// Refreshes a card's hover tips.
     /// </summary>
+    /// <remarks>
+    /// 刷新一个卡牌的悬浮提示。
+    /// </remarks>
     public static void RefreshHoverTips(this CardModel card)
     {
         // 查找当前卡牌对应的场景节点（Node）
@@ -302,25 +372,33 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 自动打出一张卡牌，会传入choiceContext
+    /// Auto-plays a card, passing in a choice context.
     /// </summary>
+    /// <remarks>
+    /// 自动打出一张卡牌，会传入 choiceContext。
+    /// </remarks>
     public static async Task AutoPlay(PlayerChoiceContext choiceContext, CardModel card, ICombatState combatState, bool skipX = true)
     {
         await CardCmd.AutoPlay(choiceContext, card, GetAutoTarget(card, combatState), skipXCapture: skipX);
     }
 
     /// <summary>
-    /// 自动打出一张牌，不用传入choiceContext
-    /// 会用new BlockingPlayerChoiceContext()代替
+    /// Auto-plays a card without a choice context (uses a new BlockingPlayerChoiceContext).
     /// </summary>
+    /// <remarks>
+    /// 自动打出一张牌，不用传入 choiceContext，会用 new BlockingPlayerChoiceContext() 代替。
+    /// </remarks>
     public static async Task AutoPlay(CardModel card, ICombatState combatState, bool skipX = true)
     {
         await CardCmd.AutoPlay(new BlockingPlayerChoiceContext(), card, GetAutoTarget(card, combatState), skipXCapture: skipX);
     }
 
     /// <summary>
-    /// 获取一个卡牌可以指定的随机目标
+    /// Gets a random target a card can target.
     /// </summary>
+    /// <remarks>
+    /// 获取一个卡牌可以指定的随机目标。
+    /// </remarks>
     public static Creature? GetAutoTarget(CardModel card, ICombatState combatState)
     {
         if (card == null || combatState == null) return null;
@@ -348,8 +426,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 设置卡牌的类型
+    /// Sets the card type.
     /// </summary>
+    /// <remarks>
+    /// 设置卡牌的类型。
+    /// </remarks>
     public static void SetCardType(this CardModel card, CardType newType)
     {
         if (card == null) return;
@@ -357,72 +438,99 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 弃掉卡牌，需传入choiceContext
+    /// Discards cards, requiring a choice context.
     /// </summary>
+    /// <remarks>
+    /// 弃掉卡牌，需传入 choiceContext。
+    /// </remarks>
     public static async Task Discard(PlayerChoiceContext choiceContext, IEnumerable<CardModel> card)
     {
         await CardCmd.Discard(choiceContext, card);
     }
 
     /// <summary>
-    /// 弃掉卡牌，需传入choiceContext
+    /// Discards a card, requiring a choice context.
     /// </summary>
+    /// <remarks>
+    /// 弃掉卡牌，需传入 choiceContext。
+    /// </remarks>
     public static async Task Discard(PlayerChoiceContext choiceContext, CardModel card)
     {
         await CardCmd.Discard(choiceContext, card);
     }
 
     /// <summary>
-    /// 预览一张卡牌（出现在中央再飞回卡堆）
+    /// Previews a card (it appears at center and flies back to the pile).
     /// </summary>
+    /// <remarks>
+    /// 预览一张卡牌（出现在中央再飞回卡堆）。
+    /// </remarks>
     public static TaskCompletionSource? Preview(CardModel card, float time = 1.2f, CardPreviewStyle style = CardPreviewStyle.HorizontalLayout)
     {
         return CardCmd.Preview(card, time, style);
     }
 
     /// <summary>
-    /// 给一张卡牌添加指定量的附魔
+    /// Enchants a card with the given amount.
     /// </summary>
+    /// <remarks>
+    /// 给一张卡牌添加指定量的附魔。
+    /// </remarks>
     public static T? Enchant<T>(CardModel card, Decimal amount) where T : EnchantmentModel
     {
         return CardCmd.Enchant(ModelDb.Enchantment<T>().ToMutable(), card, amount) as T;
     }
 
     /// <summary>
-    /// 给一张卡牌添加指定量的附魔
+    /// Enchants a card with the given amount (using a specific enchantment).
     /// </summary>
+    /// <remarks>
+    /// 给一张卡牌添加指定量的附魔。
+    /// </remarks>
     public static EnchantmentModel? Enchant(EnchantmentModel enchantment, CardModel card, Decimal amount)
     {
         return CardCmd.Enchant(enchantment.ToMutable(), card, amount);
     }
 
     /// <summary>
-    /// 创建一个卡牌
+    /// Creates a card.
     /// </summary>
+    /// <remarks>
+    /// 创建一个卡牌。
+    /// </remarks>
     public static T CreateCard<T>(ICombatState combatState, Player player) where T : CardModel
     {
         return (T)combatState.CreateCard(ModelDb.Card<T>(), player);
     }
 
     /// <summary>
-    /// 以card为基础创建一个card
+    /// Creates a card based on a given card.
     /// </summary>
+    /// <remarks>
+    /// 以 card 为基础创建一个 card。
+    /// </remarks>
     public static CardModel CreateCard(CardModel canonicalCard, ICombatState combatState, Player player)
     {
         return combatState.CreateCard(canonicalCard, player);
     }
 
     /// <summary>
-    /// 把目标卡牌转变成指定卡牌的最初版本
+    /// Transforms a target card into the origin version of the specified card type.
     /// </summary>
+    /// <remarks>
+    /// 把目标卡牌转变成指定卡牌的最初版本。
+    /// </remarks>
     public static async Task<CardPileAddResult?> TransformTo<T>(CardModel card) where T : CardModel
     {
         return await CardCmd.TransformTo<T>(card);
     }
 
     /// <summary>
-    /// 把目标卡牌变化成目标卡牌
+    /// Transforms a target card into another card.
     /// </summary>
+    /// <remarks>
+    /// 把目标卡牌变化成目标卡牌。
+    /// </remarks>
     public static async Task<CardPileAddResult?> Transform(
         CardModel original,
         CardModel replacement,
@@ -432,9 +540,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 带预览的变化
-    /// 把目标卡牌变化成目标卡牌
+    /// Transforms a target card into another card, with preview.
     /// </summary>
+    /// <remarks>
+    /// 带预览的变化，把目标卡牌变化成目标卡牌。
+    /// </remarks>
     public static async Task PreviewTransform(
         CardModel original,
         CardModel replacement,
@@ -444,8 +554,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 拥有锻造一般的预览效果
+    /// Shows a smithing-like preview effect on a collection of cards.
     /// </summary>
+    /// <remarks>
+    /// 拥有锻造一般的预览效果。
+    /// </remarks>
     public static void PreviewSovereignBlade(IReadOnlyCollection<CardModel> cards)
     {
         if (TestMode.IsOn || !LocalContext.IsMine(cards.First()))
@@ -460,8 +573,11 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// 拥有锻造一般的预览效果
+    /// Shows a smithing-like preview effect on a single card.
     /// </summary>
+    /// <remarks>
+    /// 拥有锻造一般的预览效果。
+    /// </remarks>
     public static void PreviewSovereignBlade(CardModel card)
     {
         List<CardModel> cards =

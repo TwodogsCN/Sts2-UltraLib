@@ -7,9 +7,13 @@ using MegaCrit.Sts2.Core.Models;
 namespace UltraLib.Hook.HookPatches;
 
 /// <summary>
+/// Harmony patch for orb passive triggers: dynamically scans the <c>Passive</c> method
+/// of every <c>OrbModel</c> subclass and injects Before/After hooks.
+/// </summary>
+/// <remarks>
 /// 充能球被动触发（Passive）的 Hook Patch。
 /// 动态扫描所有 OrbModel 子类的 Passive 方法，注入 Before/After Hook。
-/// </summary>
+/// </remarks>
 [HarmonyPatch]
 public static class OrbPassivePatch
 {
@@ -48,9 +52,13 @@ public static class OrbPassivePatch
 }
 
 /// <summary>
+/// Harmony patch for orb evoke triggers: dynamically scans the <c>Evoke</c> method
+/// of every <c>OrbModel</c> subclass and injects Before/After hooks.
+/// </summary>
+/// <remarks>
 /// 充能球激发（Evoke）的 Hook Patch。
 /// 动态扫描所有 OrbModel 子类的 Evoke 方法，注入 Before/After Hook。
-/// </summary>
+/// </remarks>
 [HarmonyPatch]
 public static class OrbEvokePatch
 {

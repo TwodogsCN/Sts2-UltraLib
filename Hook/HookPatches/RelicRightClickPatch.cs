@@ -2,7 +2,6 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.ControllerInput;
-using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Nodes.Combat;
@@ -16,10 +15,14 @@ using UltraLib.Base.Utils;
 namespace UltraLib.Hook.HookPatches;
 
 /// <summary>
+/// Full Harmony patch for relic right-click: connects right-click input after
+/// <c>NRelicInventoryHolder._Ready</c> and enqueues a GameAction for online sync.
+/// </summary>
+/// <remarks>
 /// 遗物右键点击的完整 Hook Patch。
 /// 在 NRelicInventoryHolder._Ready 后连接右键输入信号；
 /// 检测右键/取消键，通过 GameAction 入队保证联机同步。
-/// </summary>
+/// </remarks>
 [HarmonyPatch(typeof(NRelicInventoryHolder), "_Ready", MethodType.Normal)]
 public static class RelicRightClickPatch
 {
@@ -76,7 +79,7 @@ public static class RelicRightClickPatch
         }
 
         if (IsMultiplayer())
-            Log.Warn("[UltraLib] RelicRightClickAction enqueue failed (multiplayer), firing hook directly");
+            GD.PrintErr("[UltraLib] RelicRightClickAction enqueue failed (multiplayer), firing hook directly / RelicRightClickAction 入队失败（联机），直接触发 hook");
 
         _ = PlusHooks.Plus_TriggerRelicRightClick(model, holder);
     }

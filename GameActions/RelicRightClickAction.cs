@@ -5,7 +5,6 @@ using MegaCrit.Sts2.Core.Entities.Multiplayer;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Serialization;
 using MegaCrit.Sts2.Core.Nodes.Relics;
@@ -14,20 +13,26 @@ using UltraLib.Hook;
 namespace UltraLib.GameActions;
 
 /// <summary>
+/// GameAction for right-clicking a relic.
+/// </summary>
+/// <remarks>
 /// 遗物右键操作的 GameAction。
 /// <para>
 /// 继承自 <see cref="GameAction"/>，确保在联机环境中，
 /// 右键 Hook 能通过原版的 Action 队列同步到所有客户端。
 /// </para>
-/// </summary>
+/// </remarks>
 public sealed class RelicRightClickAction : GameAction
 {
     private readonly RelicModel _relic;
     private readonly NRelicInventoryHolder? _holder;
 
     /// <summary>
-    /// 创建一个遗物右键 Action。
+    /// Creates a relic right-click action.
     /// </summary>
+    /// <remarks>
+    /// 创建一个遗物右键 Action。
+    /// </remarks>
     /// <param name="relic">被右键点击的遗物。</param>
     /// <param name="holder">遗物持有者 UI 控件（可能为 null）。</param>
     public RelicRightClickAction(RelicModel relic, NRelicInventoryHolder? holder)
@@ -37,8 +42,11 @@ public sealed class RelicRightClickAction : GameAction
     }
 
     /// <summary>
-    /// 创建一个遗物右键 Action（不带 UI 控件引用，执行时会自动查找）。
+    /// Creates a relic right-click action without a UI holder reference (resolved on execution).
     /// </summary>
+    /// <remarks>
+    /// 创建一个遗物右键 Action（不带 UI 控件引用，执行时会自动查找）。
+    /// </remarks>
     /// <param name="relic">被右键点击的遗物。</param>
     public RelicRightClickAction(RelicModel relic)
     {
@@ -60,7 +68,7 @@ public sealed class RelicRightClickAction : GameAction
             return;
         }
 
-        Log.Info($"[UltraLib] 遗物右键 Action 执行: {_relic.Id}");
+        GD.Print($"[UltraLib] 遗物右键 Action 执行: {_relic.Id} / executing relic right-click action: {_relic.Id}");
 
         try
         {
@@ -70,11 +78,11 @@ public sealed class RelicRightClickAction : GameAction
             // 触发遗物右键 Hook
             await PlusHooks.Plus_TriggerRelicRightClick(_relic, holder);
 
-            Log.Info($"[UltraLib] 遗物右键 Action ({_relic.Id}) 执行完毕。");
+            GD.Print($"[UltraLib] 遗物右键 Action ({_relic.Id}) 执行完毕 / relic right-click action completed: {_relic.Id}");
         }
         catch (Exception ex)
         {
-            Log.Error($"[UltraLib] 执行 RelicRightClickAction 崩溃: {ex}");
+            GD.PrintErr($"[UltraLib] 执行 RelicRightClickAction 崩溃: {ex} / RelicRightClickAction execution crashed: {ex}");
         }
     }
 
@@ -88,8 +96,11 @@ public sealed class RelicRightClickAction : GameAction
     }
 
     /// <summary>
-    /// 在场景树中递归查找指定遗物模型对应的 UI 控件。
+    /// Recursively finds the UI holder control for the given relic model in the scene tree.
     /// </summary>
+    /// <remarks>
+    /// 在场景树中递归查找指定遗物模型对应的 UI 控件。
+    /// </remarks>
     /// <param name="model">要查找的遗物模型。</param>
     /// <returns>找到的遗物持有者控件，未找到则返回 null。</returns>
     private static NRelicInventoryHolder? FindRelicHolder(RelicModel model)
@@ -105,14 +116,17 @@ public sealed class RelicRightClickAction : GameAction
         }
         catch (Exception ex)
         {
-            Log.Warn($"[UltraLib] 查找遗物 UI 节点时异常: {ex.Message}");
+            GD.PrintErr($"[UltraLib] 查找遗物 UI 节点时异常: {ex.Message} / error finding relic UI node: {ex.Message}");
             return null;
         }
     }
 
     /// <summary>
-    /// 在场景树中递归查找遗物持有者控件。
+    /// Recursively searches the scene tree for the relic holder control.
     /// </summary>
+    /// <remarks>
+    /// 在场景树中递归查找遗物持有者控件。
+    /// </remarks>
     /// <param name="node">当前遍历的节点。</param>
     /// <param name="model">要查找的遗物模型。</param>
     /// <returns>找到的遗物持有者控件，未找到则返回 null。</returns>
@@ -140,19 +154,28 @@ public sealed class RelicRightClickAction : GameAction
 }
 
 /// <summary>
+/// Network serialization structure for the relic right-click action.
+/// </summary>
+/// <remarks>
 /// 遗物右键 Action 的网络序列化结构。
 /// 在联机环境中，GameAction 通过此结构序列化并传输到其他客户端。
-/// </summary>
+/// </remarks>
 public struct NetRelicRightClickAction : INetAction
 {
     /// <summary>
-    /// 被右键点击的遗物 ID。
+    /// ID of the relic that was right-clicked.
     /// </summary>
+    /// <remarks>
+    /// 被右键点击的遗物 ID。
+    /// </remarks>
     public string RelicId;
 
     /// <summary>
-    /// 将网络数据反序列化为实际的 GameAction。
+    /// Deserializes the network data into an actual GameAction.
     /// </summary>
+    /// <remarks>
+    /// 将网络数据反序列化为实际的 GameAction。
+    /// </remarks>
     /// <param name="player">接收此 Action 的玩家。</param>
     /// <returns>对应的 GameAction 实例。</returns>
     public GameAction ToGameAction(Player player)
@@ -179,8 +202,11 @@ public struct NetRelicRightClickAction : INetAction
     }
 
     /// <summary>
-    /// 在玩家身上查找指定 ID 的遗物。
+    /// Finds a relic with the given ID on the player.
     /// </summary>
+    /// <remarks>
+    /// 在玩家身上查找指定 ID 的遗物。
+    /// </remarks>
     private static RelicModel? FindRelicInPlayer(Player player, string relicId)
     {
         if (player == null || string.IsNullOrEmpty(relicId))
@@ -200,8 +226,11 @@ public struct NetRelicRightClickAction : INetAction
     }
 
     /// <summary>
-    /// 枚举玩家拥有的所有遗物（通过反射遍历所有可枚举的属性）。
+    /// Enumerates all relics owned by the player (via reflection over enumerable properties).
     /// </summary>
+    /// <remarks>
+    /// 枚举玩家拥有的所有遗物（通过反射遍历所有可枚举的属性）。
+    /// </remarks>
     private static IEnumerable EnumerateRelics(Player player)
     {
         foreach (PropertyInfo prop in player.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -228,8 +257,11 @@ public struct NetRelicRightClickAction : INetAction
 }
 
 /// <summary>
-/// 空的遗物右键 Action，用于网络反序列化失败时的降级处理。
+/// Empty relic right-click action, used as a degraded fallback when network deserialization fails.
 /// </summary>
+/// <remarks>
+/// 空的遗物右键 Action，用于网络反序列化失败时的降级处理。
+/// </remarks>
 internal sealed class EmptyRelicRightClickAction : GameAction
 {
     /// <inheritdoc />

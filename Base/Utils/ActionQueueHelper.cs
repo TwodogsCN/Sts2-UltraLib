@@ -1,16 +1,19 @@
 using System.Reflection;
+using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
-using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace UltraLib.Base.Utils;
 
 /// <summary>
+/// Helper for enqueueing GameActions into the action queue.
+/// </summary>
+/// <remarks>
 /// GameAction 队列入队辅助工具。
 /// 优先走 ActionQueueSynchronizer，单机回退到反射寻找 Enqueue 方法。
-/// </summary>
+/// </remarks>
 public static class ActionQueueHelper
 {
     public static bool TryEnqueue(GameAction action)
@@ -27,7 +30,7 @@ public static class ActionQueueHelper
             }
             catch (Exception ex)
             {
-                Log.Warn("[UltraLib] ActionQueueHelper RequestEnqueue failed: " + ex);
+                GD.PrintErr($"[UltraLib] ActionQueueHelper RequestEnqueue failed: {ex} / 入队请求失败: {ex}");
             }
         }
 
@@ -49,11 +52,11 @@ public static class ActionQueueHelper
             }
             catch (Exception ex)
             {
-                Log.Warn("[UltraLib] ActionQueueHelper fallback failed on " + candidate.GetType().Name + ": " + ex);
+                GD.PrintErr($"[UltraLib] ActionQueueHelper fallback failed on {candidate.GetType().Name}: {ex} / 反射入队回退失败于 {candidate.GetType().Name}: {ex}");
             }
         }
 
-        Log.Warn("[UltraLib] ActionQueueHelper: no enqueue method found.");
+        GD.PrintErr("[UltraLib] ActionQueueHelper: no enqueue method found / 找不到入队方法");
         return false;
     }
 

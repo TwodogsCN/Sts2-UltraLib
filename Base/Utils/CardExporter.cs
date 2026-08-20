@@ -9,19 +9,36 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace UltraLib.Base.Utils;
 
+/// <summary>
+/// Renders card models to PNG images saved on disk, for exporting card artwork
+/// and documentation previews.
+/// </summary>
+/// <remarks>
+/// 将卡牌模型渲染为 PNG 图片并保存到磁盘，用于导出卡牌素材和文档预览。
+/// </remarks>
 public partial class CardExporter : Node
 {
+
+    /// <summary>
+    /// Generate an image of a card and save it to the specified path.
+    /// </summary>
+    /// <remarks>
+    /// 生成一个卡牌的图像并保存到指定路径。
+    /// </remarks>
+    /// <param name="cardModel">要渲染的卡牌模型。</param>
+    /// <param name="savePath">保存路径；为空时使用 <c>user://{Title}.png</c>。</param>
+    /// <returns>保存操作的结果。</returns>
     public static async Task<Error> RenderCardToImage(
         CardModel cardModel,
         string savePath = "")
     {
-        // 0. 路径处理（建议使用 ID 避免特殊字符导致保存失败）
+        // 0. 路径处理（建议使用 ID 以避免特殊字符导致保存失败）
         if (string.IsNullOrEmpty(savePath))
         {
             savePath = $"user://{cardModel.Title}.png";
         }
 
-        // 1. 获取父节点逻辑 (保持不变)
+        // 1. 获取父节点逻辑
         Node? parentNode = NCombatRoom.Instance ?? (Node?)NGame.Instance;
         if (parentNode == null) return Error.Failed;
 
@@ -44,19 +61,19 @@ public partial class CardExporter : Node
             return Error.Failed;
         }
 
-        // *** 关键修改：先添加到 SubViewport，让它“活”过来 ***
+        // *** 先添加到 SubViewport，让卡牌节点激活正常渲染 ***
         subViewport.AddChild(nCard);
         nCard.Position = (Vector2)viewportSize / 2f;
-        
+
         var unplayableIcon = nCard.GetNodeOrNull<Control>("%UnplayableEnergyIcon");
         if (unplayableIcon != null)
         {
-            unplayableIcon.QueueFree(); 
+            unplayableIcon.QueueFree();
         }
-        
+
         nCard.UpdateVisuals(PileType.Hand, CardPreviewMode.Normal);
 
-        // 4. 【核心修复】强制同步与深度等待
+        // 4. 强制同步与深度等待
         // 给异步加载和本地化注入留出充足时间
         await Task.Delay(150);
 
@@ -76,11 +93,11 @@ public partial class CardExporter : Node
             return Error.Failed;
         }
 
-        // 6. 裁剪逻辑 (保持不变)
+        // 6. 裁剪逻辑
         Rect2I usedRect = image.GetUsedRect();
         if (usedRect.Area == 0)
         {
-            GD.PrintErr($"警告: {cardModel.Id} 渲染出空白，请检查资源路径");
+            GD.PrintErr($"[{cardModel.Id}] 渲染出空白，请检查资源路径 / render produced blank image, check resource path");
         }
 
         Rect2I marginRect = usedRect.Grow(10);
@@ -91,7 +108,7 @@ public partial class CardExporter : Node
         Error error = croppedImage.SavePng(savePath);
         if (error == Error.Ok)
         {
-            GD.Print($"✓ [{cardModel.Id}] 保存成功");
+            GD.Print($"[{cardModel.Id}] 保存成功 / save succeeded");
         }
 
         nCard.QueueFree();
@@ -101,11 +118,14 @@ public partial class CardExporter : Node
     }
 
     /// <summary>
-    /// 生成带有 Hover Tips 的卡牌图像（修正了之前版本中顶部裁剪过严导致的金边特效和文本 Shader 被切掉的问题）
+    /// Generate an image of the card with its hover tips displayed.
     /// </summary>
-    /// <param name="cardModel"></param>
-    /// <param name="savePath"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// 生成带有悬浮提示的卡牌图像。
+    /// </remarks>
+    /// <param name="cardModel">要渲染的卡牌模型（含其悬浮提示）。</param>
+    /// <param name="savePath">保存路径；为空时使用 <c>user://{Title}_WithTips.png</c>。</param>
+    /// <returns>保存操作的结果。</returns>
     public static async Task<Error> RenderCardWithHoverTipsToImage(
         CardModel cardModel,
         string savePath = "")
@@ -150,13 +170,13 @@ public partial class CardExporter : Node
             cardWrapper.CustomMinimumSize.X / 2f,
             cardWrapper.CustomMinimumSize.Y / 2f
         );
-        
+
         var unplayableIcon = nCard.GetNodeOrNull<Control>("%UnplayableEnergyIcon");
         if (unplayableIcon != null)
         {
-            unplayableIcon.QueueFree(); 
+            unplayableIcon.QueueFree();
         }
-        
+
         nCard.UpdateVisuals(PileType.Hand, CardPreviewMode.Normal);
 
         HBoxContainer tipsGroupHBox = new HBoxContainer();
@@ -236,7 +256,7 @@ public partial class CardExporter : Node
                         .Instantiate<Control>(PackedScene.GenEditState.Disabled);
 
                     Control cardBox = new Control();
-                    // 采用你修改后的紧凑适配大小 (220, 320)
+                    // 紧凑的衍生卡展示尺寸
                     cardBox.CustomMinimumSize = new Vector2(220, 320);
                     cardBox.AddChild(cardTipControl);
                     cardsColumn.AddChild(cardBox);
@@ -274,7 +294,7 @@ public partial class CardExporter : Node
         Rect2I usedRect = image.GetUsedRect();
         if (usedRect.Area == 0)
         {
-            GD.PrintErr($"警告: {cardModel.Id} 渲染出空白");
+            GD.PrintErr($"[{cardModel.Id}] 渲染出空白 / render produced blank image");
         }
 
         Rect2I marginRect = usedRect.Grow(90);
@@ -284,7 +304,7 @@ public partial class CardExporter : Node
         Error error = croppedImage.SavePng(savePath);
         if (error == Error.Ok)
         {
-            GD.Print($"✓ [{cardModel.Id}] 顶端向上延展对齐修正完毕，图像已安全保存: {savePath}");
+            GD.Print($"[{cardModel.Id}] 图像已安全保存: {savePath} / image saved safely: {savePath}");
         }
 
         container.QueueFree();

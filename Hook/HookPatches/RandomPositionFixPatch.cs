@@ -8,13 +8,16 @@ using MegaCrit.Sts2.Core.Nodes.Combat;
 namespace UltraLib.Hook.HookPatches;
 
 /// <summary>
+/// Harmony patch for hand position fix.
+/// </summary>
+/// <remarks>
 /// 手牌位置修正 Patch。
 /// <para>
 /// 原版 StS2 手牌的 UI 视觉顺序与逻辑层牌堆顺序不一致。
 /// 当 NPlayerHand.Add(card, -1) 时，游戏总是将卡牌追加到 UI 末尾。
 /// 此 Patch 在 index == -1 时去逻辑牌堆查找卡牌真实索引，插入正确位置。
 /// </para>
-/// </summary>
+/// </remarks>
 [HarmonyPatch(typeof(NPlayerHand), nameof(NPlayerHand.Add))]
 public static class RandomPositionFixPatch
 {

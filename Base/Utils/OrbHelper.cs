@@ -11,18 +11,24 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
+/// Orb (charge orb) operation helpers.
+/// </summary>
+/// <remarks>
 /// 充能球（Orb）操作辅助工具。
 /// <para>
 /// 提供充能球的生成（Channel）、激发（Evoke）、数值修改、槽位管理等便捷方法。
 /// </para>
-/// </summary>
+/// </remarks>
 public static class OrbHelper
 {
     private static readonly MethodInfo EvokeMethod = AccessTools.Method(typeof(OrbCmd), "Evoke");
 
     /// <summary>
-    /// 为玩家生成一个指定类型的充能球。
+    /// Channels an orb of the given type for the player.
     /// </summary>
+    /// <remarks>
+    /// 为玩家生成一个指定类型的充能球。
+    /// </remarks>
     /// <typeparam name="T">充能球类型。</typeparam>
     /// <param name="choiceContext">玩家选择上下文。</param>
     /// <param name="player">目标玩家。</param>
@@ -32,7 +38,7 @@ public static class OrbHelper
         var blueprint = ModelDb.Orb<T>();
         if (blueprint == null)
         {
-            GD.PrintErr($"[OrbHelper] Failed to find Orb blueprint for type: {typeof(T).Name}");
+            GD.PrintErr($"[UltraLib] 未找到类型 {typeof(T).Name} 的充能球蓝图 / failed to find orb blueprint for type: {typeof(T).Name}");
             return null;
         }
 
@@ -42,8 +48,11 @@ public static class OrbHelper
     }
 
     /// <summary>
-    /// 安全地异步生成充能球（不阻塞调用方）。
+    /// Safely channels an orb asynchronously without blocking the caller.
     /// </summary>
+    /// <remarks>
+    /// 安全地异步生成充能球（不阻塞调用方）。
+    /// </remarks>
     /// <typeparam name="T">充能球类型。</typeparam>
     /// <param name="choiceContext">玩家选择上下文。</param>
     /// <param name="player">目标玩家。</param>
@@ -62,13 +71,16 @@ public static class OrbHelper
         }
         catch (Exception e)
         {
-            GD.PrintErr($"[OrbHelper] SafeChannelAsync Error: {e.Message}");
+            GD.PrintErr($"[UltraLib] 安全充能球生成出错: {e.Message} / SafeChannelAsync error: {e.Message}");
         }
     }
 
     /// <summary>
-    /// 通过反射调用原版私有的 Evoke 方法，激发指定充能球。
+    /// Evokes the given orb by reflecting the game's private Evoke method.
     /// </summary>
+    /// <remarks>
+    /// 通过反射调用原版私有的 Evoke 方法，激发指定充能球。
+    /// </remarks>
     /// <param name="choiceContext">玩家选择上下文。</param>
     /// <param name="player">目标玩家。</param>
     /// <param name="targetOrb">要激发的充能球。</param>
@@ -83,9 +95,11 @@ public static class OrbHelper
     }
 
     /// <summary>
-    /// 强制修改充能球的数值并同步 UI。
-    /// <para>通过 Traverse 设置 _passiveVal 字段。</para>
+    /// Force-sets an orb's value and syncs the UI.
     /// </summary>
+    /// <remarks>
+    /// 强制修改充能球的数值并同步 UI。通过 Traverse 设置 _passiveVal 字段。
+    /// </remarks>
     /// <param name="orb">目标充能球。</param>
     /// <param name="amount">新数值。</param>
     public static void SetVal(OrbModel orb, decimal amount)
@@ -95,8 +109,11 @@ public static class OrbHelper
     }
 
     /// <summary>
-    /// 安全地获取当前充能球列表的只读快照。
+    /// Safely gets a read-only snapshot of the current orb list.
     /// </summary>
+    /// <remarks>
+    /// 安全地获取当前充能球列表的只读快照。
+    /// </remarks>
     /// <param name="player">目标玩家。</param>
     /// <returns>充能球列表。</returns>
     public static List<OrbModel> GetOrbList(Player player)
@@ -106,8 +123,11 @@ public static class OrbHelper
     }
 
     /// <summary>
-    /// 移除充能球槽位（带战斗结束检查）。
+    /// Removes orb slots (with end-of-combat check).
     /// </summary>
+    /// <remarks>
+    /// 移除充能球槽位（带战斗结束检查）。
+    /// </remarks>
     /// <param name="player">目标玩家。</param>
     /// <param name="amount">移除的槽位数。</param>
     public static void RemoveSlots(Player player, int amount)

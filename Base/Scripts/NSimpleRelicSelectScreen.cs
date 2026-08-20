@@ -9,7 +9,7 @@ using UltraLib.Base.Utils;
 namespace UltraLib.Base.Scripts;
 
 /// <summary>
-/// 遗物选择器配置参数。
+/// Configuration parameters for the relic selector.
 /// </summary>
 /// <param name="HeaderText">选择界面标题。</param>
 /// <param name="MinSelect">最少可选数量。</param>
@@ -18,35 +18,41 @@ namespace UltraLib.Base.Scripts;
 public record RelicSelectorPrefs(string HeaderText, int MinSelect = 1, int MaxSelect = 1, bool RequireManualConfirmation = true);
 
 /// <summary>
+/// Controller for the simple relic-selection screen.
+/// </summary>
+/// <remarks>
 /// 简单的遗物选择界面控制器。
 /// <para>
 /// 创建一个 Godot 场景弹窗，以网格形式展示遗物供玩家选择。
 /// 依赖场景文件 <c>res://Base/Scenes/screens/simple_relic_select_screen.tscn</c>。
 /// </para>
-/// </summary>
+/// </remarks>
 public class NSimpleRelicSelectScreen
 {
     private const string ScenePath = "res://Base/Scenes/screens/simple_relic_select_screen.tscn";
 
-    private Node _rootNode;
-    private GridContainer _gridContainer;
-    private RichTextLabel _headerLabel;
-    private Button _confirmButton;
+    private Node _rootNode = null!;
+    private GridContainer _gridContainer = null!;
+    private RichTextLabel _headerLabel = null!;
+    private Button _confirmButton = null!;
 
-    private IReadOnlyList<RelicModel> _relics;
-    private RelicSelectorPrefs _prefs;
-    private Player _playerContext;
+    private IReadOnlyList<RelicModel> _relics = null!;
+    private RelicSelectorPrefs _prefs = null!;
+    private Player _playerContext = null!;
 
     private readonly List<RelicModel> _selectedRelics = new();
     private readonly Dictionary<RelicModel, Control> _relicHolders = new();
     private readonly Dictionary<RelicModel, Panel> _relicBgPanels = new();
 
     private readonly TaskCompletionSource<IEnumerable<RelicModel>> _tcs = new();
-    private Control _currentTipInstance;
+    private Control? _currentTipInstance;
 
     /// <summary>
-    /// 创建遗物选择界面并返回玩家选择结果。
+    /// Creates the relic-selection screen and returns the player's selection.
     /// </summary>
+    /// <remarks>
+    /// 创建遗物选择界面并返回玩家选择结果。
+    /// </remarks>
     /// <param name="relics">可供选择的遗物列表。</param>
     /// <param name="prefs">选择器配置。</param>
     /// <param name="player">进行选择的玩家。</param>
@@ -85,7 +91,7 @@ public class NSimpleRelicSelectScreen
         }
         catch (Exception ex)
         {
-            GD.PrintErr($"[UltraLib] Relic selection screen init failed: {ex}");
+            GD.PrintErr($"[UltraLib] Relic selection screen init failed: {ex} / 遗物选择界面初始化失败: {ex}");
             _tcs.TrySetException(ex);
         }
     }
@@ -125,13 +131,13 @@ public class NSimpleRelicSelectScreen
         }
     }
 
-    private Control CreateRelicHolderNode(RelicModel relic)
+    private Control? CreateRelicHolderNode(RelicModel relic)
     {
         try
         {
             var scene = GD.Load<PackedScene>("res://scenes/ui/relic_inventory_holder.tscn");
             var holder = scene.Instantiate<Control>();
-            // 设置遗物数据（通过 Reflection 或公开方法）
+            // 通过反射或公开属性设置遗物数据
             var relicNode = holder.GetNode<NRelic>("%Relic");
             if (relicNode != null)
             {
@@ -152,7 +158,7 @@ public class NSimpleRelicSelectScreen
         }
         catch (Exception ex)
         {
-            GD.PrintErr($"[UltraLib] Create relic holder failed: {ex}");
+            GD.PrintErr($"[UltraLib] Create relic holder failed: {ex} / 创建遗物展示节点失败: {ex}");
             return null;
         }
     }
@@ -238,7 +244,7 @@ public class NSimpleRelicSelectScreen
         }
         catch (Exception ex)
         {
-            GD.PrintErr($"[UltraLib] Show relic tip failed: {ex}");
+            GD.PrintErr($"[UltraLib] Show relic tip failed: {ex} / 显示遗物悬浮提示失败: {ex}");
         }
     }
 

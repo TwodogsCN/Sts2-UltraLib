@@ -1,3 +1,4 @@
+using Godot;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
@@ -5,15 +6,17 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
-using MegaCrit.Sts2.Core.Logging;
 using UltraLib.Base.Scripts;
 
 namespace UltraLib.Base.Multiplayer.Cmds;
 
 /// <summary>
+/// Custom relic-selection command with online (multiplayer) synchronization.
+/// </summary>
+/// <remarks>
 /// 自定义遗物选择命令，支持联机同步。
 /// 本地玩家通过 NSimpleRelicSelectScreen 界面选择，远程通过 PlayerChoiceSynchronizer 同步。
-/// </summary>
+/// </remarks>
 public static class PlusRelicSelectCmd
 {
     private static bool ShouldSelectLocalRelic(Player player)
@@ -22,8 +25,11 @@ public static class PlusRelicSelectCmd
     }
 
     /// <summary>
-    /// 打开自定义遗物选择界面，返回玩家选择的遗物。
+    /// Opens the custom relic-selection screen and returns the relic the player chose.
     /// </summary>
+    /// <remarks>
+    /// 打开自定义遗物选择界面，返回玩家选择的遗物。
+    /// </remarks>
     /// <param name="player">进行选择的玩家。</param>
     /// <param name="relics">可选的遗物列表。</param>
     /// <param name="prefs">选择器配置。</param>
@@ -75,11 +81,11 @@ public static class PlusRelicSelectCmd
 
             if (finalIndex >= 0 && finalIndex < relics.Count)
             {
-                Log.Info($"[UltraLib] Remote player selected relic index: {finalIndex}, ID: {relics[finalIndex].Id.Entry}");
+                GD.Print($"[UltraLib] Remote player selected relic index: {finalIndex}, ID: {relics[finalIndex].Id.Entry} / 远端玩家选择遗物索引: {finalIndex}");
             }
             else
             {
-                Log.Warn($"[UltraLib] Remote selection index out of range: {finalIndex} (count={relics.Count})");
+                GD.PrintErr($"[UltraLib] Remote selection index out of range: {finalIndex} (count={relics.Count}) / 远端选择索引越界: {finalIndex} (共{relics.Count})");
             }
         }
 

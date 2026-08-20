@@ -11,25 +11,31 @@ using UltraLib.Hook;
 namespace UltraLib.Base.Singleton;
 
 /// <summary>
+/// Isomorphism singleton.
+/// </summary>
+/// <remarks>
 /// 同构（Isomorphism）单例。
 /// <para>
 /// 当手牌中存在两张带有 <see cref="PlusCardKeyWord.Isomorphism"/> 关键词的卡牌
 /// 且间隔一张卡牌（即索引 i 和 i+2 均有 Isomorphism）时，
 /// 自动打出中间的那张卡牌。
 /// </para>
-/// <remarks>
+/// <para>
 /// 触发时机：
 /// <list type="bullet">
 ///   <item>卡牌变更牌堆时（<see cref="AfterCardChangedPiles"/>）</item>
 ///   <item>手牌移动后（通过 <see cref="IPlusHooks.Plus_AfterHandPileMoved"/>）</item>
 /// </list>
+/// </para>
 /// </remarks>
-/// </summary>
 public class IsomorphismSingleton() : PlusSingletonModel(CustomSingletonModel.HookType.Combat)
 {
     /// <summary>
-    /// 卡牌变更牌堆后触发同构检测。
+    /// Fired when a card changes piles; triggers isomorphism detection.
     /// </summary>
+    /// <remarks>
+    /// 卡牌变更牌堆后触发同构检测。
+    /// </remarks>
     /// <param name="card">变更牌堆的卡牌。</param>
     /// <param name="oldPileType">原牌堆类型。</param>
     /// <param name="source">变更来源。</param>
@@ -42,8 +48,11 @@ public class IsomorphismSingleton() : PlusSingletonModel(CustomSingletonModel.Ho
     }
 
     /// <summary>
-    /// 手牌移动后触发同构检测。
+    /// Fired after the hand pile moves; triggers isomorphism detection.
     /// </summary>
+    /// <remarks>
+    /// 手牌移动后触发同构检测。
+    /// </remarks>
     /// <param name="card">被移动的卡牌。</param>
     public override async Task Plus_AfterHandPileMoved(CardModel card)
     {
@@ -51,12 +60,15 @@ public class IsomorphismSingleton() : PlusSingletonModel(CustomSingletonModel.Ho
     }
 
     /// <summary>
+    /// Core method that executes the isomorphism logic.
+    /// </summary>
+    /// <remarks>
     /// 执行同构逻辑的核心方法。
     /// <para>
     /// 扫描手牌，找到所有满足「i 和 i+2 均有 Isomorphism」的中间卡牌，
     /// 将它们自动打出。
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <param name="triggerCard">触发检测的卡牌（用于定位玩家和战斗状态）。</param>
     private static async Task ExecuteIsomorphismLogic(CardModel triggerCard)
     {

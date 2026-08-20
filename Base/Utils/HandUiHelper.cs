@@ -8,6 +8,9 @@ using UltraLib.Hook;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
+/// Hand-UI operation helpers.
+/// </summary>
+/// <remarks>
 /// 手牌 UI 操作辅助工具。
 /// <para>
 /// 由于 StS2 原版手牌的视觉顺序与逻辑顺序不一致，
@@ -20,12 +23,15 @@ namespace UltraLib.Base.Utils;
 /// <see cref="PlusHooks.Plus_TriggerAfterHandPileMoved"/> Hook，
 /// 方便其他模块（如 <see cref="IsomorphismSingleton"/>）响应手牌变化。
 /// </para>
-/// </summary>
+/// </remarks>
 public static class HandUiHelper
 {
     /// <summary>
-    /// 通过反射获取手牌牌堆的内部 _cards 列表（原始引用，可直接修改）。
+    /// Gets the hand pile's internal <c>_cards</c> list via reflection (raw reference, mutable).
     /// </summary>
+    /// <remarks>
+    /// 通过反射获取手牌牌堆的内部 _cards 列表（原始引用，可直接修改）。
+    /// </remarks>
     /// <param name="owner">手牌持有者（玩家）。</param>
     /// <returns>手牌 CardModel 的内部列表，如果获取失败返回 null。</returns>
     public static List<CardModel>? GetRawCards(Player owner)
@@ -40,8 +46,11 @@ public static class HandUiHelper
     // ==========================================
 
     /// <summary>
-    /// 根据索引交换两张手牌的位置（逻辑层 + UI 层同时同步）。
+    /// Swaps two hand cards by index (logical + UI layers kept in sync).
     /// </summary>
+    /// <remarks>
+    /// 根据索引交换两张手牌的位置（逻辑层 + UI 层同时同步）。
+    /// </remarks>
     /// <param name="owner">手牌持有者（玩家）。</param>
     /// <param name="indexA">第一张牌的索引。</param>
     /// <param name="indexB">第二张牌的索引。</param>
@@ -69,11 +78,14 @@ public static class HandUiHelper
     }
 
     /// <summary>
+    /// Swaps two hand cards by CardModel reference.
+    /// </summary>
+    /// <remarks>
     /// 根据 CardModel 引用交换两张手牌的位置。
     /// <para>
     /// 会在执行前重新查找索引，防止 Hook 异步操作导致索引偏移。
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <param name="owner">手牌持有者（玩家）。</param>
     /// <param name="cardA">第一张牌。</param>
     /// <param name="cardB">第二张牌。</param>
@@ -114,12 +126,15 @@ public static class HandUiHelper
     // ==========================================
 
     /// <summary>
+    /// Aligns the hand UI children order with the logical card list order.
+    /// </summary>
+    /// <remarks>
     /// 将手牌 UI 层的子节点顺序与逻辑层卡片顺序对齐。
     /// <para>
     /// 通过 <c>MoveChild</c> 调整每个 <c>NHandCardHolder</c> 在容器中的索引，
     /// 使其与 <paramref name="cardsList"/> 中的顺序一致。
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <param name="owner">手牌持有者（玩家）。</param>
     /// <param name="cardsList">逻辑层的手牌顺序列表。</param>
     public static void SyncVisuals(Player owner, List<CardModel> cardsList)
@@ -159,8 +174,11 @@ public static class HandUiHelper
     // ==========================================
 
     /// <summary>
-    /// 使用游戏的 RNG 对玩家手牌进行 Fisher-Yates 洗牌。
+    /// Shuffles the player's hand using the game RNG (Fisher-Yates).
     /// </summary>
+    /// <remarks>
+    /// 使用游戏的 RNG 对玩家手牌进行 Fisher-Yates 洗牌。
+    /// </remarks>
     /// <param name="owner">手牌持有者（玩家）。</param>
     public static async Task ShuffleHand(Player owner)
     {
@@ -195,8 +213,11 @@ public static class HandUiHelper
     // ==========================================
 
     /// <summary>
-    /// 将指定卡牌移动到最左侧（toLeft = true）或最右侧（toLeft = false）。
+    /// Moves a card to the far left (toLeft = true) or far right (toLeft = false).
     /// </summary>
+    /// <remarks>
+    /// 将指定卡牌移动到最左侧（toLeft = true）或最右侧（toLeft = false）。
+    /// </remarks>
     /// <param name="owner">手牌持有者（玩家）。</param>
     /// <param name="card">要移动的卡牌。</param>
     /// <param name="toLeft">true 移到最左，false 移到最右。</param>

@@ -73,22 +73,28 @@ The hook system is the core extension point. Understand these pieces before writ
 
 ## 6. Logging & error handling
 
-- Use the library logger (`MainFile.Logger`) or `Log.*` for diagnostics. **Do not** use `Console.WriteLine` in shipped code.
-- Prefer safe dispatch: hook code that can throw should be caught and logged (see `Plus_TriggerRelicRightClick`), not allowed to propagate and break a game action.
+- **Use Godot's native logging** — `GD.Print` / `GD.PrintErr` / `GD.PrintPush` — for diagnostics. This writes straight to the Godot console and is visible in-game for quick review (e.g. `GD.PrintErr` marks a "ERR" line you can spot in the game UI). **Do not** use `Console.WriteLine` in shipped code.
+- **Every log line must start with the `[UltraLib]` tag** so messages can be filtered and attributed to this mod, e.g. `GD.PrintErr($"[UltraLib] ...")`.
+- **Log messages must be bilingual (EN + 中文)** so the same log line is readable by both English and Chinese speakers, e.g.:
+  ```csharp
+  GD.PrintErr($"[UltraLib] [{cardModel.Id}] 渲染出空白，请检查资源路径 / render produced blank image, check resource path");
+  GD.Print($"[UltraLib] [{cardModel.Id}] 保存成功 / save succeeded");
+  ```
+- Prefer safe dispatch: hook code that can throw should be caught and logged, not allowed to propagate and break a game action.
 - Annotate intent with short `//` comments for non-obvious decisions; rely on XML doc comments for public API meaning instead of narrating statements.
 
 ## 7. Documentation comments
 
 - **All public API members** get `/// <summary>` XML doc comments. The existing code comments are in Chinese; keep the same language when editing existing files, and choose one language and stay consistent within each file.
-- **New functionality (new public types / methods / hooks / helpers) must ship with a bilingual `/summary`** explaining its purpose and usage — provide both an English and a 简体中文 description, e.g.:
+- **New functionality (new public types / methods / hooks / helpers) must ship with a bilingual `<summary>`** explaining its purpose and usage. The canonical bilingual layout is **English in `<summary>` + 简体中文 in an adjacent `<remarks>`**, e.g.:
   ```csharp
   /// <summary>
-  /// Channels an orb of the given type for the player.
+  /// Generate an image of a card and save it to the specified path.
   /// </summary>
   /// <remarks>
-  /// 为玩家生成一个指定类型的充能球。
+  /// 生成一个卡牌的图像并保存到指定路径。
   /// </remarks>
-  public static async Task<T?> Channel<T>(...) where T : OrbModel => ...;
+  public static async Task<Error> RenderCardToImage(CardModel cardModel, string savePath = "");
   ```
   This feeds the bilingual Wiki/API docs and the CHM reference, keeping generated/foreign documentation consistent without a second translation pass.
 - Use `<para>`, `<list type="bullet">`, `<see cref="…"/>`, and `<c>…</c>` tags where they add clarity (see `MainFile.cs`).

@@ -8,17 +8,23 @@ using MegaCrit.Sts2.Core.Models;
 namespace UltraLib.Base.Utils;
 
 /// <summary>
+/// Discover-mechanic helpers.
+/// </summary>
+/// <remarks>
 /// 发现（Discover）机制辅助工具。
 /// <para>
 /// 提供从多个卡池中随机选取卡牌供玩家选择的便捷方法，
 /// 类似于炉石传说中的「发现」机制。
 /// </para>
-/// </summary>
+/// </remarks>
 public static class DiscoverHelper
 {
     /// <summary>
-    /// 从指定的卡池列表中随机展示若干卡牌供玩家选择。
+    /// Randomly shows several cards from the given pools for the player to choose.
     /// </summary>
+    /// <remarks>
+    /// 从指定的卡池列表中随机展示若干卡牌供玩家选择。
+    /// </remarks>
     /// <param name="choiceContext">玩家选择上下文。</param>
     /// <param name="player">进行发现的玩家。</param>
     /// <param name="cardPools">可选的卡池列表。</param>
