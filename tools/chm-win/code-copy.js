@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
     PowerModel Code Script (Cookie Theme Support)
     Version: 1.2
     Encoding: UTF-8

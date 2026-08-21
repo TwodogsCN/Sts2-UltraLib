@@ -1,4 +1,4 @@
-# UltraLib Helper —— WinCHM 工程
+﻿# UltraLib Helper —— WinCHM 工程
 
 这里是 UltraLib 的 **WinCHM 离线文档工程**(与在线 Wiki / 仓库 docs 内容同源,但改用 WinCHM 编译、风格更贴近 CHM 阅读体验)。
 
