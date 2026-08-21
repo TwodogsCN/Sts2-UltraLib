@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DiscoverHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">DiscoverHelper 发现（Discover）机制辅助工具</div>
+    <div class="info-content">
+        类似炉石传说「发现」机制：从多个卡池中随机选取若干卡牌供玩家选择一张。
+        内部处理解锁卡牌过滤、筛选条件、去重随机、可选升级与跳过。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>Discover</code></td><td>从多个卡池随机展示 3 张卡牌供玩家选择。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>发现：<code>Discover</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">CardModel</span>?&gt; Discover(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player,
+    <span class="type">List</span>&lt;<span class="type">CardPoolModel</span>&gt; cardPools, <span class="type">CardPlay</span>? cardPlay,
+    <span class="type">Func</span>&lt;<span class="type">CardModel</span>, <span class="keyword">bool</span>&gt;? filter,
+    <span class="keyword">bool</span> isUpgrade = <span class="keyword">false</span>, <span class="keyword">bool</span> canSkip = <span class="keyword">false</span>)</pre></div>
+    <p class="plain"><strong>流程：</strong>① 从所有卡池收集玩家已解锁的卡牌 → ② 应用 <code>filter</code> 筛选 → ③ 用战斗 RNG 随机取 3 张去重卡 → ④ <code>isUpgrade=true</code> 时全部升级 → ⑤ 弹出三选一界面。</p>
+    <p class="plain"><strong>参数：</strong><code>choiceContext</code> 玩家选择上下文；<code>player</code> 进行发现的玩家；<code>cardPools</code> 可选卡池列表；<code>cardPlay</code> 来源卡牌打出记录（可为 null）；<code>filter</code> 卡牌筛选条件（null 表示全部）；<code>isUpgrade</code> 是否升级展示的卡；<code>canSkip</code> 是否允许跳过。</p>
+    <p class="plain"><strong>返回：</strong>玩家选中的卡牌；跳过或卡池为空时返回 null。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

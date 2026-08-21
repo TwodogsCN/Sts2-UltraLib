@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>AttackHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">AttackHelper AttackCommand 构建辅助工具</div>
+    <div class="info-content">
+        <code>AttackCommand</code> 是 StS2 的攻击命令构建器，其关键属性/字段是私有的。
+        本类通过反射提供链式修改方法：设置攻击者、伤害属性、修改最终伤害、清除目标。
+        所有方法都返回命令本身，便于链式调用。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>SetAttacker</code></td><td>设置攻击命令的发起者（Attacker）。</td></tr>
+    <tr><td><code>SetDamageProps</code></td><td>设置攻击命令的伤害属性（整体替换）。</td></tr>
+    <tr class="alt"><td><code>AddDamageProps</code></td><td>追加伤害属性（按位或合并）。</td></tr>
+    <tr><td><code>ModifySingleFinalDamage</code></td><td>修改单次最终伤害值（转换函数）。</td></tr>
+    <tr class="alt"><td><code>ClearTargets</code></td><td>清除攻击目标（单个目标、战斗状态、随机标志、目标侧）。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>设置攻击者：<code>SetAttacker</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">AttackCommand</span> SetAttacker(<span class="keyword">this</span> <span class="type">AttackCommand</span> cmd, <span class="type">Creature</span> attacker)</pre></div>
+    <p class="plain">通过反射设置 <code>Attacker</code> 属性为指定生物。返回命令本身。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>设置伤害属性：<code>SetDamageProps</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">AttackCommand</span> SetDamageProps(<span class="keyword">this</span> <span class="type">AttackCommand</span> cmd, <span class="type">ValueProp</span> prop)</pre></div>
+    <p class="plain">整体替换 <code>DamageProps</code> 属性为 <code>prop</code>。返回命令本身。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>追加伤害属性：<code>AddDamageProps</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">AttackCommand</span> AddDamageProps(<span class="keyword">this</span> <span class="type">AttackCommand</span> cmd, <span class="type">ValueProp</span> prop)</pre></div>
+    <p class="plain">读取当前 <code>DamageProps</code> 并按位或（<code>|</code>）合并 <code>prop</code> 后写回，用于给已有攻击追加属性（如追加「无视格挡」）。返回命令本身。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>修改最终伤害：<code>ModifySingleFinalDamage</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">AttackCommand</span> ModifySingleFinalDamage(
+    <span class="keyword">this</span> <span class="type">AttackCommand</span> cmd, <span class="type">Func</span>&lt;<span class="type">decimal</span>, <span class="type">decimal</span>&gt; damageModifier)</pre></div>
+    <p class="plain">用 <code>damageModifier</code> 转换函数修改最终伤害：若尚未计算最终伤害（基础伤害为负），则修改计算伤害变量的基础值；否则直接改 <code>_damagePerHit</code> 并清空缓存的计算变量。返回命令本身。适合实现「伤害 X 点加成/减半」类效果。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>清除目标：<code>ClearTargets</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">AttackCommand</span> ClearTargets(<span class="keyword">this</span> <span class="type">AttackCommand</span> cmd)</pre></div>
+    <p class="plain">清空单个目标字段、战斗状态、<code>IsRandomlyTargeted</code> 标志与 <code>TargetSide</code>（自动处理属性或后备字段）。反射出错时打印错误但不会中断。返回命令本身。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

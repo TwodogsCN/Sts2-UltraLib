@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>HandUiHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">HandUiHelper 手牌 UI 操作辅助工具</div>
+    <div class="info-content">
+        StS2 原版手牌的<strong>视觉顺序</strong>与<strong>逻辑顺序</strong>不一致，此类提供在逻辑层操作手牌、
+        并自动同步到 UI 视觉层的静态方法（交换、洗牌、移动、对齐）。
+        <br>所有改变手牌顺序的操作都会触发 <code>Plus_TriggerBeforeHandPileMoved</code> /
+        <code>Plus_TriggerAfterHandPileMoved</code> Hook，方便其他模块（如 IsomorphismSingleton）响应手牌变化。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>GetRawCards</code></td><td>通过反射获取手牌内部 _cards 列表（原始可变引用）。</td></tr>
+    <tr><td><code>SwapPlayerHandCards</code></td><td>交换两张手牌（索引版 / 引用版两种重载）。</td></tr>
+    <tr class="alt"><td><code>SyncVisuals</code></td><td>将手牌 UI 子节点顺序与逻辑列表对齐。</td></tr>
+    <tr><td><code>ShuffleHand</code></td><td>用游戏 RNG 对手牌进行 Fisher-Yates 洗牌。</td></tr>
+    <tr class="alt"><td><code>MoveToEdges</code></td><td>把指定卡牌移到手牌最左或最右。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>获取原始列表：<code>GetRawCards</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt;? GetRawCards(<span class="type">Player</span> owner)</pre></div>
+    <p class="plain">通过 Harmony <code>AccessTools.Field</code> 反射读取手牌牌堆的 <code>_cards</code> 字段，返回<strong>原始引用</strong>（可直接修改）。获取失败返回 null。注意：直接改这个列表不会自动同步 UI，请优先使用本类的其他方法。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>交换手牌（索引版）：<code>SwapPlayerHandCards</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> SwapPlayerHandCards(<span class="type">Player</span> owner, <span class="type">int</span> indexA, <span class="type">int</span> indexB)</pre></div>
+    <p class="plain">按索引交换两张手牌。索引越界、相同或列表为空时直接返回。交换前对两张牌触发 Before Hook，交换后触发 After Hook，并同步视觉层。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>交换手牌（引用版）：<code>SwapPlayerHandCards</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> SwapPlayerHandCards(<span class="type">Player</span> owner, <span class="type">CardModel</span> cardA, <span class="type">CardModel</span> cardB)</pre></div>
+    <p class="plain">按卡牌引用交换。会在执行前实时查找索引，并在触发 Before Hook 后<strong>重新索引</strong>，防止 Hook 的异步操作导致索引偏移。任一张不在手牌中则直接返回。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>同步视觉：<code>SyncVisuals</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> SyncVisuals(<span class="type">Player</span> owner, <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardsList)</pre></div>
+    <p class="plain">建立 CardModel → NHandCardHolder 映射，用 <code>MoveChild</code> 把每个 holder 移动到与逻辑顺序一致的索引，最后调用 <code>ForceRefreshCardIndices</code> 刷新卡牌交互索引。无 UI 或容器无效时直接返回。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>洗牌：<code>ShuffleHand</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> ShuffleHand(<span class="type">Player</span> owner)</pre></div>
+    <p class="plain">用 <code>RunState.Rng.Shuffle</code> 做 Fisher-Yates 洗牌。每步交换都触发 Before/After Hook 并同步视觉；每轮后重新获取列表引用，防止其他操作改变引用。少于 2 张牌时直接返回。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>移到边缘：<code>MoveToEdges</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> MoveToEdges(<span class="type">Player</span> owner, <span class="type">CardModel</span> card, <span class="keyword">bool</span> toLeft)</pre></div>
+    <p class="plain">从原位置移除 <code>card</code> 并插入到手牌最左（<code>toLeft=true</code>）或最右（<code>toLeft=false</code>）。触发 Before/After Hook 并同步视觉。卡不在手牌中时直接返回。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

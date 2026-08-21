@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>新增功能 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">UltraLib 新增功能专项</div>
+    <div class="info-content">
+        UltraLib 相对 BaseLib / 原版新增了三类核心能力：
+        <b>① 钩子系统（Hooks）</b>、<b>② 工具类（Utils）</b>、<b>③ 充能遗物（Charge Relic）</b>。
+        本页是这三类能力的总览入口，点击各卡片进入对应专项文档。
+    </div>
+</div>
+
+<h3>新增功能一览</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>① 钩子系统（Hooks） — <a href="../new-hooks/new-hooks.htm">新 Hooks 表 →</a></strong></p>
+    <p class="plain">
+        以 <code>IPlusHooks</code> 为契约、<code>PlusHooks</code> 为分发器的扩展系统。
+        你的内容模型（遗物 / 能力 / 单例）实现 <code>IPlusHooks</code>（或继承 Plus* 基类）即可被自动收集。
+    </p>
+    <ul>
+        <li><b>事件钩子</b>：响应「发生了什么」——遗物右键、充能变化、充能球激发、手牌移动、卡牌返回/赋能等。</li>
+        <li><b>数值修改钩子</b>：修改「某个数值」——金币获得/损失、最大充能、充能升级量、充能消耗量、充能重复次数、玫瑰数值，采用 <code>Pipeline / Multiplicative / Addictive</code> 三段式组合。</li>
+    </ul>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>② 工具类（Utils） — <a href="../new-utils/new-utils.htm">新 Utils 表 →</a></strong></p>
+    <p class="plain">
+        <code>Base/Utils</code> 下提供 17 个静态工具类，封装 StS2 常用操作，避免重复实现或深入游戏私有 API。
+    </p>
+    <ul>
+        <li><b>卡牌</b>：<code>CardHelper</code> / <code>CardListHelper</code> / <code>CardPileHelper</code> / <code>CardExporter</code></li>
+        <li><b>战斗</b>：<code>CreatureHelper</code> / <code>AttackHelper</code> / <code>PowerHelper</code> / <code>OrbHelper</code></li>
+        <li><b>机制</b>：<code>DiscoverHelper</code> / <code>RewardHelper</code> / <code>RelicSelectionHelper</code> / <code>AncientEventHelper</code></li>
+        <li><b>UI / 文本</b>：<code>HandUiHelper</code> / <code>HoverTipHelper</code> / <code>LocStringHelper</code> / <code>DynamicVarHelper</code></li>
+        <li><b>队列</b>：<code>ActionQueueHelper</code></li>
+    </ul>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>③ 充能遗物（Charge Relic） — <a href="../charge-relic/charge-relic.htm">充能遗物总览 →</a></strong></p>
+    <p class="plain">
+        <code>PlusChargeRelic</code> 抽象基类：遗物有「当前充能 / 最大充能」，充能会回复（默认每房间 +1，可自定义），
+        满充后触发效果并消耗充能。
+    </p>
+    <ul>
+        <li><b>触发方式不写死</b>：右键、自动、回合开始等由创作者自行决定。</li>
+        <li><b>效果逻辑统一写在 <code>MainEffect</code></b>，由 <code>DoChargeRelicEffect</code> 执行，触发次数 Hook 自动生效。</li>
+        <li><b>充能条 UI</b>：自动在遗物图标下方渲染充能进度条。</li>
+        <li>子页面：<a href="../charge-relic/charge-mechanic.htm">充能机制详解</a> · <a href="../charge-relic/charge-hooks.htm">触发与 Hook</a></li>
+    </ul>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    三类能力分别有独立专项页；本页仅作总览。完整 API 地图见在线 Wiki 的 API 索引。
+</p>
+
+</body>
+</html>

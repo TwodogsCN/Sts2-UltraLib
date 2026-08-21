@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>充能遗物（ChargeRelic）总览 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">新功能 [充能遗物] — 总览</div>
+    <div class="info-content">
+        充能遗物（<b>ChargeRelic</b>）是 UltraLib 提供的一类特殊遗物基类 <code>PlusChargeRelic</code>。
+        它的核心玩法是：<b>遗物会随着时间自动积攒「充能」，充能满后玩家右键遗物触发一次强力效果并消耗充能</b>。
+        本文档介绍它的设计思路、如何创建、默认行为以及可自定义的部分。
+    </div>
+</div>
+
+<h3>设计思路</h3>
+<p class="plain">
+    普通遗物拿到后效果是「永久」或「一次性」的；充能遗物则像一座小「电池」——
+    它本身不做任何事，而是不断「充电」（回复充能），充能满时玩家主动右键「放电」（触发效果），
+    之后重新开始积攒。这样就形成 <b>充能 → 满充 → 右键触发 → 清空 → 再充能</b> 的循环节奏。
+</p>
+<ul>
+    <li><b>回复充能</b>：默认在进入每个房间时自动 +1 充能（见 <a href="charge-mechanic.htm">充能机制详解</a>）。</li>
+    <li><b>触发效果</b>：充能满时右键遗物，执行你写在 <code>MainEffect</code> 里的逻辑（见 <a href="charge-hooks.htm">触发与 Hook</a>）。</li>
+    <li><b>消耗充能</b>：触发后清空充能（可自定义消耗量），重新开始积攒。</li>
+</ul>
+
+<h3>如何创建一个充能遗物</h3>
+<p class="plain">
+    继承 <code>PlusChargeRelic</code>，然后只需要写 <b>两样东西</b>：最大充能值，以及触发效果 <code>MainEffect</code>。
+    默认情况下其余行为（自动充能、充能条 UI）都由基类和 Patch 自动完成。
+</p>
+
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">public sealed class</span> <span class="type">ExampleChargeRelic</span> : <span class="type">PlusChargeRelic</span>
+{
+    <span class="keyword">public</span> ExampleChargeRelic()
+    {
+        <span class="comment">// 最大充能：需要 5 点充能才能触发</span>
+        <span class="property">TotalCharge</span> = <span class="number">5</span>;
+    }
+
+    <span class="comment">// ① 触发接线（示例：右键触发；也可以是自动/回合开始等，由你决定）</span>
+    <span class="keyword">public override async Task</span> <span class="property">Plus_RelicRightClick</span>(<span class="type">RelicModel</span> relicModel, <span class="type">NRelicInventoryHolder</span>? holder)
+    {
+        <span class="keyword">if</span> (!IsFullyCharged) <span class="keyword">return</span>;
+
+        <span class="keyword">await</span> <span class="property">DoChargeRelicEffect</span>(); <span class="comment">// 执行 MainEffect（含触发次数 Hook）</span>
+        <span class="property">SpendCharge</span>();                <span class="comment">// 消耗充能</span>
+    }
+
+    <span class="comment">// ② 充能触发时的实际效果</span>
+    <span class="keyword">public override async Task</span> <span class="property">MainEffect</span>()
+    {
+        <span class="keyword">await</span> <span class="type">CreatureHelper</span>.<span class="property">Damage</span>(
+            <span class="keyword">new</span> <span class="type">BlockingPlayerChoiceContext</span>(),
+            Owner.<span class="property">Creature</span>.<span class="property">CombatState</span>.<span class="property">HittableEnemies</span>.<span class="property">First</span>(),
+            <span class="number">20m</span>, <span class="type">ValueProp</span>.<span class="property">None</span>, Owner.<span class="property">Creature</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
+    }
+}</pre>
+</div>
+
+<p class="plain">
+    <b>注意：</b><code>MainEffect</code> 是效果的<b>核心入口</b>，把充能触发时的实际效果逻辑写在这里。
+    触发方式<b>不写死</b>——右键触发、自动触发、回合开始触发等都由<b>创作者自己决定</b>：
+    在任意你想触发的地方，检查 <code>IsFullyCharged</code>（满充）后调用 <code>DoChargeRelicEffect()</code> 执行效果，
+    再调用 <code>SpendCharge()</code> 消耗充能即可。只要效果写在 <code>MainEffect</code>、
+    并通过 <code>DoChargeRelicEffect</code> 执行，UltraLib 的「触发次数」Hook（<code>Plus_ModifyChargeRepeatTimes</code> 系列）
+    就能自动、正确地包裹并重复执行你的效果，你无需自己处理次数逻辑。
+    详见 <a href="charge-hooks.htm#doeffect">DoChargeRelicEffect 执行流程</a>。
+</p>
+
+<h3>完整行为一览</h3>
+<table class="utils-table">
+    <tr><th>行为</th><th>默认情况</th><th>如何修改</th></tr>
+    <tr class="alt"><td>充能回复</td><td>进入每个房间自动 +1</td><td>覆写 <code>AutoCharge = false</code> 关闭；或覆写 <code>Plus_AfterRoomEntered</code> 自定义回复逻辑</td></tr>
+    <tr><td>最大充能</td><td>默认 1</td><td>设置 <code>TotalCharge</code>，或用 <code>SetCharge(now, total)</code></td></tr>
+    <tr class="alt"><td>充能显示</td><td>遗物下方显示充能进度条</td><td>覆写 <code>UseChargeBarDisplay = false</code> 回退为数字显示</td></tr>
+    <tr><td>触发条件</td><td>右键时检查 <code>IsFullyCharged</code>，未满充不触发</td><td>在 <code>Plus_RelicRightClick</code> 里自定义触发条件</td></tr>
+    <tr class="alt"><td>触发效果</td><td>右键接线中调用 <code>DoChargeRelicEffect()</code> → 循环执行 <code>MainEffect</code></td><td>效果写 <code>MainEffect</code>；接线需自己覆写 <code>Plus_RelicRightClick</code></td></tr>
+    <tr><td>触发次数</td><td>默认 1 次</td><td>覆写 <code>Plus_ModifyChargeRepeatTimes</code> 系列 Hook</td></tr>
+    <tr class="alt"><td>充能消耗</td><td>触发后清空全部充能</td><td>覆写 <code>Plus_ModifyChargeSpend</code> 系列 Hook 调整消耗量</td></tr>
+</table>
+
+<h3>子页面导航</h3>
+<ul>
+    <li><a href="charge-mechanic.htm"><b>充能机制详解</b></a> — 充能如何回复/消耗/设置，默认逻辑与自定义方法。</li>
+    <li><a href="charge-hooks.htm"><b>触发与 Hook</b></a> — 右键触发链路、<code>DoChargeRelicEffect</code> 执行流程、全部充能相关 Hook 参考。</li>
+</ul>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="../intro/intro.htm">UltraLib Helper 首页</a></p>
+
+</body>
+</html>

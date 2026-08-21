@@ -197,6 +197,25 @@ feat(hook): 新增充能球被动钩子 Plus_BeforeOrbPassive (Issue #12)
   3. 所有 `htm` 文件名与文件夹必须是**纯 ASCII**（英文，无 CJK / 特殊字符）。
   4. 在 WinCHM 中重新编译，确认新页面出现在目录树中；随发布附上重新编译的 `.chm`。
 
+### 10.4.1 发布产物输出与版本同步（每次发布必做）
+
+CHM **直接编译到 `tools/chm-win/UltraLib.chm`**（`.wcp` 中 `CompiledFile=UltraLib.chm` 且 `RootDir` 为空，因此 WinCHM 输出在工程文件所在目录）。**这个编译产物就是发布产物**——提交进仓库（不要在 `.gitignore` 里重新忽略它），CHM 内的「检查更新」页直接从 `raw/main/tools/chm-win/UltraLib.chm` 下载。
+
+每次发布新版本前，必须同步更新**四个版本来源**，CHM 内的「检查更新」页才能检测到新版本：
+
+| # | 文件 | 改哪里 |
+|---|------|--------|
+| 1 | `version.txt` | 仓库根目录——纯文本版本号，检查页备用读取 |
+| 2 | `version.js` | 仓库根目录——`window.ULTRALIB_LATEST = "x.y.z";`（JSONP，检查页实际加载它） |
+| 3 | `UltraLib.json` | `"version": "x.y.z"`——模组自身版本 |
+| 4 | `tools/chm-win/data/check-update/check-update.htm` | `CONFIG.current` 与页面可见的 `<span class="value">`——CHM 内本地版本 |
+
+然后：
+1. 在 WinCHM 中重新编译 CHM → 产物输出到 `tools/chm-win/UltraLib.chm`（即提交的发布产物）。
+2. 提交并推送 `version.txt`、`version.js`、`UltraLib.json`、重新编译的 `tools/chm-win/UltraLib.chm` 及 CHM 源码改动。检查页从 `raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.js` 拉取版本、从 `raw/main/tools/chm-win/UltraLib.chm` 下载——两者都必须推到 `main` 分支后才会生效。
+
+> 四个版本来源必须**保持一致**；漏掉任何一个都会导致检查页报告错误结果。
+
 ### 10.5 涉及代码改动的 PR 检查清单
 
 - [ ] `docs/` 已为该改动更新（新 API/功能已文档化）。

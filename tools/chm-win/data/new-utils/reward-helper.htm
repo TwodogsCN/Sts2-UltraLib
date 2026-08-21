@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>RewardHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">RewardHelper 奖励（Reward）界面辅助工具</div>
+    <div class="info-content">
+        获取当前奖励界面中指定玩家的奖励数据。
+        内部使用反射访问 <code>NRewardsScreen</code> 的私有字段，并按玩家身份过滤，
+        保证联机模式下每个玩家只拿到自己的奖励。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>GetCurrentRewards</code></td><td>获取指定玩家当前可见的全部 Reward 数据。</td></tr>
+    <tr><td><code>GetCurrentCardRewards</code></td><td>获取指定玩家当前的卡牌奖励（CardReward）列表。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>获取当前奖励：<code>GetCurrentRewards</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">Reward</span>&gt; GetCurrentRewards(<span class="type">Player</span> player)</pre></div>
+    <p class="plain">从当前顶层的 <code>NRewardsScreen</code> 读取奖励按钮列表，提取 <code>NRewardButton.Reward</code>，只保留 <code>Reward.Player == player</code> 的项。若玩家为 null、当前没有奖励界面、或屏幕与玩家不属于同一 RunState（多人安全校验），返回空列表。反射字段为惰性缓存，异常会被捕获并打印，不影响游戏运行。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>获取卡牌奖励：<code>GetCurrentCardRewards</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">CardReward</span>&gt; GetCurrentCardRewards(<span class="type">Player</span> player)</pre></div>
+    <p class="plain">在 <code>GetCurrentRewards</code> 结果中筛选出 <code>CardReward</code> 类型的子集。用于读取当前奖励界面上展示的卡牌奖励（例如做「跳过奖励自动重roll」类功能）。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

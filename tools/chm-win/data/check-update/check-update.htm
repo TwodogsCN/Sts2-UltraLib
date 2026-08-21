@@ -23,41 +23,46 @@
 
     <div class="btn-group">
         <input type="button" class="btn btn-blue" value="开始检查更新" onclick="startCheck()">
-        <A class="btn btn-white" href="https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/dist/UltraLib.chm" target=_blank>从 GitHub 下载</a>
+        <a class="btn btn-white" href="https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm" target=_blank>从 GitHub 下载</a>
+        <a class="btn btn-white" href="https://github.com/TwodogsCN/Sts2-UltraLib/releases" target=_blank>GitHub Releases</a>
     </div>
 
     <div id="status"></div>
 
     <div class="tip">
         <strong>注意：</strong> 若打开显示空白，请右键 UltraLib.chm -&gt; 属性 -&gt; 勾选"解除锁定"。
+        检查更新需要联网；CHM 阅读器可能阻止脚本跨域请求，此时请使用「从 GitHub 下载」按钮手动获取最新版。
     </div>
 </div>
 
 <script type="text/javascript">
+// 当前本地版本 —— 与仓库根目录 version.txt / version.js 保持一致
 var CONFIG = {
     current: "0.1.0",
-    // 优先级 1: GitHub
+    // 优先级 1: GitHub（JSONP 脚本方式，跨域可用）
     github: {
         name: "GitHub",
-        raw: "https://raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.txt",
-        dl: "https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/dist/UltraLib.chm"
+        script: "https://raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.js",
+        dl: "https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm"
     },
     // 优先级 2: Gitee
     gitee: {
         name: "Gitee",
-        raw: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/version.txt",
-        dl: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/dist/UltraLib.chm"
+        script: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/version.js",
+        dl: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm"
     }
 };
+
+var TIMEOUT_MS = 8000; // 单节点超时
 
 function startCheck() {
     checkVersion(CONFIG.github, function(success, version) {
         if (!success) {
-            document.getElementById('status').innerHTML = "GitHub 连接失败，正在尝试 Gitee...";
+            setStatus("GitHub 连接失败，正在尝试 Gitee...");
             checkVersion(CONFIG.gitee, function(successGitee, versionGitee) {
                 if (!successGitee) {
                     document.getElementById('cloud-v').innerHTML = "ERR";
-                    document.getElementById('status').innerHTML = "所有云端节点均无法连接，请检查网络。";
+                    setStatus("所有云端节点均无法连接，请检查网络，或点击「从 GitHub 下载」手动获取最新版。");
                 } else {
                     processResult(versionGitee, CONFIG.gitee.dl);
                 }
@@ -68,46 +73,68 @@ function startCheck() {
     });
 }
 
+// 通过动态 <script> 加载 version.js（JSONP），读取 window.ULTRALIB_LATEST
 function checkVersion(source, callback) {
-    document.getElementById('status').innerHTML = "正在连接 " + source.name + "...";
+    setStatus("正在连接 " + source.name + " ...");
 
-    var xhr = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-    var url = source.raw + "?nocache=" + new Date().getTime();
+    // 清理上一次加载的全局标记
+    try { delete window.ULTRALIB_LATEST; } catch (e) { window.ULTRALIB_LATEST = undefined; }
 
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                var latest = xhr.responseText.replace(/\s+/g, "");
-                callback(true, latest);
-            } else {
-                callback(false, null);
-            }
+    var done = false;
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = source.script + "?nocache=" + new Date().getTime();
+    script.onerror = function() { finish(false, null); };
+
+    var timer = setTimeout(function() { finish(false, null); }, TIMEOUT_MS);
+
+    function finish(success, version) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        if (script.parentNode) script.parentNode.removeChild(script);
+        if (success) callback(true, version);
+        else callback(false, null);
+    }
+
+    // JSONP 回调：脚本加载后轮询全局变量（兼容 IE7 不支持 onload 可靠触发的场景）
+    var poll = setInterval(function() {
+        if (window.ULTRALIB_LATEST !== undefined && window.ULTRALIB_LATEST !== null) {
+            var v = String(window.ULTRALIB_LATEST).replace(/\s+/g, "");
+            clearInterval(poll);
+            finish(true, v);
         }
+    }, 120);
+
+    // 兜底：确保轮询随 finish 清理
+    var origFinish = finish;
+    finish = function(success, version) {
+        clearInterval(poll);
+        origFinish(success, version);
     };
 
-    try {
-        xhr.open("GET", url, true);
-        xhr.send();
-    } catch (e) {
-        callback(false, null);
-    }
+    try { document.body.appendChild(script); }
+    catch (e) { finish(false, null); }
 }
 
 function processResult(latest, downloadUrl) {
     var cloudVEl = document.getElementById('cloud-v');
-    var statusEl = document.getElementById('status');
     cloudVEl.innerHTML = latest;
 
     if (latest !== CONFIG.current) {
-        statusEl.innerHTML = "<span style='color:#cf222e; font-weight:bold;'>检测到新版本！</span>";
+        setStatus("<span style='color:#cf222e; font-weight:bold;'>检测到新版本！</span> 云端 " + latest + " &gt; 本地 " + CONFIG.current);
         var msg = "检测到新版本: " + latest + "\n当前本地版本: " + CONFIG.current + "\n\n是否立即下载更新？";
         if (confirm(msg)) {
             window.location.href = downloadUrl;
             alert("正在下载，完成后请覆盖旧文件。");
         }
     } else {
-        statusEl.innerHTML = "<span style='color:#1a7f37;'>当前已是最新版本。</span>";
+        setStatus("<span style='color:#1a7f37;'>当前已是最新版本 (" + latest + ")。</span>");
     }
+}
+
+function setStatus(html) {
+    document.getElementById('status').innerHTML = html;
 }
 </script>
 

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>LocStringHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">LocStringHelper 本地化字符串辅助工具</div>
+    <div class="info-content">
+        <code>LocString</code> 是 StS2 的本地化字符串类型，可包含格式化占位符。
+        本类提供将其解析为最终展示文本的便捷方法。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>ToFormattedString</code></td><td>把 LocString 解析为格式化后的纯文本。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>解析为文本：<code>ToFormattedString</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static string</span> ToFormattedString(<span class="type">LocString</span> locString)
+    <span class="operator">=&gt;</span> locString.GetFormattedText();</pre></div>
+    <p class="plain">调用原版 <code>GetFormattedText()</code> 返回格式化后的纯文本字符串。例如拿 <code>LocString</code> 类型的卡牌描述拼接到自己的日志或 UI 文本中时使用。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

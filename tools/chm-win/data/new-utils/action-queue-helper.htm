@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ActionQueueHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">ActionQueueHelper GameAction 队列入队辅助</div>
+    <div class="info-content">
+        把 <code>GameAction</code> 加入游戏动作队列的统一入口。
+        优先走 <code>ActionQueueSynchronizer.RequestEnqueue</code>（联机正确）；
+        失败且非多人时，回退到反射在 CombatManager 对象图中寻找 Enqueue 类方法。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>TryEnqueue</code></td><td>尝试把 GameAction 入队，返回是否成功。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>入队：<code>TryEnqueue</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="keyword">bool</span> TryEnqueue(<span class="type">GameAction</span> action)</pre></div>
+    <p class="plain"><strong>流程：</strong>① <code>action</code> 为 null 直接返回 false；② 有 <code>ActionQueueSynchronizer</code> 时调用 <code>RequestEnqueue</code>，成功返回 true（异常会打印）；③ 若是多人联机且同步器不可用，返回 false（避免不同步）；④ 否则用反射在 CombatManager 及对象图中（深度 2，跳过 System 类型）寻找参数为 GameAction 的 Enqueue/AddAction/Queue/Request 方法并调用。</p>
+    <p class="plain"><strong>返回：</strong>true 表示入队成功；全部失败打印错误并返回 false。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

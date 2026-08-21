@@ -198,6 +198,25 @@ Use trigger words in the PR description so GitHub auto-creates the Development l
   3. All `htm` file names and folders must be **ASCII-only** (English, no CJK / special characters).
   4. Rebuild in WinCHM; verify the new page appears in the TOC; publish the rebuilt `.chm` with the release.
 
+### 10.4.1 Release build output & version sync (REQUIRED for every release)
+
+The CHM compiles **directly to `tools/chm-win/UltraLib.chm`** (the `.wcp` sets `CompiledFile=UltraLib.chm` with an empty `RootDir`, so WinCHM outputs next to the project file). **This compiled file is the release artifact** — it is committed to the repo (do not re-ignore it in `.gitignore`), and the in-CHM "检查更新 / Check Update" page downloads it directly from `raw/main/tools/chm-win/UltraLib.chm`.
+
+Before shipping a new release, update **all four version sources** so the in-CHM "检查更新 / Check Update" page can detect it:
+
+| # | File | Where to edit |
+|---|------|---------------|
+| 1 | `version.txt` | repository root — plain-text version, read by the check page as a fallback |
+| 2 | `version.js` | repository root — `window.ULTRALIB_LATEST = "x.y.z";` (JSONP, loaded by the check page) |
+| 3 | `UltraLib.json` | `"version": "x.y.z"` — the mod's own version |
+| 4 | `tools/chm-win/data/check-update/check-update.htm` | `CONFIG.current` and the visible `<span class="value">` — the in-CHM local version |
+
+Then:
+1. Rebuild the CHM in WinCHM → output goes to `tools/chm-win/UltraLib.chm` (already the committed release artifact).
+2. Commit & push `version.txt`, `version.js`, `UltraLib.json`, the rebuilt `tools/chm-win/UltraLib.chm`, and any CHM source changes. The check page fetches `raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.js` and downloads `raw/main/tools/chm-win/UltraLib.chm` — both only work after the files land on `main`.
+
+> All four version sources must stay **identical**; forgetting any one makes the check page report the wrong result.
+
 ### 10.5 Checklist for PRs that change code
 
 - [ ] `docs/` updated for the change (new API/feature documented).

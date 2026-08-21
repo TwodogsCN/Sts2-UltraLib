@@ -13,7 +13,7 @@ The building blocks for content mods. Inherit these and override the members you
 | `PlusRelicModel` | Base for custom relics. Adds `RelicLevel` (appearance weight), `ItemPool`, `Tags`, typed internal data (`GetInternalData<T>` / `GetOrInitInternalData<T>`), correct `DeepCloneFields`, and empty default implementations of **all** `IPlusHooks`. This is the usual relic base to subclass. |
 | `PlusPowerModel` | Base for custom powers, wired to the hook system. |
 | `PlusSingletonModel` | Base for singletons (one-instance-per-run models). |
-| `PlusChargeRelic` | Charge-based relic base: auto-gains charge on entering a room (unless `AutoCharge` is `false`); when fully charged the player right-clicks to trigger the effect and consume charge. |
+| `PlusChargeRelic` | Charge-based relic base: auto-gains charge on entering a room (unless `AutoCharge` is `false`); when fully charged the creator triggers the effect (right-click, automatic, etc. — not hard-coded) via `DoChargeRelicEffect`, which loops `MainEffect` and consumes charge. See [ChargeRelic.md](ChargeRelic.md). |
 
 ## 2. Hook system — `Hook`
 
@@ -48,7 +48,7 @@ Static `*Helper` classes for common operations. Pick by what you're touching.
 | `AttackHelper` | Attack-related helpers. |
 | `AncientEventHelper` | Ancient-event interactions. |
 | `DiscoverHelper` | Discover / choice-screen helpers. |
-| `RewardsHelper` | Reward screen helpers. |
+| `RewardHelper` | Reward screen helpers. |
 | `HandUiHelper` | In-hand UI manipulation. |
 | `HoverTipHelper` | Hover-tip wiring (used with `HoverTip/PlusHoverTips`). |
 | `DynamicVarHelper` | Dynamic-variable helpers. |

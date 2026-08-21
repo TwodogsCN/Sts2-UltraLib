@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>动态变量 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">动态变量（DynamicVar）</div>
+    <div class="info-content">
+        UltraLib 在 <strong>Variables</strong> 目录下提供自定义<b>动态变量</b>。
+        动态变量挂在 <code>CardModel.DynamicVars</code> 上，用于在卡牌描述中渲染动态数值，
+        并可配合 <code>CardHelper</code> 便捷操作。当前提供两个词条（一个文件一个词）。
+    </div>
+</div>
+
+<h3>词条一览</h3>
+<table class="utils-table">
+    <tr><th>词条</th><th>键名</th><th>作用</th></tr>
+    <tr class="alt"><td><a href="empower-var.htm"><code>EmpowerVar</code> 赋能</a></td><td><code>Empower</code></td><td>为卡牌注入指定能力，打出时使目标获得该能力若干层。</td></tr>
+    <tr><td><a href="return-var.htm"><code>ReturnVar</code> 返回</a></td><td><code>Return</code></td><td>每回合前 N 次打出后返回手牌，而非进入弃牌堆。</td></tr>
+</table>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    这两个动态变量的添加/移除均可直接使用 <code>CardHelper.AddEmpowerVar</code> / <code>AddReturnVar</code> 等便捷方法。
+</p>
+
+</body>
+</html>

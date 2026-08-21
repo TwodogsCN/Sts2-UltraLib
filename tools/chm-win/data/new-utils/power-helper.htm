@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>PowerHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">PowerHelper 能力（Power）辅助工具</div>
+    <div class="info-content">
+        封装能力（Power）的施加、获取、移除、层数修改与视觉刷新。
+        施加能力时通过泛型 <code>Apply&lt;T&gt;</code> 指定能力类型即可，UltraLib 自动从 ModelDb 取蓝图。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>Apply&lt;T&gt;</code></td><td>为单目标 / 多目标施加指定类型能力。</td></tr>
+    <tr><td><code>Apply</code></td><td>用指定 PowerModel 实例施加能力（须为 Mutable）。</td></tr>
+    <tr class="alt"><td><code>GetPowerTip</code></td><td>获取能力的悬浮提示。</td></tr>
+    <tr><td><code>RefreshVisuals</code></td><td>刷新能力拥有者的视觉显示（意图重算）。</td></tr>
+    <tr class="alt"><td><code>GetPower&lt;T&gt;</code></td><td>从生物身上获取指定类型的能力。</td></tr>
+    <tr><td><code>Remove</code></td><td>移除并清理指定能力。</td></tr>
+    <tr class="alt"><td><code>Decrement</code></td><td>能力层数减 1。</td></tr>
+    <tr><td><code>ModifyAmount</code></td><td>修改能力层数（正负偏移）。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>施加能力（单目标）：<code>Apply&lt;T&gt;</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">T</span>?&gt; Apply&lt;<span class="type">T</span>&gt;(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Creature</span> target, <span class="type">Decimal</span> amount,
+    <span class="type">Creature</span>? applier, <span class="type">CardModel</span>? cardSource, <span class="keyword">bool</span> silent = <span class="keyword">false</span>)
+    <span class="keyword">where</span> <span class="type">T</span> : <span class="type">PowerModel</span></pre></div>
+    <p class="plain">给目标 <code>target</code> 添加 <code>T</code> 类型能力，层数为 <code>amount</code>（允许小数）。<code>silent=true</code> 时不播放提示动画。返回施加成功的能力实例。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>施加能力（多目标）：<code>Apply&lt;T&gt;</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">IReadOnlyList</span>&lt;<span class="type">T</span>&gt;&gt; Apply&lt;<span class="type">T</span>&gt;(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">IEnumerable</span>&lt;<span class="type">Creature</span>&gt; targets, <span class="type">Decimal</span> amount,
+    <span class="type">Creature</span>? applier, <span class="type">CardModel</span>? cardSource, <span class="keyword">bool</span> silent = <span class="keyword">false</span>)
+    <span class="keyword">where</span> <span class="type">T</span> : <span class="type">PowerModel</span></pre></div>
+    <p class="plain">给一组目标 <code>targets</code> 同时施加能力，参数含义同上。返回施加结果列表。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>施加能力（实例版）：<code>Apply</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> Apply(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">PowerModel</span> power, <span class="type">Creature</span> target,
+    <span class="type">Decimal</span> amount, <span class="type">Creature</span>? applier, <span class="type">CardModel</span>? cardSource, <span class="keyword">bool</span> silent = <span class="keyword">false</span>)</pre></div>
+    <p class="plain">使用已经构造好的 <code>power</code> 实例施加能力。<strong>注意：</strong>实例必须来自 <code>ToMutable()</code>，否则原版命令会拒绝。适用于需要自定义能力属性的场景。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>获取能力悬浮提示：<code>GetPowerTip</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">IHoverTip</span>? GetPowerTip(<span class="type">PowerModel</span> power)</pre></div>
+    <p class="plain">通过反射调用 <code>HoverTipFactory.FromPower</code> 获取该能力类型的悬浮提示，用于自绘 UI 或调试。失败返回 null。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>刷新能力视觉：<code>RefreshVisuals</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> RefreshVisuals(<span class="keyword">this</span> <span class="type">PowerModel</span> power)</pre></div>
+    <p class="plain">让能力拥有者所在的战斗房间节点重新计算意图（RefreshIntents）。能力数值被外部直接修改后调用，可刷新敌人头顶的意图显示。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>获取能力：<code>GetPower&lt;T&gt;</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">T</span>? GetPower&lt;<span class="type">T</span>&gt;(<span class="type">Creature</span> creature) <span class="keyword">where</span> <span class="type">T</span> : <span class="type">PowerModel</span></pre></div>
+    <p class="plain">从生物 <code>creature</code> 身上获取 <code>T</code> 类型能力，不存在返回 null。例如判断敌人是否有 <code>StrengthPower</code>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>移除能力：<code>Remove</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> Remove(<span class="type">PowerModel</span>? power)</pre></div>
+    <p class="plain">移除并清理指定能力：先调用 <code>RemoveInternal</code>，等待 0.2~0.4 秒演出，再调用 <code>AfterRemoved</code> 完成善后。传入 null 直接返回。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>层数减一：<code>Decrement</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> Decrement(<span class="type">PowerModel</span> power)</pre></div>
+    <p class="plain">等价于 <code>ModifyAmount(..., -1, null, null)</code>，层数减 1。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>修改层数：<code>ModifyAmount</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">int</span>&gt; ModifyAmount(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">PowerModel</span> power, <span class="type">Decimal</span> offset,
+    <span class="type">Creature</span>? applier, <span class="type">CardModel</span>? cardSource, <span class="keyword">bool</span> silent = <span class="keyword">false</span>)</pre></div>
+    <p class="plain">将能力层数加上 <code>offset</code>（可为负）。返回修改后的层数。修改层数（如力量、易伤）请走这里，而不是直接改字段。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

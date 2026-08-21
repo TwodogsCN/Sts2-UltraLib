@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Dull 迟钝 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">Dull 迟钝（卡牌关键词）</div>
+    <div class="info-content">
+        <b>迟钝</b>——该牌在你的回合无法被丢弃。
+        显示在<b>卡牌名称之前</b>。
+    </div>
+</div>
+
+<h3>效果说明</h3>
+<p class="plain">
+    拥有 <code>Dull</code> 关键词的卡牌在玩家回合内<b>不能被手动丢弃</b>，
+    防止因弃牌类效果而意外离手（回合结束自动弃牌等原版规则不受影响）。
+</p>
+
+<h3>使用方式</h3>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 给卡牌添加「迟钝」关键词</span>
+<span class="type">CardHelper</span>.<span class="property">ApplyKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">Dull</span>);
+
+<span class="comment">// 移除</span>
+<span class="type">CardHelper</span>.<span class="property">RemoveKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">Dull</span>);</pre>
+</div>
+
+<p class="plain">定义位置：<code>Base/Label/Card/PlusCardKeyWord.cs</code>，关键词位置属性 <code>AutoKeywordPosition.Before</code>。</p>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="card-keywords.htm">← 卡牌关键词目录</a> · <a href="hunger.htm">Hunger 饥饿 →</a>
+</p>
+
+</body>
+</html>

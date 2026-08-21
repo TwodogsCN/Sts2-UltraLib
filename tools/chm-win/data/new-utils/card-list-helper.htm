@@ -1,0 +1,101 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CardListHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">CardListHelper 卡牌列表操作辅助工具</div>
+    <div class="info-content">
+        提供从牌堆取牌、从手牌/列表/牌堆中选择卡牌、按稀有度/费用筛选、随机打乱等功能。
+        常用于实现「选择 X 张牌」「筛选符合条件的牌」等卡牌效果。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>FromPile</code></td><td>从玩家指定牌堆获取所有卡牌。</td></tr>
+    <tr><td><code>SelectCardFromHand</code>（两种重载）</td><td>从手牌中选择卡牌（排除源卡 / 带筛选条件）。</td></tr>
+    <tr class="alt"><td><code>SelectCardFromList</code></td><td>从任意卡牌列表中选择指定数量。</td></tr>
+    <tr><td><code>SelectCardFromPile</code>（两种重载）</td><td>从指定牌堆中选择卡牌（可选有序）。</td></tr>
+    <tr class="alt"><td><code>Filter</code>（稀有度 / 费用）</td><td>按稀有度或能量费用筛选卡牌。</td></tr>
+    <tr><td><code>RandomizeOrder</code>（生物 / RNG）</td><td>打乱卡牌列表顺序。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>取牌：<code>FromPile</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; FromPile(<span class="type">Player</span> owner, <span class="type">PileType</span> pileType)</pre></div>
+    <p class="plain">获取玩家指定牌堆（抽牌堆 / 弃牌堆 / 手牌 / 消耗堆等）中的所有卡牌副本列表。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>从手牌选择：<code>SelectCardFromHand</code>（重载 1，排除源卡）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt;&gt; SelectCardFromHand(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player, <span class="type">LocString</span> prompt,
+    <span class="keyword">int</span> minCount, <span class="keyword">int</span> maxCount, <span class="type">CardModel</span> card)</pre></div>
+    <p class="plain">从手牌中选择最少 <code>minCount</code>、最多 <code>maxCount</code> 张牌，并排除源卡牌 <code>card</code>（例如「弃掉除这张以外的手牌」）。<code>prompt</code> 为选择界面的提示文本。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>从手牌选择：<code>SelectCardFromHand</code>（重载 2，带筛选）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt;&gt; SelectCardFromHand(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player, <span class="type">LocString</span> prompt,
+    <span class="keyword">int</span> count, <span class="type">Func</span>&lt;<span class="type">CardModel</span>, <span class="keyword">bool</span>&gt;? filter, <span class="type">AbstractModel</span> source)</pre></div>
+    <p class="plain">从手牌中选择恰好 <code>count</code> 张符合 <code>filter</code> 条件的牌。筛选器传 <code>null</code> 表示不筛选；<code>source</code> 为效果来源模型（用于排除自身）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>从列表选择：<code>SelectCardFromList</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt;&gt; SelectCardFromList(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">IReadOnlyList</span>&lt;<span class="type">CardModel</span>&gt; cardsIn, <span class="type">Player</span> player,
+    <span class="type">LocString</span> prompt, <span class="keyword">int</span> minCount, <span class="keyword">int</span> maxCount)</pre></div>
+    <p class="plain">从任意给定的卡牌列表中弹出选择界面，让玩家选最少 <code>minCount</code>、最多 <code>maxCount</code> 张。适用于「从生成的若干张牌里选一张」等场景。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>从牌堆选择：<code>SelectCardFromPile</code>（重载 1，固定数量）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt;&gt; SelectCardFromPile(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player, <span class="type">PileType</span> pile, <span class="type">LocString</span> prompt,
+    <span class="keyword">int</span> count, <span class="type">CardModel</span>? cardSource = <span class="keyword">null</span>, <span class="keyword">bool</span> isOrdered = <span class="keyword">false</span>,
+    <span class="type">Func</span>&lt;<span class="type">CardModel</span>, <span class="keyword">bool</span>&gt;? filter = <span class="keyword">null</span>)</pre></div>
+    <p class="plain">从指定牌堆中选择恰好 <code>count</code> 张。<code>isOrdered=true</code> 时先按稀有度、再按 ID 排序展示；牌堆为空直接返回空列表。可用于「从弃牌堆回收 N 张牌」。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>从牌堆选择：<code>SelectCardFromPile</code>（重载 2，数量范围）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt;&gt; SelectCardFromPile(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player, <span class="type">PileType</span> pile, <span class="type">LocString</span> prompt,
+    <span class="keyword">int</span> minCount, <span class="keyword">int</span> maxCount, <span class="type">CardModel</span>? cardSource = <span class="keyword">null</span>, <span class="keyword">bool</span> isOrdered = <span class="keyword">false</span>)</pre></div>
+    <p class="plain">同上，但选择数量为范围 <code>minCount ~ maxCount</code>（玩家可少选）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>稀有度筛选：<code>Filter</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; Filter(<span class="type">CardRarity</span> rarity, <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList, <span class="keyword">int</span> cmp = <span class="number">0</span>)</pre></div>
+    <p class="plain">按稀有度筛选：<code>cmp = 0</code> 只取等于；<code>cmp &lt; 0</code> 取「等于或更低稀有度」；<code>cmp &gt; 0</code> 取「等于或更高稀有度」（如传入 Rare 且 cmp&gt;0 等价于全部）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>费用筛选：<code>Filter</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; Filter(<span class="keyword">int</span> energyCost, <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList, <span class="keyword">int</span> cmp = <span class="number">0</span>)</pre></div>
+    <p class="plain">按解析后的能量费用筛选：<code>cmp = 0</code> 等于；<code>cmp &lt; 0</code> 小于等于；<code>cmp &gt; 0</code> 大于等于。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>打乱顺序：<code>RandomizeOrder</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; RandomizeOrder(<span class="type">Creature</span> creature, <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList)
+<span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; RandomizeOrder(<span class="type">Rng</span> rng, <span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList)</pre></div>
+    <p class="plain">使用生物所属战斗的 RNG（第一个重载，战斗状态为空时原样返回）或指定 <code>Rng</code>（第二个重载）进行不稳定洗牌，返回新列表。用于「随机打乱可选卡牌顺序」。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

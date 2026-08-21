@@ -107,4 +107,4 @@ Discover / choice helpers.
 
 ---
 
-Other helpers (`ActionQueueHelper`, `AttackHelper`, `CreatureHelper`, `HandUiHelper`, `HoverTipHelper`, `LocStringHelper`, `RewardsHelper`, `RelicSelectionHelper`, `DynamicVarHelper`, `AncientEventHelper`) follow the same pattern — they wrap game operations for their respective domain. Add details here as needed.
+Other helpers (`ActionQueueHelper`, `AttackHelper`, `CreatureHelper`, `HandUiHelper`, `HoverTipHelper`, `LocStringHelper`, `RewardHelper`, `RelicSelectionHelper`, `DynamicVarHelper`, `AncientEventHelper`) follow the same pattern — they wrap game operations for their respective domain. Add details here as needed.

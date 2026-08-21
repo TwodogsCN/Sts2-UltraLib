@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CreatureHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">CreatureHelper 生物操作辅助工具</div>
+    <div class="info-content">
+        封装 <code>CreatureCmd</code> 的常用操作：动画触发、格挡、伤害、最大生命与治疗。
+        所有修改类方法走游戏命令系统（Cmd），保证联机同步与事件触发。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>TriggerAnim</code></td><td>触发生物的指定动画。</td></tr>
+    <tr><td><code>CastCardOnCreature</code></td><td>触发玩家的施法动画。</td></tr>
+    <tr class="alt"><td><code>GainBlock</code></td><td>为生物增加格挡值（两种重载）。</td></tr>
+    <tr><td><code>Damage</code></td><td>对目标造成伤害（单目标 / 多目标两种重载）。</td></tr>
+    <tr class="alt"><td><code>GainMaxHpAndHeal</code></td><td>增加最大生命值，可选回血。</td></tr>
+    <tr><td><code>Heal</code></td><td>治疗生物。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>触发动画：<code>TriggerAnim</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> TriggerAnim(<span class="type">Creature</span> creature, <span class="type">string</span> triggerName, <span class="type">float</span> waitTime)</pre></div>
+    <p class="plain">触发 <code>creature</code> 上名为 <code>triggerName</code> 的动画，并等待 <code>waitTime</code> 秒。常用于自定义攻击/受击演出。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>施法动画：<code>CastCardOnCreature</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> CastCardOnCreature(<span class="type">Player</span> player)</pre></div>
+    <p class="plain">对玩家生物触发 <code>"Cast"</code> 动画，等待时间取角色配置的 <code>CastAnimDelay</code>。打出一张自定卡牌前调用可还原原版手感。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>加格挡（变量版）：<code>GainBlock</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">decimal</span>&gt; GainBlock(<span class="type">Creature</span> creature, <span class="type">BlockVar</span> blockVar,
+    <span class="type">CardPlay</span>? cardPlay, <span class="keyword">bool</span> fast = <span class="keyword">false</span>)</pre></div>
+    <p class="plain">使用 <code>BlockVar</code>（含基础值与属性标记 Props）为生物加格挡。返回实际获得的格挡值。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>加格挡（数值版）：<code>GainBlock</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">decimal</span>&gt; GainBlock(<span class="type">Creature</span> creature, <span class="type">decimal</span> amount,
+    <span class="type">ValueProp</span> props, <span class="type">CardPlay</span>? cardPlay, <span class="keyword">bool</span> fast = <span class="keyword">false</span>)</pre></div>
+    <p class="plain">直接指定格挡数值与属性标记。返回实际获得的格挡值。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>造成伤害（单目标）：<code>Damage</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">IEnumerable</span>&lt;<span class="type">DamageResult</span>&gt;&gt; Damage(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Creature</span> target, <span class="type">decimal</span> amount,
+    <span class="type">ValueProp</span> props, <span class="type">Creature</span>? dealer, <span class="type">CardModel</span>? cardSource, <span class="type">CardPlay</span>? cardPlay)</pre></div>
+    <p class="plain">对单个目标 <code>target</code> 造成 <code>amount</code> 点伤害，携带伤害属性 <code>props</code>。返回伤害结算结果列表（含格挡吸收、实际扣血等）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>造成伤害（多目标）：<code>Damage</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">IEnumerable</span>&lt;<span class="type">DamageResult</span>&gt;&gt; Damage(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">IEnumerable</span>&lt;<span class="type">Creature</span>&gt;? targets,
+    <span class="type">DamageVar</span> damageVar, <span class="type">Creature</span>? dealer, <span class="type">CardModel</span>? cardSource, <span class="type">CardPlay</span>? cardPlay)</pre></div>
+    <p class="plain">对目标列表造成伤害，数值与属性取自 <code>DamageVar</code>（含 BaseValue 与 Props）。适合 AOE 类效果。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>增加最大生命：<code>GainMaxHpAndHeal</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> GainMaxHpAndHeal(<span class="type">Creature</span> creature, <span class="type">decimal</span> amount, <span class="keyword">bool</span> isHeal = <span class="keyword">true</span>)</pre></div>
+    <p class="plain">增加 <code>amount</code> 点最大生命值；<code>isHeal=true</code> 时同时回复等量生命。会记录到地图点历史（MaxHpGained）。<strong>注意：</strong><code>amount</code> 必须为非负数，否则抛出 <code>ArgumentException</code>（减少最大生命请用 LoseMaxHp 类方法）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>治疗：<code>Heal</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> Heal(<span class="type">Creature</span> creature, <span class="type">decimal</span> amount)</pre></div>
+    <p class="plain">治疗生物 <code>amount</code> 点生命（不会超过最大生命值）。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>RelicSelectionHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">RelicSelectionHelper 遗物选择界面辅助工具</div>
+    <div class="info-content">
+        提供「从多个遗物中让玩家选择其一」的功能，底层走 <code>PlusRelicSelectCmd</code>，
+        支持联机同步。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>SelectRelic</code></td><td>让玩家从指定遗物列表中选择一个。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>选择遗物：<code>SelectRelic</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">RelicModel</span>?&gt; SelectRelic(
+    <span class="type">IReadOnlyList</span>&lt;<span class="type">RelicModel</span>&gt; relics, <span class="type">Player</span> owner, <span class="type">RelicSelectorPrefs</span> prefs)</pre></div>
+    <p class="plain"><strong>参数：</strong><code>relics</code> 可选的遗物列表；<code>owner</code> 选择遗物的玩家；<code>prefs</code> 选择器配置（标题、可选数量等）。</p>
+    <p class="plain"><strong>返回：</strong>玩家选中的遗物；列表为空时返回 null。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

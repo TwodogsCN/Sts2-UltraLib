@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>卡牌关键词 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">卡牌关键词（Card Keyword）</div>
+    <div class="info-content">
+        UltraLib 在 <strong>Base/Label/Card</strong> 的 <strong>PlusCardKeyWord</strong> 中定义了自定义卡牌关键词。
+        每个关键词通过 <code>CustomEnumAttribute</code> 注册到本地化系统，
+        并用 <code>KeywordPropertiesAttribute</code> 控制其在卡牌描述中的位置（名称前 Before / 名称后 After）。
+        给卡牌添加/移除关键词直接用 <code>CardHelper.ApplyKeyword</code> / <code>RemoveKeyword</code>。
+    </div>
+</div>
+
+<h3>关键词一览（一个文件一个词）</h3>
+<table class="utils-table">
+    <tr><th>关键词</th><th>位置</th><th>作用</th></tr>
+    <tr class="alt"><td><a href="isomorphism.htm"><code>Isomorphism</code> 同构</a></td><td>名称后</td><td>手牌中两张此词卡间隔一张时，自动打出中间那张。</td></tr>
+    <tr><td><a href="cast-when-drawn.htm"><code>CastWhenDrawn</code> 抽牌时施放</a></td><td>名称前</td><td>抽到带此词的卡时自动打出。</td></tr>
+    <tr class="alt"><td><a href="dull.htm"><code>Dull</code> 迟钝</a></td><td>名称前</td><td>该牌在你的回合无法被丢弃。</td></tr>
+    <tr><td><a href="hunger.htm"><code>Hunger</code> 饥饿</a></td><td>名称前</td><td>使用后不可再次使用，除非有非爪牙敌方单位死亡。</td></tr>
+    <tr class="alt"><td><a href="in-test.htm"><code>InTest</code> 测试中</a></td><td>名称后</td><td>标记仍在测试阶段的卡牌。</td></tr>
+    <tr><td><a href="discard-when-drawn.htm"><code>DiscardWhenDrawn</code> 抽牌时丢弃</a></td><td>名称后</td><td>抽到带此词的卡时自动丢弃。</td></tr>
+</table>
+
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 给卡牌添加「同构」关键词</span>
+<span class="type">CardHelper</span>.<span class="property">ApplyKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">Isomorphism</span>);
+
+<span class="comment">// 移除「抽牌时丢弃」</span>
+<span class="type">CardHelper</span>.<span class="property">RemoveKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">DiscardWhenDrawn</span>);</pre>
+</div>
+
+</body>
+</html>

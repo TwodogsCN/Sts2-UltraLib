@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CardExporter - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">CardExporter 卡牌渲染导出工具</div>
+    <div class="info-content">
+        把卡牌模型渲染为 PNG 图片保存到磁盘，用于导出卡牌素材和文档预览。
+        <strong>注意：</strong>这是 <code>Node</code> 子类（partial class），但两个方法都是静态的，
+        直接 <code>CardExporter.RenderCardToImage(...)</code> 调用即可；渲染依赖场景树，需在游戏运行中调用。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>RenderCardToImage</code></td><td>生成单张卡牌图像并保存（默认 512×512 视口，自动裁剪）。</td></tr>
+    <tr><td><code>RenderCardWithHoverTipsToImage</code></td><td>生成带悬浮提示的卡牌图像并保存（默认 2560×1440 视口）。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>渲染卡牌：<code>RenderCardToImage</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">Error</span>&gt; RenderCardToImage(<span class="type">CardModel</span> cardModel, <span class="type">string</span> savePath = <span class="string">""</span>)</pre></div>
+    <p class="plain"><strong>流程：</strong>① <code>savePath</code> 为空时使用 <code>user://{Title}.png</code>（建议传带卡牌 ID 的路径，避免特殊字符保存失败）；② 挂到 <code>NCombatRoom</code> 或 <code>NGame</code> 下创建 512×512 透明 SubViewport；③ 实例化 <code>NCard</code>，移除「不可打出能量图标」，以 Hand/Normal 模式刷新视觉；④ 等待 150ms + 10 帧（让异步加载与本地化完成）；⑤ 抓图、按内容自动裁剪（外扩 10px）后 <code>SavePng</code>。</p>
+    <p class="plain"><strong>返回：</strong><code>Error</code> 保存结果；渲染失败返回 <code>Error.Failed</code>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>渲染带悬浮提示：<code>RenderCardWithHoverTipsToImage</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">Error</span>&gt; RenderCardWithHoverTipsToImage(
+    <span class="type">CardModel</span> cardModel, <span class="type">string</span> savePath = <span class="string">""</span>)</pre></div>
+    <p class="plain"><strong>流程：</strong>在 2560×1440 透明视口中横向布局：左侧卡牌（270×460），右侧悬浮提示列表——普通 <code>HoverTip</code> 词条（标题/描述/图标，Debuff 带红色材质）与 <code>CardHoverTip</code> 衍生卡（220×320 迷你卡）分列展示。等待 400ms + 35 帧后抓图，按内容裁剪（外扩 90px）保存。</p>
+    <p class="plain"><strong>返回：</strong><code>Error</code> 保存结果；渲染失败返回 <code>Error.Failed</code>。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

@@ -16,7 +16,8 @@
 ## 2. 当前状态（重要！先读这里）
 
 - **Issue #1（代码规范性自审查）**：✅ **代码部分已完成**，由 **PR #3** 合入 `main`。全部核心源码目录已按规范双语化（`Base/`、`Hook/`、`GameActions/`、`HoverTip/`、`Variables/`、`UltraLibCode/`）。
-- **Issue #2（目前功能的 CHM 维护）**：🔄 **进行中**。WinCHM 工程已搭建完成（`tools/chm-win/`），PR #4 已创建且 OPEN，**等待 review/合并**。剩余项：编译出的 `.chm` 随发布归档分发（发布时执行）。
+- **Issue #2（目前功能的 CHM 维护）**：🔄 **进行中**。WinCHM 工程已搭建完成（`tools/chm-win/`），PR #4 已创建且 OPEN，**等待 review/合并**。剩余项：编译出的 `.chm` 直接输出到 `tools/chm-win/UltraLib.chm` 并随发布归档分发（发布时执行；该文件已从 `.gitignore` 移除，作为发布产物入库）。
+- **充能遗物（PlusChargeRelic）专项文档已完成**（2026-08）：新增「新增功能 → 充能遗物」目录（3 个 CHM 子页）+ docs/ChargeRelic.md 双语 Wiki 文档；同时为「新增功能」分组增加专项介绍页 `data/new-features/new-features.htm`；Utils 总表下新增 17 个工具类方法级子页（`data/new-utils/*-helper.htm`）；新增「动态变量」（EmpowerVar/ReturnVar 各一页）与「卡牌关键词」（6 个词条各一页）子目录。
 - **PR #4**：`docs(docs): 构建并归档可分发 UltraLib.chm (Closes #2)` —— 分支 `feat/chm-docs-maintenance`，OPEN 待合并。
 - 本地工作分支：`feat/chm-docs-maintenance`（与 PR #4 对应）。
 - 主分支 `main` 是干净的，本地已与 `origin/main` 同步。
@@ -27,8 +28,8 @@ UltraLib 维护 **两套不同受众、不同内容、不同维护方式的文�
 
 | 载体 | 位置 | 内容/结构 | 维护方式 |
 |------|------|-----------|----------|
-| **GitHub Wiki**（在线、双语） | 仓库 `docs/`（Markdown）→ 镜像到 Wiki（独立 wiki git 仓库） | README / API 索引 / 代码规范 / 开发流程 / Hook 系统 / Utils | 编辑 `docs/` 中的 Markdown，同步到 Wiki |
-| **CHM 文档**（离线） | `tools/chm-win/`（WinCHM 工程 `UltraLibHelper.wcp`） | **独立结构**：前言 / 检查更新 / 简单认识C# / 更新日志 / 原版Hook列表 / 入门模组开发教学 / 新增功能（新Hooks表、新Utils表） | 用 **WinCHM** 打开 `.wcp` 编辑/编译，产出 `UltraLib Helper.chm` |
+| **GitHub Wiki**（在线、双语） | 仓库 `docs/`（Markdown）→ 镜像到 Wiki（独立 wiki git 仓库） | README / API 索引 / 代码规范 / 开发流程 / Hook 系统 / Utils / 充能遗物 | 编辑 `docs/` 中的 Markdown，同步到 Wiki |
+| **CHM 文档**（离线） | `tools/chm-win/`（WinCHM 工程 `UltraLibHelper.wcp`，编译产物直接输出 `tools/chm-win/UltraLib.chm`） | **独立结构**：前言 / 检查更新 / 简单认识C# / 更新日志 / 原版Hook列表 / 入门模组开发教学 / 新增功能（专项页、新Hooks表、新Utils表→17 个工具类子页、充能遗物→3 子页、动态变量→2 词条、卡牌关键词→6 词条） | 用 **WinCHM** 打开 `.wcp` 编辑/编译，产出 `tools/chm-win/UltraLib.chm` |
 
 - 新功能需要时**同步进 CHM**（开发流程 §10）。
 - CHM 页面规则（踩过的坑，务必遵守）：
@@ -66,13 +67,15 @@ UltraLib 维护 **两套不同受众、不同内容、不同维护方式的文�
 
 - `gh` CLI 已登录（TwodogsCN），可建 Issue/PR：`gh issue create/edit`、`gh pr create/edit`、`gh pr merge`。
 - 构建：`dotnet build`（当前有 0 错误；存在若干**既有业务 nullable 警告**，如 GoldPatch/OrbHooksPatches/RoseVars 等，非注释引入，修需业务判断——**不知道效果不要猜**）。
-- CHM 编译：用户在 **WinCHM** 打开 `tools/chm-win/UltraLibHelper.wcp` 编译（不在本环境执行）。
+- CHM 编译：用户在 **WinCHM** 打开 `tools/chm-win/UltraLibHelper.wcp` 编译，产物直接输出到 `tools/chm-win/UltraLib.chm`（`.wcp` 的 `CompiledFile=UltraLib.chm` + 空 `RootDir`）；**该文件即发布产物**，提交入库（检查更新下载链接指向 `raw/main/tools/chm-win/UltraLib.chm`，无 dist）。
+- **发布版本同步（每次发布必做，详见 docs/DEVELOPMENT_WORKFLOW.md §10.4.1）**：CHM「检查更新」页依赖 4 个版本来源保持完全一致——`version.txt`、`version.js`（JSONP：`window.ULTRALIB_LATEST = "x.y.z";`）、`UltraLib.json` 的 `"version"`、`tools/chm-win/data/check-update/check-update.htm` 的 `CONFIG.current` 与页面显示版本。漏改任一，检查页会误报。
 - Wiki 镜像：Wiki 独立 git 仓库（`https://github.com/TwodogsCN/Sts2-UltraLib.wiki.git`），本地克隆在 `C:\Users\Administrator\AppData\Local\Temp\sts2wiki`（**临时目录，重启可能丢失**，需要时重新 clone 或用 `gh` 处理）。
 
 ## 7. 给下一个 Agent 的待办/提醒
 
 - [ ] PR #4 待 review/合并（合并后 Issue #2 自动关闭）。
-- [ ] 发布时：用 WinCHM 编译 `UltraLib Helper.chm` 并随 Release 归档（Issue #2 剩余项）。
+- [ ] 发布时：用 WinCHM 编译 `UltraLibHelper.wcp` → 产物 `tools/chm-win/UltraLib.chm`（即发布产物，提交入库）并随 Release 归档（Issue #2 剩余项；注意本次已新增充能遗物/Utils 子页/新增功能专项页/动态变量/卡牌关键词，需重新编译才可见）。
+- [ ] **发布新版本时同步 4 处版本号**：`version.txt`、`version.js`、`UltraLib.json`、`check-update.htm` 的 `CONFIG.current`/显示版本（漏改会致检查更新误报，规范见 docs/DEVELOPMENT_WORKFLOW.md §10.4.1）。
 - [ ] 代码库中仍有既有 nullable 警告（GoldPatch、OrbHooksPatches、RandomPositionFixPatch、RelicObtainPatch、ChargeRelicUiPatch、RoseVars 等），修复需要业务判断，先问维护者。
 - [ ] CHM 的"入门模组开发教学"为骨架页，待后续填充（6 个章节）。
 - [ ] 新增功能后记得：双语 summary（代码）→ docs/（Wiki 源）→ Wiki 镜像 → CHM 页面（如适用）。

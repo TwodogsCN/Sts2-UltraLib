@@ -1,0 +1,53 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CardPileHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">CardPileHelper 牌堆操作辅助工具</div>
+    <div class="info-content">
+        封装 <code>CardPileCmd</code> 的常用操作：向牌堆加牌、随机打乱牌堆、抽牌。
+        注意：这里操作的是「牌堆」本身（抽牌堆、弃牌堆、手牌等），与单张卡牌操作（CardHelper）区分。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>AddToPile</code></td><td>把一张卡添加到指定牌堆的指定位置。</td></tr>
+    <tr><td><code>RandomizeOrderForPile</code></td><td>使用游戏 RNG 随机打乱整个牌堆。</td></tr>
+    <tr class="alt"><td><code>Draw</code></td><td>从抽牌堆抽取指定数量的卡。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>添加卡牌：<code>AddToPile</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">CardPileAddResult</span>&gt; AddToPile(
+    <span class="type">CardModel</span> card, <span class="type">PileType</span> pile, <span class="type">CardPilePosition</span> position)</pre></div>
+    <p class="plain">把 <code>card</code> 添加到 <code>pile</code> 的指定位置（顶部 / 底部 / 随机）。返回 <code>CardPileAddResult</code> 描述添加结果。这是最底层的入堆操作，不带预览动画、不触发生成 Hook——需要预览请用 <code>CardHelper.AddToPile</code>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>打乱牌堆：<code>RandomizeOrderForPile</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> RandomizeOrderForPile(<span class="type">PileType</span> cardPile, <span class="type">Player</span> player)</pre></div>
+    <p class="plain">对玩家 <code>player</code> 的 <code>cardPile</code> 牌堆调用内部 <code>RandomizeOrderInternal</code>，使用玩家运行状态的洗牌 RNG 打乱顺序。适用于「洗回牌堆并打乱」类效果。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>抽牌：<code>Draw</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">IEnumerable</span>&lt;<span class="type">CardModel</span>&gt;&gt; Draw(
+    <span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">decimal</span> count, <span class="type">Player</span> player,
+    <span class="keyword">bool</span> fromHandDraw = <span class="keyword">false</span>)</pre></div>
+    <p class="plain">从抽牌堆抽取 <code>count</code> 张牌到手上。数量支持小数（如 0.5 表示抽一张但概率减半）。<code>fromHandDraw=true</code> 表示「从手牌抽出（回收）」的特殊抽法。返回实际抽到的卡牌列表。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

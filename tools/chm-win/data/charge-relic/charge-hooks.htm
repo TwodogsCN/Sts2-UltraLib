@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>触发与 Hook - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">触发与 Hook</div>
+    <div class="info-content">
+        本文档说明充能遗物从「玩家右键」到「效果执行」的完整链路，
+        以及 UltraLib 为充能遗物提供的全部 Hook。核心结论：<b>效果逻辑写 <code>MainEffect</code></b>，
+        这样触发次数等 Hook 会自动生效。
+    </div>
+</div>
+
+<h3 id="chain">右键触发链路</h3>
+<p class="plain">完整链路如下（右键捕获、Action 同步、Hook 分发由 UltraLib 自动接通；<b>右键只是触发方式之一</b>，你完全可以用自动触发等其他方式调用 <code>DoChargeRelicEffect</code>）：</p>
+<ol>
+    <li><b>右键捕获</b>：<code>RelicRightClickPatch</code> 在遗物 UI 上监听右键/取消键，校验归属玩家后触发。</li>
+    <li><b>Action 入队</b>：构造 <code>RelicRightClickAction</code>（GameAction）入队，联机时通过 <code>RelicRightClickSyncNet</code> 同步到其他客户端，保证全端一致执行。</li>
+    <li><b>Hook 分发</b>：执行 <code>Plus_TriggerRelicRightClick</code>，把所有 <code>IPlusHooks</code> 监听者（包括遗物自身）的 <code>Plus_RelicRightClick</code> 逐个调用。</li>
+    <li><b>创作者接线</b>：<code>PlusChargeRelic</code> 基类<b>不写死</b>触发方式——由创作者自己决定何时触发（右键、自动、回合开始等均可）：在触发点检查满充后调用 <code>DoChargeRelicEffect()</code>，再调用 <code>SpendCharge()</code> 消耗充能（见下方示例）。</li>
+</ol>
+
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 触发接线（示例：右键触发）——触发方式由你决定，可以是右键 / 自动 / 回合开始等</span>
+<span class="keyword">public override async Task</span> <span class="property">Plus_RelicRightClick</span>(<span class="type">RelicModel</span> relicModel, <span class="type">NRelicInventoryHolder</span>? holder)
+{
+    <span class="keyword">if</span> (!IsFullyCharged) <span class="keyword">return</span>;   <span class="comment">// 未满充不触发</span>
+
+    <span class="keyword">await</span> <span class="property">DoChargeRelicEffect</span>();  <span class="comment">// 执行 MainEffect（含重复次数 Hook）</span>
+    <span class="property">SpendCharge</span>();               <span class="comment">// 消耗充能</span>
+}</pre>
+</div>
+
+<h3 id="doeffect">DoChargeRelicEffect 执行流程</h3>
+<p class="plain">
+    <code>DoChargeRelicEffect</code> 是充能遗物效果的总入口。它会依次做三件事：
+    <b>① 计算重复次数 → ② 触发前后全局 Hook → ③ 循环执行 MainEffect</b>。
+    伪代码：
+</p>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">async Task</span> <span class="property">DoChargeRelicEffect</span>()
+{
+    <span class="comment">// ① 计算重复次数（默认 1，可被 Hook 修正）</span>
+    <span class="keyword">int</span> times = <span class="number">1</span>;
+    times += <span class="property">Plus_TriggerModifyChargeRepeatTimesAddictive</span>(times, ...);
+    times  = (<span class="keyword">int</span>)(<span class="property">Plus_TriggerModifyChargeRepeatTimesMultiplicative</span>(times, ...) * times);
+    times  = (<span class="keyword">int</span>)<span class="property">Plus_TriggerModifyChargeRepeatTimes</span>(times, ...);
+
+    <span class="comment">// ② 总触发前</span>
+    <span class="keyword">await</span> <span class="property">Plus_TriggerBeforeChargeTotallyEffected</span>(...);
+
+    <span class="comment">// ③ 循环执行效果</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; times; i++)
+    {
+        <span class="keyword">await</span> <span class="property">Plus_TriggerBeforeChargeEffected</span>(...); <span class="comment">// 单次触发前</span>
+        <span class="keyword">await</span> <span class="property">MainEffect</span>();                          <span class="comment">// ← 你的效果写这里</span>
+        <span class="keyword">await</span> <span class="property">Plus_TriggerAfterChargeEffected</span>(...);  <span class="comment">// 单次触发后</span>
+    }
+
+    <span class="comment">// 总触发后</span>
+    <span class="keyword">await</span> <span class="property">Plus_TriggerAfterChargeTotallyEffected</span>(...);
+}</pre>
+</div>
+<p class="plain">
+    <b>为什么效果必须写在 <code>MainEffect</code>？</b>
+    因为「触发次数」由 <code>DoChargeRelicEffect</code> 统一计算并循环调用 <code>MainEffect</code>。
+    如果你把效果写在别处（例如 <code>Plus_RelicRightClick</code> 里直接写），
+    那么 <code>Plus_ModifyChargeRepeatTimes</code> 系列 Hook 和
+    <code>Before/AfterChargeEffected</code> 单次 Hook 都无法正确包裹你的效果。
+</p>
+
+<h3 id="hooks">充能相关 Hook 参考</h3>
+<p class="plain">以下 Hook 定义在 <code>IPlusHooks</code>，你可以在自己的遗物/能力/单例模型中覆写；基类 <code>PlusRelicModel</code> 已提供空实现，只覆写需要的即可。</p>
+
+<h3>数值修正类（Modify）</h3>
+<table class="utils-table">
+    <tr><th>Hook</th><th>作用</th></tr>
+    <tr class="alt"><td><code>Plus_ModifyMaxCharge</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修正最大充能值（依次为 管道、乘法、加法 三段式）。</td></tr>
+    <tr><td><code>Plus_ModifyChargeUpgrade</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修正每次充能获得量（默认 +1）。</td></tr>
+    <tr class="alt"><td><code>Plus_ModifyChargeSpend</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修正每次触发消耗的充能量（默认消耗 = 最大充能）。</td></tr>
+    <tr><td><code>Plus_ModifyChargeRepeatTimes</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修正触发效果重复次数（默认 1 次）。</td></tr>
+</table>
+
+<h3>事件类（Trigger）</h3>
+<table class="utils-table">
+    <tr><th>Hook</th><th>触发时机</th></tr>
+    <tr class="alt"><td><code>Plus_OnChargeFullyCharged</code></td><td>充能到达满值时。</td></tr>
+    <tr><td><code>Plus_OnChargeNoLongerFullyCharged</code></td><td>充能不再满值时（如消耗后）。</td></tr>
+    <tr class="alt"><td><code>Plus_OnChargeChanged</code></td><td>充能数值变化时（参数：旧值、新值）。</td></tr>
+    <tr><td><code>Plus_AfterChargeGain</code></td><td>每次获得充能后（参数：获得量）。</td></tr>
+    <tr class="alt"><td><code>Plus_AfterChargeSpend</code></td><td>每次消耗充能后（参数：消耗量）。</td></tr>
+    <tr><td><code>Plus_BeforeChargeEffected</code> / <code>Plus_AfterChargeEffected</code></td><td>单次效果执行前 / 后（若重复次数 &gt; 1 会多次触发）。</td></tr>
+    <tr class="alt"><td><code>Plus_BeforeChargeTotallyEffected</code> / <code>Plus_AfterChargeTotallyEffected</code></td><td>整个效果流程开始前 / 结束后（只触发一次）。</td></tr>
+</table>
+
+<h3>典型覆写示例</h3>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 例：另一个遗物让本充能遗物多触发 1 次</span>
+<span class="keyword">public override decimal</span> <span class="property">Plus_ModifyChargeRepeatTimesAddictive</span>(<span class="type">decimal</span> a, <span class="type">Player</span> p, <span class="type">RelicModel</span> r)
+{
+    <span class="keyword">if</span> (r <span class="keyword">is</span> <span class="type">ExampleChargeRelic</span>)
+        <span class="keyword">return</span> a + <span class="number">1m</span>;
+    <span class="keyword">return</span> a;
+}
+
+<span class="comment">// 例：充能满时给一个提示</span>
+<span class="keyword">public override Task</span> <span class="property">Plus_OnChargeFullyCharged</span>(<span class="type">Player</span> p, <span class="type">RelicModel</span> r)
+{
+    <span class="type">GD</span>.<span class="property">Print</span>($<span class="string">"[{r.Id}] 充能已满，右键触发！"</span>);
+    <span class="keyword">return</span> <span class="type">Task</span>.<span class="property">CompletedTask</span>;
+}</pre>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="charge-relic.htm">← 返回充能遗物总览</a> · <a href="charge-mechanic.htm">充能机制详解 →</a>
+</p>
+
+</body>
+</html>
