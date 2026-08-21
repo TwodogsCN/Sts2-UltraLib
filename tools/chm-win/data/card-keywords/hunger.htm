@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Hunger 饥饿 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">Hunger 饥饿（卡牌关键词）</div>
+    <div class="info-content">
+        <b>饥饿</b>——使用后不可再次使用，除非有非爪牙敌方单位死亡。
+        显示在<b>卡牌名称之前</b>。
+    </div>
+</div>
+
+<h3>效果说明</h3>
+<p class="plain">
+    拥有 <code>Hunger</code> 关键词的卡牌<b>使用一次后进入"饥饿"状态</b>，无法再次打出；
+    只有当<b>非爪牙（non-minion）敌方单位死亡</b>时才解除限制，恢复可用。
+    适合做「喂食/猎杀」主题的机制。
+</p>
+
+<h3>使用方式</h3>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 给卡牌添加「饥饿」关键词</span>
+<span class="type">CardHelper</span>.<span class="property">ApplyKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">Hunger</span>);
+
+<span class="comment">// 移除</span>
+<span class="type">CardHelper</span>.<span class="property">RemoveKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">Hunger</span>);</pre>
+</div>
+
+<p class="plain">定义位置：<code>Base/Label/Card/PlusCardKeyWord.cs</code>，关键词位置属性 <code>AutoKeywordPosition.Before</code>。</p>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="card-keywords.htm">← 卡牌关键词目录</a> · <a href="in-test.htm">InTest 测试中 →</a>
+</p>
+
+</body>
+</html>

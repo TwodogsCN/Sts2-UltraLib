@@ -1,0 +1,80 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>新 Hooks 表</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">UltraLib 新增 Hooks（钩子）总表</div>
+    <div class="info-content">
+        UltraLib 的钩子系统以 <strong>IPlusHooks</strong> 为契约、<strong>PlusHooks</strong> 为分发器。
+        你的内容模型（遗物 / 能力 / 单例）只要实现 <strong>IPlusHooks</strong>（或继承 Plus* 基类），
+        就会被自动收集并收到这些钩子调用。所有钩子都有默认实现，你只需覆写关心的部分。
+    </div>
+</div>
+
+<h3>一、事件钩子（Task，响应"发生了某事"）</h3>
+<table class="hook-table">
+    <tr><th>钩子方法</th><th>触发时机</th><th>用途示例</th></tr>
+    <tr><td><code>Plus_AfterRandomRoomRolled(RoomType)</code></td><td>随机房间 Roll 完成后</td><td>根据房间类型调整地图逻辑</td></tr>
+    <tr class="alt"><td><code>Plus_AfterHandPileMoved(CardModel)</code></td><td>手牌堆移动后</td><td>响应卡牌进/出手牌（同构检测依赖）</td></tr>
+    <tr><td><code>Plus_BeforeHandPileMoved(CardModel)</code></td><td>手牌堆移动前</td><td>在移动生效前阻止/修改</td></tr>
+    <tr class="alt"><td><code>Plus_PowerRightClick(PowerModel, NPower)</code></td><td>能力被右键点击</td><td>自定义能力右键行为</td></tr>
+    <tr><td><code>Plus_RelicRightClick(RelicModel, holder)</code></td><td>遗物被右键点击</td><td>充能遗物右键触发</td></tr>
+    <tr class="alt"><td><code>Plus_AfterRelicObtain(...)</code> / <code>Plus_BeforeRelicObtain(...)</code></td><td>获得遗物后 / 前</td><td>遗物获得逻辑</td></tr>
+    <tr><td><code>Plus_CardRightClick(CardModel, NCardHolder)</code></td><td>卡牌被右键点击</td><td>自定义卡牌右键</td></tr>
+    <tr class="alt"><td><code>Plus_AfterChargeSpend(...)</code> / <code>Plus_AfterChargeGain(...)</code></td><td>充能消耗/获得后</td><td>充能变化后置逻辑</td></tr>
+    <tr><td><code>Plus_OnChargeFullyCharged(...)</code> / <code>Plus_OnChargeNoLongerFullyCharged(...)</code></td><td>充能充满 / 不再充满</td><td>充满触发效果</td></tr>
+    <tr class="alt"><td><code>Plus_OnChargeChanged(old, new, ...)</code></td><td>充能数值变化</td><td>充能变化监测</td></tr>
+    <tr><td><code>Plus_BeforeChargeEffected(...)</code> / <code>Plus_AfterChargeEffected(...)</code><br><code>Plus_BeforeChargeTotallyEffected(...)</code> / <code>Plus_AfterChargeTotallyEffected(...)</code></td><td>充能效果生效前/后</td><td>充能效果全流程</td></tr>
+    <tr class="alt"><td><code>Plus_AfterOrbEvokeRemoved(...)</code> / <code>Plus_BeforeOrbEvoke(...)</code></td><td>充能球激发后/前</td><td>充能球激发流程</td></tr>
+    <tr><td><code>Plus_BeforeOrbPassive(...)</code> / <code>Plus_AfterOrbPassive(...)</code></td><td>充能球被动生效前/后</td><td>充能球被动流程</td></tr>
+    <tr class="alt"><td><code>Plus_BeforeIsomorphism(...)</code> / <code>Plus_AfterIsomorphism(...)</code></td><td>同构自动打牌前/后</td><td>同构关键词流程</td></tr>
+    <tr><td><code>Plus_BeforeCastWhenDrawn(...)</code> / <code>Plus_AfterCastWhenDrawn(...)</code></td><td>抽牌时施放前/后</td><td>CastWhenDrawn 关键词流程</td></tr>
+    <tr class="alt"><td><code>Plus_BeforeCardReturn(...)</code> / <code>Plus_AfterCardReturn(...)</code></td><td>卡牌返回前/后</td><td>Return 关键词流程</td></tr>
+    <tr><td><code>Plus_BeforeCardEmpower(...)</code> / <code>Plus_AfterCardEmpower(...)</code></td><td>赋能前/后</td><td>Empower 关键词流程</td></tr>
+</table>
+
+<h3>二、数值修改钩子（decimal，修改"某一个数值"）</h3>
+<div class="plain">
+    对每个可修改值 <strong>X</strong>，有三个钩子：管线（Pipeline）、乘算（Multiplicative）、加算（Addictive）。
+    组合方式：<code>Modify( (amount + Addictive) × Multiplicative )</code>。
+</div>
+<table class="hook-table">
+    <tr><th>数值</th><th>三个钩子</th><th>说明</th></tr>
+    <tr class="alt"><td>金币获得</td><td><code>Plus_ModifyGoldGain</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修改金币获得量</td></tr>
+    <tr><td>金币损失</td><td><code>Plus_ModifyGoldLoss</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修改金币损失量</td></tr>
+    <tr class="alt"><td>最大充能</td><td><code>Plus_ModifyMaxCharge</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修改遗物最大充能</td></tr>
+    <tr><td>充能升级量</td><td><code>Plus_ModifyChargeUpgrade</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修改充能升级量</td></tr>
+    <tr class="alt"><td>充能消耗量</td><td><code>Plus_ModifyChargeSpend</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修改充能消耗量</td></tr>
+    <tr><td>充能重复次数</td><td><code>Plus_ModifyChargeRepeatTimes</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修改充能效果重复次数</td></tr>
+    <tr class="alt"><td>玫瑰数值</td><td><code>Plus_ModifyRoseCard</code> / <code>...Multiplicative</code> / <code>...Addictive</code></td><td>修改玫瑰类卡牌数值</td></tr>
+</table>
+
+<div class="info-box">
+    <div class="info-title">如何实现一个钩子</div>
+    <div class="info-content">
+        继承 <strong>PlusRelicModel</strong> / <strong>PlusPowerModel</strong> / <strong>PlusSingletonModel</strong>，
+        然后覆写你需要的钩子方法即可，例如：
+    </div>
+</div>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">MyRelic</span> : <span class="type">PlusRelicModel</span>
+{
+    <span class="comment">// 玩家获得金币后触发——减半</span>
+    <span class="keyword">public</span> <span class="keyword">override</span> <span class="type">decimal</span> <span class="property">Plus_ModifyGoldGain</span>(<span class="type">decimal</span> amount, <span class="type">Player</span> player, <span class="type">bool</span> wasStolenBack)
+        <span class="operator">=&gt;</span> amount <span class="operator">*</span> <span class="number">0.5m</span>;
+}</pre>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    完整钩子分类与组合规则见在线 Wiki 的 Hook System 页。
+</p>
+
+</body>
+</html>

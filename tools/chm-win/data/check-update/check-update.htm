@@ -1,0 +1,142 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+<title>检查更新</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+</head>
+<body>
+
+<div class="card">
+    <div class="title">UltraLib Helper 更新检测</div>
+
+    <div class="v-item">
+        <span class="label">当前本地版本:</span>
+        <span class="value">0.1.0</span>
+    </div>
+
+    <div class="v-item">
+        <span class="label">云端最新版本:</span>
+        <span class="value" id="cloud-v">---</span>
+    </div>
+
+    <div class="btn-group">
+        <input type="button" class="btn btn-blue" value="开始检查更新" onclick="startCheck()">
+        <a class="btn btn-white" href="https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm" target=_blank>从 GitHub 下载</a>
+        <a class="btn btn-white" href="https://github.com/TwodogsCN/Sts2-UltraLib/releases" target=_blank>GitHub Releases</a>
+    </div>
+
+    <div id="status"></div>
+
+    <div class="tip">
+        <strong>注意：</strong> 若打开显示空白，请右键 UltraLib.chm -&gt; 属性 -&gt; 勾选"解除锁定"。
+        检查更新需要联网；CHM 阅读器可能阻止脚本跨域请求，此时请使用「从 GitHub 下载」按钮手动获取最新版。
+    </div>
+</div>
+
+<script type="text/javascript">
+// 当前本地版本 —— 与仓库根目录 version.txt / version.js 保持一致
+var CONFIG = {
+    current: "0.1.0",
+    // 优先级 1: GitHub（JSONP 脚本方式，跨域可用）
+    github: {
+        name: "GitHub",
+        script: "https://raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.js",
+        dl: "https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm"
+    },
+    // 优先级 2: Gitee
+    gitee: {
+        name: "Gitee",
+        script: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/version.js",
+        dl: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm"
+    }
+};
+
+var TIMEOUT_MS = 8000; // 单节点超时
+
+function startCheck() {
+    checkVersion(CONFIG.github, function(success, version) {
+        if (!success) {
+            setStatus("GitHub 连接失败，正在尝试 Gitee...");
+            checkVersion(CONFIG.gitee, function(successGitee, versionGitee) {
+                if (!successGitee) {
+                    document.getElementById('cloud-v').innerHTML = "ERR";
+                    setStatus("所有云端节点均无法连接，请检查网络，或点击「从 GitHub 下载」手动获取最新版。");
+                } else {
+                    processResult(versionGitee, CONFIG.gitee.dl);
+                }
+            });
+        } else {
+            processResult(version, CONFIG.github.dl);
+        }
+    });
+}
+
+// 通过动态 <script> 加载 version.js（JSONP），读取 window.ULTRALIB_LATEST
+function checkVersion(source, callback) {
+    setStatus("正在连接 " + source.name + " ...");
+
+    // 清理上一次加载的全局标记
+    try { delete window.ULTRALIB_LATEST; } catch (e) { window.ULTRALIB_LATEST = undefined; }
+
+    var done = false;
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = source.script + "?nocache=" + new Date().getTime();
+    script.onerror = function() { finish(false, null); };
+
+    var timer = setTimeout(function() { finish(false, null); }, TIMEOUT_MS);
+
+    function finish(success, version) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        if (script.parentNode) script.parentNode.removeChild(script);
+        if (success) callback(true, version);
+        else callback(false, null);
+    }
+
+    // JSONP 回调：脚本加载后轮询全局变量（兼容 IE7 不支持 onload 可靠触发的场景）
+    var poll = setInterval(function() {
+        if (window.ULTRALIB_LATEST !== undefined && window.ULTRALIB_LATEST !== null) {
+            var v = String(window.ULTRALIB_LATEST).replace(/\s+/g, "");
+            clearInterval(poll);
+            finish(true, v);
+        }
+    }, 120);
+
+    // 兜底：确保轮询随 finish 清理
+    var origFinish = finish;
+    finish = function(success, version) {
+        clearInterval(poll);
+        origFinish(success, version);
+    };
+
+    try { document.body.appendChild(script); }
+    catch (e) { finish(false, null); }
+}
+
+function processResult(latest, downloadUrl) {
+    var cloudVEl = document.getElementById('cloud-v');
+    cloudVEl.innerHTML = latest;
+
+    if (latest !== CONFIG.current) {
+        setStatus("<span style='color:#cf222e; font-weight:bold;'>检测到新版本！</span> 云端 " + latest + " &gt; 本地 " + CONFIG.current);
+        var msg = "检测到新版本: " + latest + "\n当前本地版本: " + CONFIG.current + "\n\n是否立即下载更新？";
+        if (confirm(msg)) {
+            window.location.href = downloadUrl;
+            alert("正在下载，完成后请覆盖旧文件。");
+        }
+    } else {
+        setStatus("<span style='color:#1a7f37;'>当前已是最新版本 (" + latest + ")。</span>");
+    }
+}
+
+function setStatus(html) {
+    document.getElementById('status').innerHTML = html;
+}
+</script>
+
+</body>
+</html>

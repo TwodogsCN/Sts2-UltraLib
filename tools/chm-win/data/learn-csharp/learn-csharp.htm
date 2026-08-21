@@ -1,0 +1,83 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>简单认识 C#</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">简单认识 C#（写给模组制作者）</div>
+    <div class="info-content">
+        写 StS2 模组使用的语言是 <strong>C#</strong>。你不需要成为 C# 专家，
+        掌握下面几个基础概念就足够开始写模组了。
+    </div>
+</div>
+
+<h3>1. 类（Class）</h3>
+<div class="plain">
+    类是一段可复用的代码模板。一个模组里的卡牌、遗物、能力，本质上都是一个类。
+</div>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">MyCard</span> : <span class="type">CardModel</span>
+{
+    <span class="comment">// 类的内容（成员、方法）</span>
+}</pre>
+</div>
+
+<h3>2. 继承（Inheritance）</h3>
+<div class="plain">
+    <span class="hl">继承</span> 让一个新类"继承"已有类的能力，并可以覆盖（override）它的行为。
+    在 UltraLib 里，你通常会继承 <code>PlusRelicModel</code>、<code>CardModel</code> 这类基类。
+</div>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">MyRelic</span> : <span class="type">PlusRelicModel</span>
+{
+    <span class="keyword">public</span> <span class="keyword">override</span> <span class="type">decimal</span> <span class="property">Plus_ModifyGoldGain</span>(<span class="type">decimal</span> amount, <span class="type">Player</span> player, <span class="type">bool</span> stolenBack)
+        <span class="operator">=&gt;</span> amount <span class="operator">*</span> <span class="number">0.5m</span>;
+}</pre>
+</div>
+
+<h3>3. 方法（Method）</h3>
+<div class="plain">
+    方法是被命名的代码块，可接收参数并返回结果。模组里常用的方法是 <code>OnPlay</code>（打出卡牌时）、
+    <code>OnObtain</code>（获得遗物时）等。
+</div>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">public</span> <span class="type">int</span> <span class="property">Add</span>(<span class="type">int</span> a, <span class="type">int</span> b)
+{
+    <span class="keyword">return</span> a <span class="operator">+</span> b;
+}</pre>
+</div>
+
+<h3>4. 命名空间（Namespace）</h3>
+<div class="plain">
+    命名空间用于组织代码，避免重名。UltraLib 的代码都在 <code>UltraLib</code> 命名空间下，
+    例如 <code>UltraLib.Base.Utils</code>、<code>UltraLib.Hook</code>。
+</div>
+
+<h3>5. 关于 async / await</h3>
+<div class="plain">
+    StS2 的很多 API 是异步的（返回 <code>Task</code>），用 <code>await</code> 等待完成。
+    你会在很多方法里看到 <code>async</code> / <code>await</code>，
+    只需要按模板写即可，不必深入原理。
+</div>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span> <span class="property">DoSomething</span>()
+{
+    <span class="keyword">await</span> <span class="type">CardCmd</span>.<span class="property">Exhaust</span>(ctx, card);
+}</pre>
+</div>
+
+<p style="color:#57606a; font-size:10pt; border-top:1px solid #d0d7de; padding-top:10px;">
+    更深入的 C# 知识请参考微软官方文档。这里只列出写模组最常用的部分。
+</p>
+
+</body>
+</html>

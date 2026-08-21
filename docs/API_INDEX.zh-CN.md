@@ -13,7 +13,7 @@
 | `PlusRelicModel` | 自定义遗物基类。新增 `RelicLevel`（出现权重）、`ItemPool`、`Tags`、类型化内部数据（`GetInternalData<T>` / `GetOrInitInternalData<T>`）、正确的 `DeepCloneFields`，以及**全部 `IPlusHooks`** 的空默认实现。这是通常应继承的遗物基类。 |
 | `PlusPowerModel` | 自定义能力基类，已接入钩子系统。 |
 | `PlusSingletonModel` | 单例型模型基类（每次 run 一个实例的模型）。 |
-| `PlusChargeRelic` | 充能遗物基类：进入房间时自动获得充能（除非 `AutoCharge` 为 `false`）；充能满后玩家右键触发效果并消耗充能。 |
+| `PlusChargeRelic` | 充能遗物基类：进入房间时自动获得充能（除非 `AutoCharge` 为 `false`）；满充后由**创作者决定触发方式**（右键、自动等，不写死），通过 `DoChargeRelicEffect` 循环执行 `MainEffect` 并消耗充能。详见 [ChargeRelic.zh-CN.md](ChargeRelic.zh-CN.md)。 |
 
 ## 2. 钩子系统 — `Hook`
 
@@ -48,7 +48,7 @@
 | `AttackHelper` | 攻击相关辅助。 |
 | `AncientEventHelper` | 古老事件互动。 |
 | `DiscoverHelper` | 发现/选择界面辅助。 |
-| `RewardsHelper` | 奖励界面辅助。 |
+| `RewardHelper` | 奖励界面辅助。 |
 | `HandUiHelper` | 手牌中 UI 操作。 |
 | `HoverTipHelper` | 悬浮提示接线（配合 `HoverTip/PlusHoverTips`）。 |
 | `DynamicVarHelper` | 动态变量辅助。 |

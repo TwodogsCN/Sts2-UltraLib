@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CastWhenDrawn 抽牌时施放 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">CastWhenDrawn 抽牌时施放（卡牌关键词）</div>
+    <div class="info-content">
+        <b>抽牌时施放</b>——当抽到带有此关键词的卡牌时，自动将其打出。
+        显示在<b>卡牌名称之前</b>。
+    </div>
+</div>
+
+<h3>效果说明</h3>
+<p class="plain">
+    拥有 <code>CastWhenDrawn</code> 关键词的卡牌在被抽到时立即自动打出（无需消耗费用/选择）。
+    该机制由 <code>CastWhenDrawnSingleton</code> 底层实现，并配套
+    <code>Plus_BeforeCastWhenDrawn</code> / <code>Plus_AfterCastWhenDrawn</code> 钩子。
+</p>
+
+<h3>使用方式</h3>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 给卡牌添加「抽牌时施放」关键词</span>
+<span class="type">CardHelper</span>.<span class="property">ApplyKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">CastWhenDrawn</span>);
+
+<span class="comment">// 移除</span>
+<span class="type">CardHelper</span>.<span class="property">RemoveKeyword</span>(card, <span class="type">PlusCardKeyWord</span>.<span class="property">CastWhenDrawn</span>);</pre>
+</div>
+
+<p class="plain">定义位置：<code>Base/Label/Card/PlusCardKeyWord.cs</code>，关键词位置属性 <code>AutoKeywordPosition.Before</code>。</p>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="card-keywords.htm">← 卡牌关键词目录</a> · <a href="dull.htm">Dull 迟钝 →</a>
+</p>
+
+</body>
+</html>

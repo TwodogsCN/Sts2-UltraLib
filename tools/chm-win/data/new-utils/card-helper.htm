@@ -1,0 +1,203 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CardHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">CardHelper 卡牌操作辅助工具</div>
+    <div class="info-content">
+        封装 <code>CardCmd</code> / <code>CardPileCmd</code> 的常用操作，是功能最全的卡牌工具类。
+        覆盖：生成/添加卡牌、预览、消耗、弃牌、升级/降级、关键词、动态变量（返回/赋能）、
+        克隆、创建、自动打出、转变、附魔、锻造预览等。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>PreviewAddGeneratedCardToCombat</code></td><td>生成一张卡加入战斗并显示预览动画。</td></tr>
+    <tr><td><code>PreviewCardPileAddResult</code></td><td>播放一次牌堆添加结果的预览动画。</td></tr>
+    <tr class="alt"><td><code>Exhaust</code>（单张 / 列表）</td><td>消耗一张或一组卡牌。</td></tr>
+    <tr><td><code>Upgrade</code> / <code>Downgrade</code>（单张 / 列表）</td><td>升级 / 降级卡牌。</td></tr>
+    <tr class="alt"><td><code>AddGeneratedCardToCombat</code></td><td>生成卡牌进入战斗，触发生成卡 Hook，返回添加结果。</td></tr>
+    <tr><td><code>AddToPile</code>（单张 / 列表）</td><td>把卡加入牌堆（可带预览，不触发生成 Hook）。</td></tr>
+    <tr class="alt"><td><code>GetModelDb</code></td><td>获取卡牌对应的原版（canonical）模型。</td></tr>
+    <tr><td><code>Clone</code> / <code>CloneOrigin</code></td><td>克隆卡牌 / 克隆原版版本的卡牌。</td></tr>
+    <tr class="alt"><td><code>ApplyKeyword</code> / <code>RemoveKeyword</code>（单张 / 列表）</td><td>添加 / 移除卡牌关键词。</td></tr>
+    <tr><td><code>AddReturnVar</code> / <code>RemoveReturnVar</code></td><td>添加 / 移除卡牌「返回」效果变量。</td></tr>
+    <tr class="alt"><td><code>AddEmpowerVar</code> / <code>RemoveEmpowerVar</code></td><td>添加 / 移除卡牌「赋能」效果变量。</td></tr>
+    <tr><td><code>RefreshHoverTips</code></td><td>刷新卡牌的悬浮提示（触发原版视觉更新）。</td></tr>
+    <tr class="alt"><td><code>AutoPlay</code>（两种重载）</td><td>自动打出一张卡牌（自动选择目标）。</td></tr>
+    <tr><td><code>GetAutoTarget</code></td><td>获取一张卡牌可指定的随机目标。</td></tr>
+    <tr class="alt"><td><code>SetCardType</code></td><td>设置卡牌类型（反射写入 Type）。</td></tr>
+    <tr><td><code>Discard</code>（单张 / 列表）</td><td>弃掉一张或一组卡牌。</td></tr>
+    <tr class="alt"><td><code>Preview</code></td><td>预览一张卡（出现在中央再飞回牌堆）。</td></tr>
+    <tr><td><code>Enchant</code>（泛型 / 实例）</td><td>给卡牌添加附魔。</td></tr>
+    <tr class="alt"><td><code>CreateCard</code>（泛型 / 基于原版）</td><td>创建一张卡牌。</td></tr>
+    <tr><td><code>TransformTo</code> / <code>Transform</code> / <code>PreviewTransform</code></td><td>把一张卡转变为另一张卡（可带预览）。</td></tr>
+    <tr class="alt"><td><code>PreviewSovereignBlade</code>（单张 / 集合）</td><td>播放「锻造」样式的卡牌预览特效。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>生成 + 预览：<code>PreviewAddGeneratedCardToCombat</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> PreviewAddGeneratedCardToCombat(
+    <span class="type">CardModel</span> card, <span class="type">PileType</span> pile, <span class="type">Player</span>? player,
+    <span class="type">CardPilePosition</span> position,
+    <span class="type">CardPreviewStyle</span> style = <span class="type">CardPreviewStyle</span>.HorizontalLayout)</pre></div>
+    <p class="plain">生成一张卡加入指定牌堆，并立即播放添加预览动画。内部先调用 <code>AddGeneratedCardToCombat</code> 再调用 <code>PreviewCardPileAdd</code>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>预览：<code>PreviewCardPileAddResult</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> PreviewCardPileAddResult(<span class="type">CardPileAddResult</span> result)</pre></div>
+    <p class="plain">对一个已有的牌堆添加结果播放预览动画（卡从中央飞向目标牌堆）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>消耗：<code>Exhaust</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> Exhaust(<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList, <span class="type">PlayerChoiceContext</span>? playerChoiceContext = <span class="keyword">null</span>)
+<span class="keyword">public static async Task</span> Exhaust(<span class="type">CardModel</span> card, <span class="type">PlayerChoiceContext</span>? playerChoiceContext = <span class="keyword">null</span>)</pre></div>
+    <p class="plain">消耗一张或一组卡牌。未传入选择上下文时自动使用 <code>BlockingPlayerChoiceContext</code>（阻塞等待玩家选择）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>升级 / 降级：<code>Upgrade</code> / <code>Downgrade</code>（各两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> Upgrade(<span class="type">CardModel</span> card)          <span class="comment">// 升级单张</span>
+<span class="keyword">public static void</span> Upgrade(<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList) <span class="comment">// 升级一组</span>
+<span class="keyword">public static void</span> Downgrade(<span class="type">CardModel</span> card)          <span class="comment">// 降级单张</span>
+<span class="keyword">public static void</span> Downgrade(<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList) <span class="comment">// 降级一组</span></pre></div>
+    <p class="plain">调用 <code>CardCmd.Upgrade</code> / <code>CardCmd.Downgrade</code> 批量修改卡牌升级状态。列表重载会逐个处理。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>生成入战斗：<code>AddGeneratedCardToCombat</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">CardPileAddResult</span>&gt; AddGeneratedCardToCombat(
+    <span class="type">CardModel</span> card, <span class="type">PileType</span> pile, <span class="type">Player</span>? player,
+    <span class="type">CardPilePosition</span> position,
+    <span class="type">CardPreviewStyle</span> style = <span class="type">CardPreviewStyle</span>.HorizontalLayout)</pre></div>
+    <p class="plain">生成一张卡加入战斗（触发游戏的「生成卡牌」Hook），返回 <code>CardPileAddResult</code> 供后续处理。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>加入牌堆：<code>AddToPile</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> AddToPile(<span class="type">CardModel</span> card, <span class="type">PileType</span> pile, <span class="type">CardPilePosition</span> position,
+    <span class="keyword">bool</span> isPreview = <span class="keyword">true</span>, <span class="type">CardPreviewStyle</span> style = <span class="type">CardPreviewStyle</span>.HorizontalLayout)
+<span class="keyword">public static async Task</span> AddToPile(<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList, <span class="type">PileType</span> pile, <span class="type">CardPilePosition</span> position,
+    <span class="keyword">bool</span> isPreview = <span class="keyword">true</span>, <span class="type">CardPreviewStyle</span> style = <span class="type">CardPreviewStyle</span>.HorizontalLayout)</pre></div>
+    <p class="plain">把卡加入指定牌堆指定位置。默认带预览动画；<code>isPreview=false</code> 时静默加入。<b>注意：不触发「生成卡牌」Hook</b>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>原版模型：<code>GetModelDb</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">CardModel</span> GetModelDb(<span class="type">CardModel</span> cardModel)</pre></div>
+    <p class="plain">按传入卡牌的实际类型从 <code>ModelDb</code> 中取回原版（canonical）模型。返回的是共享蓝图，如需修改应先 <code>ToMutable()</code>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>克隆：<code>Clone</code> / <code>CloneOrigin</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">CardModel</span> Clone(<span class="type">CardModel</span> cardModel)
+<span class="keyword">public static</span> <span class="type">CardModel</span> CloneOrigin(<span class="type">CardModel</span> cardModel, <span class="type">Player</span> player, <span class="type">ICombatState</span> combatState)</pre></div>
+    <p class="plain"><code>Clone</code> 直接复制一张卡（保留当前升级等状态）；<code>CloneOrigin</code> 先取原版模型再创建，得到该卡「最初版本」的复制卡。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>关键词：<code>ApplyKeyword</code> / <code>RemoveKeyword</code>（各两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> ApplyKeyword(<span class="type">CardModel</span> card, <span class="keyword">params</span> <span class="type">CardKeyword</span>[] keywordsList)
+<span class="keyword">public static void</span> ApplyKeyword(<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList, <span class="keyword">params</span> <span class="type">CardKeyword</span>[] keywordsList)
+<span class="keyword">public static void</span> RemoveKeyword(<span class="type">CardModel</span> card, <span class="keyword">params</span> <span class="type">CardKeyword</span>[] keywordsList)
+<span class="keyword">public static void</span> RemoveKeyword(<span class="type">List</span>&lt;<span class="type">CardModel</span>&gt; cardList, <span class="keyword">params</span> <span class="type">CardKeyword</span>[] keywordsList)</pre></div>
+    <p class="plain">批量给卡牌添加 / 移除关键词（如 固有、消耗、虚无 等）。参数用 <code>params</code>，可一次传多个。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>动态变量（返回）：<code>AddReturnVar</code> / <code>RemoveReturnVar</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> AddReturnVar(<span class="keyword">this</span> <span class="type">CardModel</span> card, <span class="type">decimal</span> value)
+<span class="keyword">public static bool</span> RemoveReturnVar(<span class="keyword">this</span> <span class="type">CardModel</span> card)</pre></div>
+    <p class="plain">给卡牌添加「返回」效果变量（用于打出手牌返回类效果）。若已存在则累加数值；添加后自动刷新悬浮提示。移除返回变量成功返回 <code>true</code>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>动态变量（赋能）：<code>AddEmpowerVar</code> / <code>RemoveEmpowerVar</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> AddEmpowerVar(<span class="keyword">this</span> <span class="type">CardModel</span> card, <span class="type">PowerModel</span> power, <span class="type">decimal</span> value)
+<span class="keyword">public static bool</span> RemoveEmpowerVar(<span class="keyword">this</span> <span class="type">CardModel</span> card)</pre></div>
+    <p class="plain">给卡牌添加「赋能」效果变量（绑定一个能力对象和数值）。移除赋能变量成功返回 <code>true</code>。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>刷新悬浮提示：<code>RefreshHoverTips</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> RefreshHoverTips(<span class="keyword">this</span> <span class="type">CardModel</span> card)</pre></div>
+    <p class="plain">查找卡牌对应的场景节点，以当前牌堆类型调用原版 <code>UpdateVisuals</code>，触发 HoverTips 重新读取。在修改卡牌动态变量后调用以同步显示。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>自动打出：<code>AutoPlay</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> AutoPlay(<span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">CardModel</span> card, <span class="type">ICombatState</span> combatState, <span class="keyword">bool</span> skipX = <span class="keyword">true</span>)
+<span class="keyword">public static async Task</span> AutoPlay(<span class="type">CardModel</span> card, <span class="type">ICombatState</span> combatState, <span class="keyword">bool</span> skipX = <span class="keyword">true</span>)</pre></div>
+    <p class="plain">自动打出一张卡牌：自动选择目标（<code>GetAutoTarget</code>），可跳过 X 费用询问。第二个重载不要求传上下文（内部用 <code>BlockingPlayerChoiceContext</code>）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>自动目标：<code>GetAutoTarget</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">Creature</span>? GetAutoTarget(<span class="type">CardModel</span> card, <span class="type">ICombatState</span> combatState)</pre></div>
+    <p class="plain">按卡牌目标类型返回一个合适目标：任意敌人取第一个可打击敌人；任意友军用 RNG 随机选存活友军；任意玩家取自己；全体目标返回 <code>null</code>（不指定单目标）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>设置卡牌类型：<code>SetCardType</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> SetCardType(<span class="keyword">this</span> <span class="type">CardModel</span> card, <span class="type">CardType</span> newType)</pre></div>
+    <p class="plain">通过 Harmony <code>Traverse</code> 写入卡牌的 <code>&lt;Type&gt;k__BackingField</code>，修改卡牌类型（攻击 / 技能 / 能力）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>弃牌：<code>Discard</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> Discard(<span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">IEnumerable</span>&lt;<span class="type">CardModel</span>&gt; card)
+<span class="keyword">public static async Task</span> Discard(<span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">CardModel</span> card)</pre></div>
+    <p class="plain">弃掉一张或一组卡牌。需要传入有效的选择上下文。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>预览：<code>Preview</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">TaskCompletionSource</span>? Preview(<span class="type">CardModel</span> card, <span class="type">float</span> time = <span class="number">1.2f</span>, <span class="type">CardPreviewStyle</span> style = <span class="type">CardPreviewStyle</span>.HorizontalLayout)</pre></div>
+    <p class="plain">让卡牌出现在屏幕中央再飞回原牌堆。返回的 <code>TaskCompletionSource</code> 可在动画结束时收到完成信号（可为 null）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>附魔：<code>Enchant</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">T</span>? Enchant&lt;<span class="type">T</span>&gt;(<span class="type">CardModel</span> card, <span class="type">Decimal</span> amount) <span class="keyword">where</span> <span class="type">T</span> : <span class="type">EnchantmentModel</span>
+<span class="keyword">public static</span> <span class="type">EnchantmentModel</span>? Enchant(<span class="type">EnchantmentModel</span> enchantment, <span class="type">CardModel</span> card, <span class="type">Decimal</span> amount)</pre></div>
+    <p class="plain">给卡牌添加指定量的附魔。泛型版本按附魔类型从 <code>ModelDb</code> 取蓝图；实例版本使用传入的附魔实例（会自动 <code>ToMutable</code>）。返回添加的附魔实例。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>创建卡牌：<code>CreateCard</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">T</span> CreateCard&lt;<span class="type">T</span>&gt;(<span class="type">ICombatState</span> combatState, <span class="type">Player</span> player) <span class="keyword">where</span> <span class="type">T</span> : <span class="type">CardModel</span>
+<span class="keyword">public static</span> <span class="type">CardModel</span> CreateCard(<span class="type">CardModel</span> canonicalCard, <span class="type">ICombatState</span> combatState, <span class="type">Player</span> player)</pre></div>
+    <p class="plain">泛型版本从 <code>ModelDb</code> 取蓝图创建；实例版本以给定原版卡为基础创建。二者都归属指定玩家并绑定战斗状态。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>转变：<code>TransformTo</code> / <code>Transform</code> / <code>PreviewTransform</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">CardPileAddResult</span>?&gt; TransformTo&lt;<span class="type">T</span>&gt;(<span class="type">CardModel</span> card) <span class="keyword">where</span> <span class="type">T</span> : <span class="type">CardModel</span>
+<span class="keyword">public static async Task</span>&lt;<span class="type">CardPileAddResult</span>?&gt; Transform(<span class="type">CardModel</span> original, <span class="type">CardModel</span> replacement, <span class="type">CardPreviewStyle</span> style = <span class="type">CardPreviewStyle</span>.HorizontalLayout)
+<span class="keyword">public static async Task</span> PreviewTransform(<span class="type">CardModel</span> original, <span class="type">CardModel</span> replacement, <span class="type">CardPreviewStyle</span> style = <span class="type">CardPreviewStyle</span>.HorizontalLayout)</pre></div>
+    <p class="plain"><code>TransformTo</code> 把卡变成指定类型的原版版本；<code>Transform</code> 把一张卡变成另一张卡；<code>PreviewTransform</code> 额外带预览动画。均返回转变后的添加结果（可为 null）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>锻造预览：<code>PreviewSovereignBlade</code>（两种重载）</strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> PreviewSovereignBlade(<span class="type">IReadOnlyCollection</span>&lt;<span class="type">CardModel</span>&gt; cards)
+<span class="keyword">public static void</span> PreviewSovereignBlade(<span class="type">CardModel</span> card)</pre></div>
+    <p class="plain">播放「锻造」样式的预览特效。手牌中的卡在头顶播放特效，非手牌卡在中央预览容器播放；测试模式或非本人卡牌时自动跳过。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

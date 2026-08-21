@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ReturnVar 返回 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">ReturnVar 返回（动态变量）</div>
+    <div class="info-content">
+        使卡牌在<b>每回合前 N 次打出时返回手牌</b>，而非进入弃牌堆。
+        动态变量键名：<code>Return</code>（<code>ReturnVar.Key</code>）。
+    </div>
+</div>
+
+<h3>是什么</h3>
+<p class="plain">
+    <code>ReturnVar</code> 是 UltraLib 提供的<b>返回动态变量</b>（位于 <code>UltraLib.Variables</code>，继承 <code>DynamicVar</code>）。
+    实现类似「返回」关键词的效果：每回合有 N 次「打出后回手」的机会，次数随本回合打出次数递减。
+</p>
+
+<h3>核心成员</h3>
+<table class="utils-table">
+    <tr><th>成员</th><th>说明</th></tr>
+    <tr class="alt"><td><code>Key</code></td><td>动态变量键名常量，值 <code>"Return"</code>。</td></tr>
+    <tr><td><code>ReturnCount(card, basePersist)</code></td><td>静态方法：计算当前剩余返回次数 = 基础次数 − 本回合已打出次数（最少 0）。</td></tr>
+</table>
+
+<h3>如何创建 / 使用</h3>
+<p class="plain">推荐直接用 <code>CardHelper.AddReturnVar</code> / <code>RemoveReturnVar</code> 操作卡牌：</p>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 给卡牌添加「返回」：每回合前 2 次打出后返回手牌</span>
+<span class="type">CardHelper</span>.<span class="property">AddReturnVar</span>(card, <span class="number">2m</span>);
+
+<span class="comment">// 移除返回</span>
+<span class="keyword">bool</span> removed = <span class="type">CardHelper</span>.<span class="property">RemoveReturnVar</span>(card);</pre>
+</div>
+
+<h3>也可以直接构造</h3>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">var</span> returnVar = <span class="keyword">new</span> <span class="type">ReturnVar</span>(<span class="number">2m</span>);
+card.<span class="property">DynamicVars</span>.<span class="property">Set</span>(<span class="type">ReturnVar</span>.<span class="property">Key</span>, returnVar);</pre>
+</div>
+
+<h3>计数逻辑</h3>
+<p class="plain">
+    <code>ReturnCount(card, basePersist)</code> 会统计<b>本回合已完成打出</b>的该卡牌次数
+    （从战斗历史的 <code>CardPlaysFinished</code> 中筛选），剩余次数 = 基础次数 − 已打出次数，最少为 0。
+    卡牌预览（<code>UpdateCardPreview</code>）显示的是当前剩余次数。
+</p>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="variables.htm">← 动态变量目录</a> · <a href="empower-var.htm">EmpowerVar 赋能 →</a>
+</p>
+
+</body>
+</html>

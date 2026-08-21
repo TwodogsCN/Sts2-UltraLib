@@ -107,4 +107,4 @@
 
 ---
 
-其它辅助类(`ActionQueueHelper`、`AttackHelper`、`CreatureHelper`、`HandUiHelper`、`HoverTipHelper`、`LocStringHelper`、`RewardsHelper`、`RelicSelectionHelper`、`DynamicVarHelper`、`AncientEventHelper`)遵循同样的模式——封装各自领域的游戏操作。需要时在此补充细节。
+其它辅助类(`ActionQueueHelper`、`AttackHelper`、`CreatureHelper`、`HandUiHelper`、`HoverTipHelper`、`LocStringHelper`、`RewardHelper`、`RelicSelectionHelper`、`DynamicVarHelper`、`AncientEventHelper`)遵循同样的模式——封装各自领域的游戏操作。需要时在此补充细节。

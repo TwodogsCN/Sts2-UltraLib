@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>EmpowerVar 赋能 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">EmpowerVar 赋能（动态变量）</div>
+    <div class="info-content">
+        为卡牌注入指定的<b>能力（Power）</b>，在打出时使目标获得该能力的若干层数。
+        动态变量键名：<code>Empower</code>（<code>EmpowerVar.Key</code>）。
+    </div>
+</div>
+
+<h3>是什么</h3>
+<p class="plain">
+    <code>EmpowerVar</code> 是 UltraLib 提供的<b>赋能动态变量</b>（位于 <code>UltraLib.Variables</code>，继承 <code>DynamicVar</code>）。
+    把「打出此牌时给目标上某个能力 X 层」封装成一个动态变量挂在卡牌上，
+    卡牌描述中会按 <code>N 能力名</code> 的形式自动渲染。
+</p>
+
+<h3>核心成员</h3>
+<table class="utils-table">
+    <tr><th>成员</th><th>说明</th></tr>
+    <tr class="alt"><td><code>Key</code></td><td>动态变量键名常量，值 <code>"Empower"</code>。</td></tr>
+    <tr><td><code>Power</code></td><td>要赋予目标的能力模型（构造时必传，null 抛 <code>ArgumentNullException</code>）。</td></tr>
+    <tr class="alt"><td><code>PowerCount</code></td><td>能力层数（即 <code>IntValue</code>）。</td></tr>
+</table>
+
+<h3>如何创建 / 使用</h3>
+<p class="plain">推荐直接用 <code>CardHelper.AddEmpowerVar</code> / <code>RemoveEmpowerVar</code> 操作卡牌：</p>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 给卡牌添加「赋能」：打出时目标获得 3 层 力量（StrengthPower）</span>
+<span class="type">PowerModel</span> strength = <span class="type">ModelDb</span>.<span class="property">Power</span>&lt;<span class="type">StrengthPower</span>&gt;().<span class="property">ToMutable</span>();
+<span class="type">CardHelper</span>.<span class="property">AddEmpowerVar</span>(card, strength, <span class="number">3m</span>);
+
+<span class="comment">// 移除赋能</span>
+<span class="keyword">bool</span> removed = <span class="type">CardHelper</span>.<span class="property">RemoveEmpowerVar</span>(card);</pre>
+</div>
+
+<h3>也可以直接构造</h3>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">var</span> empowerVar = <span class="keyword">new</span> <span class="type">EmpowerVar</span>(strength, <span class="number">3m</span>);
+card.<span class="property">DynamicVars</span>.<span class="property">Set</span>(<span class="type">EmpowerVar</span>.<span class="property">Key</span>, empowerVar);</pre>
+</div>
+
+<h3>显示效果</h3>
+<p class="plain">
+    <code>ToString()</code> 输出「<code>3 力量</code>」样式；能力为 null 时显示「<code>X [能力]</code>」占位。
+    构造时自动启用 Tooltip，悬浮提示可显示动态值。
+</p>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="variables.htm">← 动态变量目录</a> · <a href="return-var.htm">ReturnVar 返回 →</a>
+</p>
+
+</body>
+</html>

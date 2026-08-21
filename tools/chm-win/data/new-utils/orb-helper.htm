@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>OrbHelper - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">OrbHelper 充能球（Orb）辅助工具</div>
+    <div class="info-content">
+        提供充能球的生成（Channel）、激发（Evoke）、数值修改、列表获取与槽位管理。
+        其中激发走原版私有方法的反射调用，生成与槽位操作均带战斗状态保护。
+    </div>
+</div>
+
+<h3>方法总览</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>作用</th></tr>
+    <tr class="alt"><td><code>Channel&lt;T&gt;</code></td><td>为玩家生成一个指定类型的充能球。</td></tr>
+    <tr><td><code>NoAwaitChannel&lt;T&gt;</code></td><td>安全地异步生成充能球（不阻塞调用方）。</td></tr>
+    <tr class="alt"><td><code>EvokeOrb</code></td><td>激发指定充能球（反射调用原版 Evoke）。</td></tr>
+    <tr><td><code>SetVal</code></td><td>强制修改充能球的数值并同步 UI。</td></tr>
+    <tr class="alt"><td><code>GetOrbList</code></td><td>安全获取当前充能球列表的只读快照。</td></tr>
+    <tr><td><code>RemoveSlots</code></td><td>移除充能球槽位（带战斗结束检查与 UI 动画）。</td></tr>
+</table>
+
+<h3>方法详解</h3>
+
+<div class="v-item">
+    <p class="plain"><strong>生成充能球：<code>Channel&lt;T&gt;</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span>&lt;<span class="type">T</span>?&gt; Channel&lt;<span class="type">T</span>&gt;(<span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player)
+    <span class="keyword">where</span> <span class="type">T</span> : <span class="type">OrbModel</span></pre></div>
+    <p class="plain">从 <code>ModelDb.Orb&lt;T&gt;()</code> 取蓝图并 <code>ToMutable()</code>，随后调用 <code>OrbCmd.Channel</code> 为玩家生成充能球。蓝图不存在时打印错误并返回 null。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>安全异步生成：<code>NoAwaitChannel&lt;T&gt;</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> NoAwaitChannel&lt;<span class="type">T</span>&gt;(<span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player)
+    <span class="keyword">where</span> <span class="type">T</span> : <span class="type">OrbModel</span></pre></div>
+    <p class="plain">fire-and-forget 版本：内部先 <code>Task.Yield</code>，仅当玩家存活时才生成；异常被捕获并打印。适合在不能 await 的回调（如 Hook）中安全地生成充能球。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>激发充能球：<code>EvokeOrb</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static async Task</span> EvokeOrb(<span class="type">PlayerChoiceContext</span> choiceContext, <span class="type">Player</span> player,
+    <span class="type">OrbModel</span> targetOrb, <span class="keyword">bool</span> dequeue = <span class="keyword">true</span>)</pre></div>
+    <p class="plain">通过反射调用原版 <code>OrbCmd.Evoke</code> 激发 <code>targetOrb</code>。<code>dequeue=true</code> 时该球会从队列移除。战斗已结束/正在结束时直接返回，不做任何操作。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>强制设置数值：<code>SetVal</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> SetVal(<span class="type">OrbModel</span> orb, <span class="type">decimal</span> amount)</pre></div>
+    <p class="plain">用 Harmony <code>Traverse</code> 直接写入充能球的 <code>_passiveVal</code> 字段，覆盖当前数值。用于「设定为固定值」类效果（例如把球的数值设为 X）。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>获取充能球列表：<code>GetOrbList</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static</span> <span class="type">List</span>&lt;<span class="type">OrbModel</span>&gt; GetOrbList(<span class="type">Player</span> player)</pre></div>
+    <p class="plain">返回玩家当前充能球队列的副本快照（只读遍历安全）；玩家或队列为空时返回空列表。</p>
+</div>
+
+<div class="v-item">
+    <p class="plain"><strong>移除槽位：<code>RemoveSlots</code></strong></p>
+    <div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre><span class="keyword">public static void</span> RemoveSlots(<span class="type">Player</span> player, <span class="type">int</span> amount)</pre></div>
+    <p class="plain">从玩家身上移除 <code>amount</code> 个充能球槽位（不会低于 0），并播放槽位移除动画。战斗结束/正在结束时直接返回。</p>
+</div>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">返回 <a href="new-utils.htm">Utils 总表</a></p>
+
+</body>
+</html>

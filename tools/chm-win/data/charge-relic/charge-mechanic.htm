@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>充能机制详解 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">新功能 [充能遗物] — 充能机制详解</div>
+    <div class="info-content">
+        这一页讲清楚充能遗物的「充能」是怎么来的、怎么消耗的、怎么设置的，以及默认逻辑如何修改。
+        核心成员全部位于 <code>PlusChargeRelic</code>（<code>Base/Abstract/PlusChargeRelic.cs</code>）。
+    </div>
+</div>
+
+<h3>核心成员</h3>
+<table class="utils-table">
+    <tr><th>成员</th><th>类型</th><th>说明</th></tr>
+    <tr class="alt"><td><code>NowCharge</code></td><td><code>[SavedProperty] int</code></td><td>当前充能数。设值时自动钳制 ≥ 0，并根据是否满充切换 <code>RelicStatus</code>。</td></tr>
+    <tr><td><code>TotalCharge</code></td><td><code>[SavedProperty] int</code></td><td>最大充能数（满充所需值）。设值时自动钳制 ≥ 0。</td></tr>
+    <tr class="alt"><td><code>IsFullyCharged</code></td><td><code>protected bool</code></td><td>是否已满充：<code>NowCharge &gt;= TotalCharge</code>。</td></tr>
+    <tr><td><code>AutoCharge</code></td><td><code>virtual bool</code>（默认 true）</td><td>是否在进入房间时自动充能。</td></tr>
+    <tr class="alt"><td><code>UseChargeBarDisplay</code></td><td><code>virtual bool</code>（默认 true）</td><td>是否使用充能进度条 UI（false 则用数字显示）。</td></tr>
+    <tr><td><code>DisplayAmount</code></td><td><code>override</code></td><td>遗物角标显示的数字，即当前充能。</td></tr>
+    <tr class="alt"><td><code>ShowCounter</code></td><td><code>override</code>（true）</td><td>是否显示充能计数。</td></tr>
+</table>
+
+<h3>默认充能回复逻辑</h3>
+<p class="plain">
+    默认情况下（<code>AutoCharge == true</code>），基类覆写了 <code>AfterRoomEntered</code>：
+    每次进入任意房间时自动调用一次 <code>NowChargeUpgrade()</code>（默认 +1 充能）。
+    也就是说，遗物每过一个房间就回复 1 点充能。
+</p>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// 基类默认行为（PlusChargeRelic.AfterRoomEntered）</span>
+<span class="keyword">public override Task</span> <span class="property">AfterRoomEntered</span>(<span class="type">AbstractRoom</span> room)
+{
+    NowCharge = _nowCharge;      <span class="comment">// 同步存档值</span>
+    <span class="keyword">if</span> (AutoCharge)
+        <span class="property">NowChargeUpgrade</span>();  <span class="comment">// 充能 +1</span>
+    <span class="keyword">return</span> Task.CompletedTask;
+}</pre>
+</div>
+
+<h3>不用默认逻辑：自定义充能回复</h3>
+<p class="plain">
+    如果你的遗物不想「每房间 +1」，把 <code>AutoCharge</code> 覆写为 <code>false</code>，
+    然后在合适的地方（比如你的战斗 Hook、回合开始 Hook、或 <code>AfterRoomEntered</code> 覆写中）
+    手动调用 <code>GainCharge(amount)</code> 来按自己的规则回复充能。
+    同样的思路也适用于<b>触发方式</b>：充能遗物不绑定右键触发，
+    由创作者自己决定何时调用 <code>DoChargeRelicEffect()</code>（详见<a href="charge-hooks.htm#chain">触发与 Hook</a>）。
+</p>
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="keyword">public sealed class</span> <span class="type">CustomChargeRelic</span> : <span class="type">PlusChargeRelic</span>
+{
+    <span class="keyword">public</span> CustomChargeRelic() { <span class="property">TotalCharge</span> = <span class="number">3</span>; }
+
+    <span class="comment">// 关闭默认的进房间 +1</span>
+    <span class="keyword">public override bool</span> <span class="property">AutoCharge</span> =&gt; <span class="keyword">false</span>;
+
+    <span class="comment">// 改为：每场战斗结束时充能 +2</span>
+    <span class="keyword">public override Task</span> <span class="property">AfterCombatEnd</span>(<span class="type">CombatRoom</span> room)
+    {
+        <span class="property">GainCharge</span>(<span class="number">2</span>);
+        <span class="keyword">return</span> Task.CompletedTask;
+    }
+
+    <span class="keyword">public override async Task</span> <span class="property">MainEffect</span>() { <span class="comment">/* 你的效果 */</span> }
+}</pre>
+</div>
+
+<h3>充能操作 API</h3>
+<table class="utils-table">
+    <tr><th>方法</th><th>签名</th><th>作用</th></tr>
+    <tr class="alt"><td><code>GainCharge</code></td><td><code>void GainCharge(int amount = 1)</code></td><td>增加指定层数充能（内部走 <code>NowChargeUpgrade</code>，经过全部充能数值 Hook 修正）。</td></tr>
+    <tr><td><code>SetCharge</code></td><td><code>void SetCharge(int now, int total)</code></td><td>直接设置当前充能与最大充能。</td></tr>
+    <tr class="alt"><td><code>SetCharge</code></td><td><code>void SetCharge(int amount)</code></td><td>把当前充能与最大充能都设为同一值（即直接充满）。</td></tr>
+    <tr><td><code>SpendCharge</code></td><td><code>async void SpendCharge()</code></td><td>消耗充能（消耗量经 <code>Plus_ModifyChargeSpend</code> 系列 Hook 修正，默认清空全部）。</td></tr>
+    <tr class="alt"><td><code>NowChargeUpgrade</code></td><td><code>async void NowChargeUpgrade(int amount = 1)</code></td><td>充能核心入口：修正增量 → 触发 <code>Plus_AfterChargeGain</code> → 累加 → 触发 <code>Plus_OnChargeChanged</code> → 刷新满充状态。</td></tr>
+</table>
+
+<p class="plain"><b>内部流程（NowChargeUpgrade）：</b></p>
+<ol>
+    <li>取「解析后最大充能」：<code>TotalCharge</code> 经过 <code>Plus_ModifyMaxCharge</code> 系列修正。</li>
+    <li>取「解析后充能增量」：<code>amount</code> 经过 <code>Plus_ModifyChargeUpgrade</code> 系列修正。</li>
+    <li>未满充时播放闪光（<code>Flash()</code>）。</li>
+    <li>触发 <code>Plus_TriggerAfterChargeGain</code>（通知外界本次获得了多少充能）。</li>
+    <li>累加充能（不超过最大充能）。</li>
+    <li>触发 <code>Plus_TriggerOnChargeChanged</code>（旧值 → 新值）。</li>
+    <li>刷新满充状态（必要时触发 <code>Plus_OnChargeFullyCharged</code>）。</li>
+</ol>
+
+<h3>充能消耗（SpendCharge）</h3>
+<p class="plain">
+    触发效果后调用 <code>SpendCharge()</code> 消耗充能。默认消耗量 = 解析后的最大充能（即清空全部）。
+    消耗量同样经过 <code>Plus_ModifyChargeSpend</code> 系列 Hook 修正，
+    所以你可以让遗物「每次只消耗 1 点充能」而不是清空。
+</p>
+
+<h3>满充状态与状态切换</h3>
+<p class="plain">
+    基类通过 <code>CalculatedIsFullyCharged()</code> 检测充能是否达到上限，并：
+</p>
+<ul>
+    <li>满充时：遗物 <code>Status</code> 变为 <code>RelicStatus.Active</code>，触发 <code>Plus_OnChargeFullyCharged</code>。</li>
+    <li>不再满充时：恢复 <code>RelicStatus.Normal</code>，触发 <code>Plus_OnChargeNoLongerFullyCharged</code>。</li>
+</ul>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="charge-relic.htm">← 返回充能遗物总览</a> · <a href="charge-hooks.htm">触发与 Hook →</a>
+</p>
+
+</body>
+</html>
