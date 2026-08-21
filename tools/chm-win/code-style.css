@@ -1,92 +1,312 @@
-/* ============================================
-   PowerModel Code Display Stylesheet
-   Version: 1.0
+/* ============================================================
+   UltraLib Helper — Geek Minimalist Stylesheet
+   Style: dark terminal / geek minimal
    Encoding: UTF-8
-   ============================================ */
+   ============================================================ */
 
-/* ---------- Base Page Styles ---------- */
+/* ---------- Design tokens ---------- */
+:root {
+    --bg:        #0d1117;   /* page background            */
+    --panel:     #161b22;   /* cards / panels             */
+    --panel-2:   #1c2128;   /* hover / header             */
+    --border:    #2d333b;   /* hairline borders           */
+    --text:      #c9d1d9;   /* primary text               */
+    --text-dim:  #8b949e;   /* secondary text             */
+    --accent:    #58a6ff;   /* primary accent (blue)      */
+    --green:     #3fb950;   /* success / terminal green   */
+    --orange:    #d29922;   /* warning                    */
+    --red:       #f85149;   /* error                      */
+}
+
+/* ---------- Base ---------- */
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11pt;
-    background: #ffffff;
-    padding: 10px;
-    margin: 0;
-}
-
-/* ---------- Code Box Styles ---------- */
-.code-box {
-    position: relative;
-    background: #262626;
-    border: 1px solid #333;
-    margin: 0 0 15px 0;
-}
-
-.copy-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: #555555;
-    color: #ffffff;
-    border: 1px solid #666666;
-    padding: 3px 10px;
+    font-family: Consolas, "Microsoft YaHei", "Courier New", monospace;
     font-size: 12px;
-    cursor: pointer;
-    z-index: 10;
-}
-
-pre {
+    background: var(--bg);
+    color: var(--text);
+    padding: 14px;
     margin: 0;
-    padding: 10px;
-    padding-top: 30px;
-    overflow-x: auto;
-    font-family: "Consolas", "Courier New", monospace;
-    font-size: 10.5pt;
-    line-height: 1.4;
-    color: #d0d0d0;
-}
-
-/* ---------- Syntax Highlighting ---------- */
-.keyword { color: #6c95eb; }
-.type { color: #c191ff; }
-.property { color: #66c3cc; }
-.accessor { color: #39cc9b; }
-.string { color: #c9a26d; }
-.number { color: #b5cea8; }
-.comment { color: #6a9955; }
-.operator { color: #d4d4d4; }
-.punctuation { color: #d4d4d4; }
-.class-name { color: #4ec9b0; }
-.normal { color: #bdbdbd; }
-
-/* ---------- Info Box Styles ---------- */
-.info-box {
-    background: #2c3e50;
-    color: #ffffff;
-    padding: 12px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    border-left: 4px solid #3498db;
-}
-
-.info-title {
-    font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 11pt;
-}
-
-.info-content {
-    font-size: 10pt;
     line-height: 1.6;
-    margin-bottom: 8px;
-    color: #fafbff;
 }
 
-.highlight {
-    background: #34495e;
+/* inline code */
+code {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+    background: var(--panel-2);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 3px;
     padding: 1px 5px;
-    font-family: "Consolas", "Courier New", monospace;
-    font-size: 9.5pt;
+}
+
+h3 {
+    color: var(--text);
+    margin-top: 26px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+    font-weight: 600;
 }
 
 ul { margin: 8px 0; padding-left: 20px; }
 li { margin-bottom: 6px; }
+strong { color: #e6edf3; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- Code Box ---------- */
+.code-box {
+    position: relative;
+    background: #010409;             /* deepest terminal black */
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin: 0 0 16px 0;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--panel-2);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+    background: var(--accent);
+    color: #0d1117;
+    border-color: var(--accent);
+}
+
+pre {
+    margin: 0;
+    padding: 12px;
+    padding-top: 34px;
+    overflow-x: auto;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 11pt;
+    line-height: 1.45;
+    color: #d0d7de;
+}
+
+/* ---------- Syntax Highlighting (VS Code Dark+ palette) ---------- */
+.keyword      { color: #ff7b72; }
+.type         { color: #ffa657; }
+.class-name   { color: #ffa657; }
+.property     { color: #79c0ff; }
+.accessor     { color: #79c0ff; }
+.string       { color: #a5d6ff; }
+.number       { color: #79c0ff; }
+.comment      { color: #8b949e; font-style: italic; }
+.operator     { color: #ff7b72; }
+.punctuation  { color: #c9d1d9; }
+.normal       { color: #d0d7de; }
+
+/* ---------- Info Box ---------- */
+.info-box {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
+
+.info-title {
+    font-weight: 600;
+    color: #e6edf3;
+    margin-bottom: 8px;
+    font-size: 12pt;
+}
+
+.info-content {
+    font-size: 10.5pt;
+    line-height: 1.65;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.highlight {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+    color: var(--green);
+    border-radius: 3px;
+}
+
+/* ---------- Plain paragraphs (outside info-box) ---------- */
+.plain {
+    color: var(--text);
+    font-size: 10.5pt;
+    line-height: 1.7;
+    margin: 8px 0 14px 0;
+}
+
+.plain code {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--green);
+}
+
+.plain .hl {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    font-family: Consolas, "Courier New", monospace;
+    color: var(--orange);
+    border-radius: 3px;
+}
+
+.hl {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    font-family: Consolas, "Courier New", monospace;
+    color: var(--orange);
+    border-radius: 3px;
+}
+
+/* ---------- Tables (hooks / utils) ---------- */
+table.hook-table,
+table.utils-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 10pt;
+}
+
+table.hook-table th, table.hook-table td,
+table.utils-table th, table.utils-table td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+table.hook-table th,
+table.utils-table th {
+    background: var(--panel-2);
+    color: #e6edf3;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent);
+}
+
+table.hook-table tr:nth-child(even),
+table.utils-table tr:nth-child(even) {
+    background: var(--panel);
+}
+
+table.hook-table tr:hover,
+table.utils-table tr:hover {
+    background: #1f2733;
+}
+
+.hook-cat {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* ---------- Check-update page ---------- */
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px;
+}
+
+.title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+    color: #e6edf3;
+}
+
+.v-item {
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.label {
+    color: var(--text-dim);
+    display: inline-block;
+    width: 110px;
+    font-size: 12px;
+}
+
+.value {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--green);
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.btn-group { margin-top: 24px; }
+
+.btn {
+    display: inline-block;
+    padding: 9px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    margin-right: 12px;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.btn-blue {
+    background-color: var(--accent);
+    color: #0d1117;
+    border-color: var(--accent);
+}
+.btn-blue:hover { background-color: #79c0ff; }
+
+.btn-white {
+    background-color: var(--panel-2);
+    color: var(--text);
+    border-color: var(--border);
+}
+.btn-white:hover { background-color: var(--panel); }
+
+#status {
+    margin-top: 14px;
+    color: var(--text-dim);
+    font-style: italic;
+    font-size: 12px;
+}
+
+.tip {
+    margin-top: 20px;
+    padding: 10px 12px;
+    background: #2d1b00;
+    border: 1px solid var(--orange);
+    border-radius: 4px;
+    font-size: 11px;
+    color: #e3b341;
+}
+
+/* ---------- Accessibility ---------- */
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+}
