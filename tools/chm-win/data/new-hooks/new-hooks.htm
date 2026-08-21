@@ -12,6 +12,9 @@
     table.hook-table tr:nth-child(even) { background: #f6f8fa; }
     .hook-cat { color: #3498db; font-weight: bold; }
     code { background: #f3f4f6; border-radius: 3px; padding: 1px 5px; font-family: Consolas, monospace; }
+    /* 普通说明文字(深色),供非 info-box 的段落使用 */
+    .plain { color: #1f2328; font-size: 11pt; line-height: 1.7; margin: 8px 0 14px 0; }
+    h3 { color: #1f2328; margin-top: 24px; border-bottom: 1px solid #d0d7de; padding-bottom: 5px; }
 </style>
 </head>
 <body>
@@ -48,7 +51,7 @@
 </table>
 
 <h3>二、数值修改钩子（decimal，修改"某一个数值"）</h3>
-<div class="info-content">
+<div class="plain">
     对每个可修改值 <strong>X</strong>，有三个钩子：管线（Pipeline）、乘算（Multiplicative）、加算（Addictive）。
     组合方式：<code>Modify( (amount + Addictive) × Multiplicative )</code>。
 </div>
