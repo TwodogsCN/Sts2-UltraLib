@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+<title>检查更新</title>
+<style>
+    body { font-family: "Microsoft YaHei", sans-serif; font-size: 12px; background: #f4f7f9; padding: 20px; }
+    .card { background: #fff; border: 1px solid #d0d7de; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .title { font-size: 16px; font-weight: bold; margin-bottom: 20px; border-bottom: 2px solid #0969da; padding-bottom: 10px; color: #1f2328; }
+    .v-item { margin-bottom: 15px; padding: 10px; background: #f6f8fa; border-radius: 6px; border: 1px solid #ebf0f4; }
+    .label { color: #57606a; display: inline-block; width: 100px; font-size: 13px; }
+    .value { font-family: Consolas, "Courier New", monospace; font-size: 20px; font-weight: bold; color: #0969da; vertical-align: middle; margin-left: 5px; }
+    .btn-group { margin-top: 25px; }
+    .btn { display: inline-block; padding: 10px 20px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 6px; border: 1px solid rgba(27,31,36,0.15); margin-right: 12px; text-decoration: none; text-align: center; }
+    .btn-blue { background-color: #0969da; color: #ffffff; }
+    .btn-blue:hover { background-color: #0550ae; }
+    .btn-white { background-color: #ffffff; color: #24292f; }
+    .btn-white:hover { background-color: #f3f4f6; }
+    #status { margin-top: 15px; color: #666; font-style: italic; font-size: 13px; }
+    .tip { margin-top: 20px; padding: 10px; background: #fffbdd; border: 1px solid #d4a017; border-radius: 4px; font-size: 11px; color: #735c0f; }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="title">UltraLib Helper 更新检测</div>
+
+    <div class="v-item">
+        <span class="label">当前本地版本:</span>
+        <span class="value">0.1.0</span>
+    </div>
+
+    <div class="v-item">
+        <span class="label">云端最新版本:</span>
+        <span class="value" id="cloud-v">---</span>
+    </div>
+
+    <div class="btn-group">
+        <input type="button" class="btn btn-blue" value="开始检查更新" onclick="startCheck()">
+        <A class="btn btn-white" href="https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/dist/UltraLib.chm" target=_blank>从 GitHub 下载</a>
+    </div>
+
+    <div id="status"></div>
+
+    <div class="tip">
+        <strong>注意：</strong> 若打开显示空白，请右键 UltraLib.chm -&gt; 属性 -&gt; 勾选"解除锁定"。
+    </div>
+</div>
+
+<script type="text/javascript">
+var CONFIG = {
+    current: "0.1.0",
+    // 优先级 1: GitHub
+    github: {
+        name: "GitHub",
+        raw: "https://raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.txt",
+        dl: "https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/dist/UltraLib.chm"
+    },
+    // 优先级 2: Gitee
+    gitee: {
+        name: "Gitee",
+        raw: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/version.txt",
+        dl: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/dist/UltraLib.chm"
+    }
+};
+
+function startCheck() {
+    checkVersion(CONFIG.github, function(success, version) {
+        if (!success) {
+            document.getElementById('status').innerHTML = "GitHub 连接失败，正在尝试 Gitee...";
+            checkVersion(CONFIG.gitee, function(successGitee, versionGitee) {
+                if (!successGitee) {
+                    document.getElementById('cloud-v').innerHTML = "ERR";
+                    document.getElementById('status').innerHTML = "所有云端节点均无法连接，请检查网络。";
+                } else {
+                    processResult(versionGitee, CONFIG.gitee.dl);
+                }
+            });
+        } else {
+            processResult(version, CONFIG.github.dl);
+        }
+    });
+}
+
+function checkVersion(source, callback) {
+    document.getElementById('status').innerHTML = "正在连接 " + source.name + "...";
+
+    var xhr = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+    var url = source.raw + "?nocache=" + new Date().getTime();
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                var latest = xhr.responseText.replace(/\s+/g, "");
+                callback(true, latest);
+            } else {
+                callback(false, null);
+            }
+        }
+    };
+
+    try {
+        xhr.open("GET", url, true);
+        xhr.send();
+    } catch (e) {
+        callback(false, null);
+    }
+}
+
+function processResult(latest, downloadUrl) {
+    var cloudVEl = document.getElementById('cloud-v');
+    var statusEl = document.getElementById('status');
+    cloudVEl.innerHTML = latest;
+
+    if (latest !== CONFIG.current) {
+        statusEl.innerHTML = "<span style='color:#cf222e; font-weight:bold;'>检测到新版本！</span>";
+        var msg = "检测到新版本: " + latest + "\n当前本地版本: " + CONFIG.current + "\n\n是否立即下载更新？";
+        if (confirm(msg)) {
+            window.location.href = downloadUrl;
+            alert("正在下载，完成后请覆盖旧文件。");
+        }
+    } else {
+        statusEl.innerHTML = "<span style='color:#1a7f37;'>当前已是最新版本。</span>";
+    }
+}
+</script>
+
+</body>
+</html>

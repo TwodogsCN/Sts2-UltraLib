@@ -1,0 +1,92 @@
+/* ============================================
+   PowerModel Code Display Stylesheet
+   Version: 1.0
+   Encoding: UTF-8
+   ============================================ */
+
+/* ---------- Base Page Styles ---------- */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    background: #ffffff;
+    padding: 10px;
+    margin: 0;
+}
+
+/* ---------- Code Box Styles ---------- */
+.code-box {
+    position: relative;
+    background: #262626;
+    border: 1px solid #333;
+    margin: 0 0 15px 0;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #555555;
+    color: #ffffff;
+    border: 1px solid #666666;
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+pre {
+    margin: 0;
+    padding: 10px;
+    padding-top: 30px;
+    overflow-x: auto;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 10.5pt;
+    line-height: 1.4;
+    color: #d0d0d0;
+}
+
+/* ---------- Syntax Highlighting ---------- */
+.keyword { color: #6c95eb; }
+.type { color: #c191ff; }
+.property { color: #66c3cc; }
+.accessor { color: #39cc9b; }
+.string { color: #c9a26d; }
+.number { color: #b5cea8; }
+.comment { color: #6a9955; }
+.operator { color: #d4d4d4; }
+.punctuation { color: #d4d4d4; }
+.class-name { color: #4ec9b0; }
+.normal { color: #bdbdbd; }
+
+/* ---------- Info Box Styles ---------- */
+.info-box {
+    background: #2c3e50;
+    color: #ffffff;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-left: 4px solid #3498db;
+}
+
+.info-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 11pt;
+}
+
+.info-content {
+    font-size: 10pt;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    color: #fafbff;
+}
+
+.highlight {
+    background: #34495e;
+    padding: 1px 5px;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 9.5pt;
+}
+
+ul { margin: 8px 0; padding-left: 20px; }
+li { margin-bottom: 6px; }
