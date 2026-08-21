@@ -162,10 +162,10 @@ feat(hook): 新增充能球被动钩子 Plus_BeforeOrbPassive (Issue #12)
 ### 10.1 总则：文档与代码保持同步
 
 - 当你**新增功能**或**修复/修改既有行为**时，在文档更新之前（若适用），该改动不算完成。
-- UltraLib 维护**两个**必须保持同步的在线/离线载体：
-  - **GitHub Wiki**（在线、双语）——主要的人类可读文档。
-  - **CHM 文档**（离线、由同一份 Markdown 编译）——面向模组作者的可分发参考。
-- **强制要求：** 每个新增的公共类型 / 方法 / 钩子 / 辅助类，其 XML 文档注释必须带**双语 `<summary>`**（一段英文描述 + 一段简体中文描述）。这是喂养双语 Wiki 与 CHM 的唯一来源，因此无需再做单独的翻译步骤。参见[代码规范 §7](CODE_CONVENTIONS.md)。
+- UltraLib 维护**两个**面向不同受众的载体。它们**并非**由同一份源生成，必须**分别维护**：
+  - **GitHub Wiki**（在线、双语）——主要的人类可读文档，在 `docs/`（Markdown）中维护并镜像到 Wiki。
+  - **CHM 文档**（离线）——位于 `tools/chm-win/` 的 WinCHM 工程，拥有**独立的结构与内容**（前言 / 检查更新 / 简单认识C# / 更新日志 / 原版Hook列表 / 入门模组开发教学 / 新增功能-新Hooks表-新Utils表）。它是模组作者查阅的离线参考，用 WinCHM 编译为 `UltraLib Helper.chm`。
+- **强制要求：** 每个新增的公共类型 / 方法 / 钩子 / 辅助类，其 XML 文档注释必须带**双语 `<summary>`**（一段英文描述 + 一段简体中文描述）。这是喂养双语 Wiki 与 CHM 的来源，因此无需再做单独的翻译步骤。参见[代码规范 §7](CODE_CONVENTIONS.md)。
 
 ### 10.2 什么情况需要更新文档
 
@@ -190,16 +190,17 @@ feat(hook): 新增充能球被动钩子 Plus_BeforeOrbPassive (Issue #12)
 
 ### 10.4 如何更新 CHM
 
-- CHM 由同一份 `docs/` Markdown 通过 `tools/chm/build-chm.bat` 编译（见 [tools/chm/README.md](../tools/chm/README.md)）。
-- 为某个新功能更新文档后：
-  1. 若该改动**新增了页面**，在 `tools/chm/build-chm.js` 的 `pages` 数组中登记。
-  2. 重新构建：在 Windows 上运行 `tools/chm/build-chm.bat`（需要 Node.js + HTML Help Workshop）。
-  3. 确认构建成功、新页面出现在目录树中；随发布附上 / 重新发布 `.chm`。
+- CHM 是 `tools/chm-win/` 下的 **WinCHM 工程**（`UltraLibHelper.wcp`）。其内容/结构与 Wiki 相互独立——当改动影响模组作者离线所需的任何内容（新钩子、新工具类、教学、更新日志）时才更新它。
+- 新增功能后：
+  1. 用 WinCHM 打开 `tools/chm-win/UltraLibHelper.wcp`。
+  2. 按工程既有 HTML 风格（`code-style.css` + `code-copy.js`）新增/更新相关页面（例如 `新Hooks表`、`新Utils表`、教学页）。
+  3. 所有 `htm` 文件名与文件夹必须是**纯 ASCII**（英文，无 CJK / 特殊字符）。
+  4. 在 WinCHM 中重新编译，确认新页面出现在目录树中；随发布附上重新编译的 `.chm`。
 
 ### 10.5 涉及代码改动的 PR 检查清单
 
 - [ ] `docs/` 已为该改动更新（新 API/功能已文档化）。
 - [ ] Wiki 已镜像，与 `docs/` 一致。
-- [ ] CHM 已重新构建（新功能），并在 `build-chm.js` 中更新页面清单。
+- [ ] 新功能已更新 CHM（WinCHM 工程 `tools/chm-win/`）——页面用英文/ASCII 文件名新增并在 WinCHM 中重新编译。
 - [ ] **新增功能的所有新公共类型 / 方法 / 钩子 / 辅助类都带双语 XML `<summary>`**（EN + 中文），说明用途与用法。
 - [ ] 适用的地方已做到双语（EN + 中文）。

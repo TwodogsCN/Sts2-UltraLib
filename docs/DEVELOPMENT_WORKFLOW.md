@@ -163,10 +163,10 @@ Use trigger words in the PR description so GitHub auto-creates the Development l
 ### 10.1 Rule: keep docs in sync with code
 
 - When you add a **new feature** or **fix/change existing behavior**, the change is not complete until the documentation is updated (if docs apply).
-- UltraLib maintains **two** online/offline surfaces that must stay in sync:
-  - **GitHub Wiki** (online, bilingual) — the primary human-readable documentation.
-  - **CHM document** (offline, compiled from the same Markdown) — distributable reference for mod authors.
-- **Mandatory:** every new public type / method / hook / helper must carry a **bilingual `<summary>`** in its XML doc comment (an English description + a 简体中文 description). This is the single source that feeds the bilingual Wiki and the CHM, so no separate translation step is needed. See [Code conventions §7](CODE_CONVENTIONS.md).
+- UltraLib maintains **two** surfaces that serve different audiences. They are **NOT** generated from the same source and must be maintained **separately**:
+  - **GitHub Wiki** (online, bilingual) — the primary human-readable documentation, maintained in `docs/` (Markdown) and mirrored to the Wiki.
+  - **CHM document** (offline) — a WinCHM project under `tools/chm-win/` with its **own structure and content** (前言 / 检查更新 / 简单认识C# / 更新日志 / 原版Hook列表 / 入门模组开发教学 / 新增功能-新Hooks表-新Utils表). It is the offline reference for mod authors, compiled with WinCHM into `UltraLib Helper.chm`.
+- **Mandatory:** every new public type / method / hook / helper must carry a **bilingual `<summary>`** in its XML doc comment (an English description + a 简体中文 description). This feeds the bilingual Wiki and the CHM so no separate translation step is needed. See [Code conventions §7](CODE_CONVENTIONS.md).
 
 ### 10.2 What triggers a docs update
 
@@ -191,16 +191,17 @@ Use trigger words in the PR description so GitHub auto-creates the Development l
 
 ### 10.4 How to update the CHM
 
-- The CHM is compiled from the same `docs/` Markdown by `tools/chm/build-chm.bat` (see [tools/chm/README.md](../tools/chm/README.md)).
-- After updating docs for a new feature:
-  1. If the change adds a **new page**, register it in the `pages` array of `tools/chm/build-chm.js`.
-  2. Rebuild: run `tools/chm/build-chm.bat` on Windows (requires Node.js + HTML Help Workshop).
-  3. Verify the rebuild succeeds and the new page appears in the TOC; attach/republish the `.chm` with the release.
+- The CHM is a **WinCHM project** in `tools/chm-win/` (`UltraLibHelper.wcp`). Its content/structure is independent of the Wiki — update it when the change affects anything a mod author needs offline (new hooks, new utils, tutorials, changelog).
+- After a new feature:
+  1. Open `tools/chm-win/UltraLibHelper.wcp` in WinCHM.
+  2. Add/update the relevant page(s) (e.g. `新Hooks表`, `新Utils表`, tutorial pages) following the project's existing HTML style (`code-style.css` + `code-copy.js`).
+  3. All `htm` file names and folders must be **ASCII-only** (English, no CJK / special characters).
+  4. Rebuild in WinCHM; verify the new page appears in the TOC; publish the rebuilt `.chm` with the release.
 
 ### 10.5 Checklist for PRs that change code
 
 - [ ] `docs/` updated for the change (new API/feature documented).
 - [ ] Wiki mirrored to match `docs/`.
-- [ ] CHM rebuilt (new features) and page list updated in `build-chm.js`.
+- [ ] CHM (WinCHM project `tools/chm-win/`) updated for new features — pages added in English/ASCII file names and rebuilt in WinCHM.
 - [ ] **New functionality ships with a bilingual XML `<summary>`** (EN + 中文) on all new public types / methods / hooks / helpers, explaining purpose and usage.
 - [ ] Bilingual (EN + 中文) where applicable.
