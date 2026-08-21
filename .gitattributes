@@ -1,2 +1,6 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
+
+# WinCHM project files must keep their original line endings (CRLF + UTF-8 BOM).
+# Git must not rewrite them, otherwise WinCHM may fail to open/render pages.
+tools/chm-win/** -text
