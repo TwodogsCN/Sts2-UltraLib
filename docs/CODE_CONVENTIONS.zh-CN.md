@@ -69,6 +69,12 @@
 - 将补丁放在 `Hook/HookPatches/`（属于相应子系统时放在 `Base/Patches/`、`Variables/VariablePatches/`）。
 - 补丁类是**标注了 `[HarmonyPatch]` 的静态类**，由 `MainFile.Initialize()` 通过 `PatchAll` 对程序集自动应用。
 - 失败的补丁**绝不能**让模组崩溃。对可能存在风险的补丁应用/方法体做包裹处理，使失败时只记录警告（参见 `MainFile.Initialize`）。
+- **要考虑程序集加载时机。** `PatchAll` 只能看到它运行那一刻已加载的程序集。UltraLib 先于内容模组加载，因此任何动态扫描程序集的补丁（例如用 `TargetMethods()` 遍历 `AppDomain.CurrentDomain.GetAssemblies()` 查找某游戏类型的子类）都会漏掉后加载模组中的类型——那些钩子会永远静默不触发。若补丁必须发现模组自定义类型：
+  - 在 `PatchAll` **之前**订阅 `AppDomain.CurrentDomain.AssemblyLoad`（参见 `Hook/HookPatches/OrbHooksPatches.cs` 的 `LateOrbPatchHelper`），并在每个程序集加载时重新执行发现逻辑。
+  - 用 `HashSet<MethodBase>` 记录已打过补丁的方法，初始 `TargetMethods()` 扫描与延迟路径共用同一集合，并且**仅在 `Add` 返回 true 时才 `yield`/打补丁**——避免两条路径重叠时对同一方法重复打补丁。
+  - **不要**扫描 `System` / `mscorlib` / `Steamworks` / `Godot` / `Unity` 程序集。
+  - 对 `GetTypes()` 要防护 `ReflectionTypeLoadException`（用 `e.Types.Where(t => t != null)`）。
+  - 注意：目标是固定游戏类型的补丁（如 `[HarmonyPatch(typeof(CardModel), ...)]`）不受影响，无需延迟补丁机制。
 - 转发到钩子系统的补丁方法应调用对应的 `Plus_Trigger…` / `Plus_…` 分发器。
 
 ## 6. 日志与错误处理

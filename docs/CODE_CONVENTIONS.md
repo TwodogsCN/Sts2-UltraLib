@@ -69,6 +69,12 @@ The hook system is the core extension point. Understand these pieces before writ
 - Place patches in `Hook/HookPatches/` (or `Base/Patches/`, `Variables/VariablePatches/` when they belong to that subsystem).
 - Patch classes are **static classes annotated with `[HarmonyPatch]`** and are auto-applied by `MainFile.Initialize()` via `PatchAll` on the assembly.
 - A failing patch must **never** crash the mod. Wrap risky patch application/bodies so failures log a warning (see `MainFile.Initialize`).
+- **Consider assembly load timing.** `PatchAll` only sees assemblies loaded *at the moment it runs*. UltraLib loads before content mods, so anything that dynamically scans assemblies (e.g. `TargetMethods()` over `AppDomain.CurrentDomain.GetAssemblies()` looking for subclasses of a game type) will miss types from mods loaded later — those hooks would silently never fire. If a patch must discover mod-defined types:
+  - Subscribe to `AppDomain.CurrentDomain.AssemblyLoad` **before** `PatchAll` (see `LateOrbPatchHelper` in `Hook/HookPatches/OrbHooksPatches.cs`), and re-run discovery on each loaded assembly.
+  - Keep a `HashSet<MethodBase>` of already-patched methods shared by both the initial `TargetMethods()` scan and the late path, and **only `yield`/patch when `Add` returns true** — this prevents double-patching the same method when the two paths overlap.
+  - Do **not** scan `System` / `mscorlib` / `Steamworks` / `Godot` / `Unity` assemblies.
+  - Guard `GetTypes()` against `ReflectionTypeLoadException` (use `e.Types.Where(t => t != null)`).
+  - Note: patches targeting fixed game types (e.g. `[HarmonyPatch(typeof(CardModel), ...)]`) are unaffected and need no late-patch machinery.
 - Patch methods that forward into the hook system should call the matching `Plus_Trigger…` / `Plus_…` dispatcher.
 
 ## 6. Logging & error handling

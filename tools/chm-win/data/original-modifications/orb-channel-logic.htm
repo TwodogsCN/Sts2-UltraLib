@@ -1,8 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>充能球逻辑修改 - UltraLib Helper</title>
+<title>充能球逻辑修改</title>
 <link rel="stylesheet" type="text/css" href="../../code-style.css">
 <script type="text/javascript" src="../../code-copy.js"></script>
 </head>
@@ -26,10 +26,11 @@
 <h3>修改内容</h3>
 <p class="plain">新充能流程 <code>SafeChannelInternal</code> 依次执行：</p>
 <ol>
-    <li><b>空槽补槽</b>：若玩家基础充能球槽位数为 0 且当前队列容量为 0，自动调用 <code>OrbCmd.AddSlots(player, 1)</code> 补 1 个槽位。</li>
-    <li><b>满队列自动激发</b>：若队列已满，循环激发最旧的充能球（最多 10 次），为新的充能球腾出空间。</li>
-    <li><b>入队与演出</b>：入队成功后写入战斗历史、播放充能音效、播放充能球动画。</li>
-    <li><b>布局修正</b>：强制修正 <code>NOrbManager</code> 的充能球位置布局，并刷新控制器导航。</li>
+    <li><b>空槽补槽</b>：若玩家基础充能球槽位数为 0 且当前队列容量为 0，自动调用 <code>OrbCmd.AddSlots(player, 1)</code> 补 
+  1 个槽位。 
+    <li><b>满队列自动激发</b>：若队列已满，循环激发最旧的充能球（最多 10 次），为新的充能球腾出空间。 
+    <li><b>入队与演出</b>：入队成功后写入战斗历史、播放充能音效、播放充能球动画。 
+    <li><b>布局修正</b>：强制修正 <code>NOrbManager</code> 的充能球位置布局，并刷新控制器导航。 
     <li><b>Hook 触发</b>：触发原版 <code>AfterOrbChanneled</code> Hook。</li>
 </ol>
 
@@ -69,9 +70,15 @@
     <tr class="alt"><td><code>Base/Utils/OrbHelper.cs</code></td><td>充能球辅助工具（Channel / EvokeOrb / SetVal / GetOrbList / RemoveSlots）。</td></tr>
 </table>
 
-<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
-    <a href="original-modifications.htm">← 返回「对于原版的修改」</a>
+<p style="FONT-SIZE: 10pt; BORDER-TOP: #ddd 1px solid; COLOR: #666; PADDING-TOP: 10px">
+    <A href="original-modifications.htm">← 返回「对于原版的修改」</A>
 </p>
+
+
+
+
+
+
 
 </body>
 </html>
