@@ -39,17 +39,13 @@
 // 当前本地版本 —— 与仓库根目录 version.txt / version.js 保持一致
 var CONFIG = {
     current: "0.1.0",
-    // 优先级 1: GitHub（JSONP 脚本方式，跨域可用）
+    // GitHub（JSONP 脚本方式，跨域可用）
+    // 注意：不能直接用 raw.githubusercontent.com——它对所有文件返回 CSP sandbox 头，
+    //       会阻止脚本执行（JSONP 失效）。必须用 jsDelivr CDN（无 CSP 限制）。
     github: {
         name: "GitHub",
-        script: "https://raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.js",
+        script: "https://cdn.jsdelivr.net/gh/TwodogsCN/Sts2-UltraLib@main/version.js",
         dl: "https://github.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm"
-    },
-    // 优先级 2: Gitee
-    gitee: {
-        name: "Gitee",
-        script: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/version.js",
-        dl: "https://gitee.com/TwodogsCN/Sts2-UltraLib/raw/main/tools/chm-win/UltraLib.chm"
     }
 };
 
@@ -58,15 +54,8 @@ var TIMEOUT_MS = 8000; // 单节点超时
 function startCheck() {
     checkVersion(CONFIG.github, function(success, version) {
         if (!success) {
-            setStatus("GitHub 连接失败，正在尝试 Gitee...");
-            checkVersion(CONFIG.gitee, function(successGitee, versionGitee) {
-                if (!successGitee) {
-                    document.getElementById('cloud-v').innerHTML = "ERR";
-                    setStatus("所有云端节点均无法连接，请检查网络，或点击「从 GitHub 下载」手动获取最新版。");
-                } else {
-                    processResult(versionGitee, CONFIG.gitee.dl);
-                }
-            });
+            document.getElementById('cloud-v').innerHTML = "ERR";
+            setStatus("云端节点无法连接，请检查网络，或点击「从 GitHub 下载」手动获取最新版。");
         } else {
             processResult(version, CONFIG.github.dl);
         }
