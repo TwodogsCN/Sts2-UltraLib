@@ -213,9 +213,11 @@ Before shipping a new release, update **all four version sources** so the in-CHM
 
 Then:
 1. Rebuild the CHM in WinCHM → output goes to `tools/chm-win/UltraLib.chm` (already the committed release artifact).
-2. Commit & push `version.txt`, `version.js`, `UltraLib.json`, the rebuilt `tools/chm-win/UltraLib.chm`, and any CHM source changes. The check page fetches `raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.js` and downloads `raw/main/tools/chm-win/UltraLib.chm` — both only work after the files land on `main`.
+2. Commit & push `version.txt`, `version.js`, `UltraLib.json`, the rebuilt `tools/chm-win/UltraLib.chm`, and any CHM source changes.
+3. **Purge the jsDelivr cache** so the check page picks up the new `version.js` immediately:
+   `curl https://purge.jsdelivr.net/gh/TwodogsCN/Sts2-UltraLib@main/version.js` (jsDelivr caches branch files up to 24h).
 
-> All four version sources must stay **identical**; forgetting any one makes the check page report the wrong result.
+> The check page loads the version via **JSONP from jsDelivr** (`https://cdn.jsdelivr.net/gh/TwodogsCN/Sts2-UltraLib@main/version.js`) and downloads the CHM from `raw/main/tools/chm-win/UltraLib.chm`. Do **not** use `raw.githubusercontent.com` for the version script — GitHub raw returns a `Content-Security-Policy: sandbox` header on every file, which blocks script execution and breaks JSONP. All four version sources must stay **identical**; forgetting any one makes the check page report the wrong result.
 
 ### 10.5 Checklist for PRs that change code
 

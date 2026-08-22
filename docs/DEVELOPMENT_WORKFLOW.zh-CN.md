@@ -212,9 +212,11 @@ CHM **直接编译到 `tools/chm-win/UltraLib.chm`**（`.wcp` 中 `CompiledFile=
 
 然后：
 1. 在 WinCHM 中重新编译 CHM → 产物输出到 `tools/chm-win/UltraLib.chm`（即提交的发布产物）。
-2. 提交并推送 `version.txt`、`version.js`、`UltraLib.json`、重新编译的 `tools/chm-win/UltraLib.chm` 及 CHM 源码改动。检查页从 `raw.githubusercontent.com/TwodogsCN/Sts2-UltraLib/main/version.js` 拉取版本、从 `raw/main/tools/chm-win/UltraLib.chm` 下载——两者都必须推到 `main` 分支后才会生效。
+2. 提交并推送 `version.txt`、`version.js`、`UltraLib.json`、重新编译的 `tools/chm-win/UltraLib.chm` 及 CHM 源码改动。
+3. **刷新 jsDelivr 缓存**，让检查页立即拿到新的 `version.js`：
+   `curl https://purge.jsdelivr.net/gh/TwodogsCN/Sts2-UltraLib@main/version.js`（jsDelivr 对分支文件最长缓存 24 小时）。
 
-> 四个版本来源必须**保持一致**；漏掉任何一个都会导致检查页报告错误结果。
+> 检查页通过 **JSONP 从 jsDelivr**（`https://cdn.jsdelivr.net/gh/TwodogsCN/Sts2-UltraLib@main/version.js`）拉取版本，从 `raw/main/tools/chm-win/UltraLib.chm` 下载 CHM。版本脚本**不要**用 `raw.githubusercontent.com`——GitHub raw 对每个文件返回 `Content-Security-Policy: sandbox` 头，会阻止脚本执行、导致 JSONP 失效。四个版本来源必须**保持一致**；漏掉任何一个都会导致检查页报告错误结果。
 
 ### 10.5 涉及代码改动的 PR 检查清单
 

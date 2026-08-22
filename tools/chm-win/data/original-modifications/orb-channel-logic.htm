@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>充能球逻辑修改 - UltraLib Helper</title>
+<link rel="stylesheet" type="text/css" href="../../code-style.css">
+<script type="text/javascript" src="../../code-copy.js"></script>
+</head>
+<body>
+
+<div class="info-box">
+    <div class="info-title">充能球逻辑修改（Orb Channel）</div>
+    <div class="info-content">
+        替换了 <code>OrbCmd.Channel</code> 的充能流程（<code>Base/Patches/OrbChannelPatch.cs</code>），
+        使充能球在<b>激发时可以生成新的充能球而不会卡死</b>，并修复充能球 UI 布局问题。
+    </div>
+</div>
+
+<h3>为什么修改</h3>
+<p class="plain">
+    原版 <code>OrbCmd.Channel</code> 在「无充能球槽位」「充能球队列已满」等边界情况下
+    行为不可控，容易导致充能流程卡死或 UI 异常。UltraLib 用一个更安全的实现替换了它，
+    保证充能球机制在各种边界条件下都能正常工作——这也是新增充能球相关功能（如充能遗物）的依赖前提。
+</p>
+
+<h3>修改内容</h3>
+<p class="plain">新充能流程 <code>SafeChannelInternal</code> 依次执行：</p>
+<ol>
+    <li><b>空槽补槽</b>：若玩家基础充能球槽位数为 0 且当前队列容量为 0，自动调用 <code>OrbCmd.AddSlots(player, 1)</code> 补 1 个槽位。</li>
+    <li><b>满队列自动激发</b>：若队列已满，循环激发最旧的充能球（最多 10 次），为新的充能球腾出空间。</li>
+    <li><b>入队与演出</b>：入队成功后写入战斗历史、播放充能音效、播放充能球动画。</li>
+    <li><b>布局修正</b>：强制修正 <code>NOrbManager</code> 的充能球位置布局，并刷新控制器导航。</li>
+    <li><b>Hook 触发</b>：触发原版 <code>AfterOrbChanneled</code> Hook。</li>
+</ol>
+
+<div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    <pre><span class="comment">// SafeChannelInternal 核心流程（简化）</span>
+<span class="keyword">if</span> (player.Character.BaseOrbSlotCount == <span class="number">0</span> &amp;&amp; orbQueue.Capacity == <span class="number">0</span>)
+    <span class="keyword">await</span> <span class="type">OrbCmd</span>.<span class="property">AddSlots</span>(player, <span class="number">1</span>);   <span class="comment">// 空槽补槽</span>
+
+<span class="keyword">while</span> (orbQueue.Orbs.Count &gt;= orbQueue.Capacity &amp;&amp; loopCount &lt; <span class="number">10</span>)
+    <span class="keyword">await</span> <span class="type">OrbCmd</span>.<span class="property">EvokeNext</span>(choiceContext, player); <span class="comment">// 满队列自动激发</span>
+
+<span class="keyword">if</span> (<span class="keyword">await</span> orbQueue.<span class="property">TryEnqueue</span>(orb)) { <span class="comment">/* 历史/音效/动画/Hook */</span> }</pre>
+</div>
+
+<h3>关键行为变化（重要）</h3>
+<div class="info-box">
+    <div class="info-title">✅ 去掉了角色判定：无槽位时所有角色都能获得充能球槽位</div>
+    <div class="info-content">
+        原版（及旧实现）在「空槽补槽」逻辑中有<b>角色特判</b>：<br>
+        - <b>故障机器人</b>：有「失去充能球槽位以换取增益」的机制，因此在槽位耗尽后
+          再生成充能球时，<b>不会</b>自动获得新槽位（原版设计如此）。<br>
+        - <b>其他角色</b>：因初始没有槽位、且故障机器人的多人牌会给队友充能球，
+          所以有一个特判——只有<b>非故障机器人</b>在无槽位时可以自动获得一个槽位。<br><br>
+        UltraLib <b>去掉了这个角色判定</b>：现在<b>所有角色</b>（包括故障机器人）在
+        <code>BaseOrbSlotCount == 0</code> 且队列容量为 0 时，都会自动获得一个充能球槽位。
+        这是<b>刻意修正</b>，目的是保证充能球机制（激发时生成新球、不卡死）对所有角色一致成立，
+        充能球相关功能（如 <code>OrbHelper.Channel</code>、充能遗物）在任何角色下都能正常使用。
+    </div>
+</div>
+
+<h3>相关文件</h3>
+<table class="utils-table">
+    <tr><th>文件</th><th>说明</th></tr>
+    <tr class="alt"><td><code>Base/Patches/OrbChannelPatch.cs</code></td><td>充能流程替换（本页内容）。</td></tr>
+    <tr><td><code>Hook/HookPatches/OrbHooksPatches.cs</code></td><td>充能球被动（Passive）/ 激发（Evoke）的 Before/After Hook 注入。</td></tr>
+    <tr class="alt"><td><code>Base/Utils/OrbHelper.cs</code></td><td>充能球辅助工具（Channel / EvokeOrb / SetVal / GetOrbList / RemoveSlots）。</td></tr>
+</table>
+
+<p style="color:#666; font-size:10pt; border-top:1px solid #ddd; padding-top:10px;">
+    <a href="original-modifications.htm">← 返回「对于原版的修改」</a>
+</p>
+
+</body>
+</html>

@@ -28,11 +28,11 @@ UltraLib 维护 **两套不同受众、不同内容、不同维护方式的文�
 
 | 载体 | 位置 | 内容/结构 | 维护方式 |
 |------|------|-----------|----------|
-| **GitHub Wiki**（在线、双语） | 仓库 `docs/`（Markdown）→ 镜像到 Wiki（独立 wiki git 仓库） | README / API 索引 / 代码规范 / 开发流程 / Hook 系统 / Utils / 充能遗物 | 编辑 `docs/` 中的 Markdown，同步到 Wiki |
-| **CHM 文档**（离线） | `tools/chm-win/`（WinCHM 工程 `UltraLibHelper.wcp`，编译产物直接输出 `tools/chm-win/UltraLib.chm`） | **独立结构**：前言 / 检查更新 / 简单认识C# / 更新日志 / 原版Hook列表 / 入门模组开发教学 / 新增功能（专项页、新Hooks表、新Utils表→17 个工具类子页、充能遗物→3 子页、动态变量→2 词条、卡牌关键词→6 词条） | 用 **WinCHM** 打开 `.wcp` 编辑/编译，产出 `tools/chm-win/UltraLib.chm` |
+| **GitHub Wiki**（在线、双语） | 仓库 `docs/`（Markdown）→ 镜像到 Wiki（独立 wiki git 仓库） | README / API 索引 / 代码规范 / 开发流程 / Hook 系统 / Utils / 充能遗物 / CHM 代码规范 | 编辑 `docs/` 中的 Markdown，同步到 Wiki |
+| **CHM 文档**（离线） | `tools/chm-win/`（WinCHM 工程 `UltraLibHelper.wcp`，编译产物直接输出 `tools/chm-win/UltraLib.chm`） | **独立结构**：前言 / 检查更新 / 简单认识C# / 更新日志 / 原版Hook列表 / 入门模组开发教学 / 新增功能（专项页、新Hooks表、新Utils表→17 个工具类子页、充能遗物→3 子页、动态变量→2 词条、卡牌关键词→6 词条） | 用 **WinCHM** 打开 `.wcp` 编辑/编译，产出 `tools/chm-win/UltraLib.chm`；页面规范见 `docs/CHM_CONVENTIONS.md` |
 
 - 新功能需要时**同步进 CHM**（开发流程 §10）。
-- CHM 页面规则（踩过的坑，务必遵守）：
+- **CHM 页面规范详见 `docs/CHM_CONVENTIONS.md`（双语）**：样式类清单（info-box / code-box / utils-table / v-item / 语法高亮 span 等全部就绪，直接复用不要自造）、页面硬性规则、新增页三步、检查更新特殊规则。此处仅列最关键的踩坑点：
   - `htm` 文件名与文件夹必须**纯 ASCII**（英文、无 CJK/特殊字符）——中文或 `C#` 文件名会导致 WinCHM 显示异常。
   - CSS 引用用 `../../code-style.css`（页面位于 `data/<dir>/`，上溯两级到工程根）。
   - 页面编码 **UTF-8 BOM + CRLF**；`.wcp` 的 URL 分隔符用 `\`。
