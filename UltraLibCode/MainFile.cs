@@ -1,6 +1,7 @@
 ﻿using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Modding;
+using UltraLib.Hook.HookPatches;
 
 namespace UltraLib.UltraLibCode;
 
@@ -57,6 +58,13 @@ public partial class MainFile : Node
 
         try
         {
+            // 注册充能球钩子的延迟补丁：
+            // UltraLib 作为依赖模组先于内容模组加载，此时内容模组里的自定义充能球
+            // （如 UltimatePlus 的 MagnetOrb）尚未加载，PatchAll 扫描不到它们的
+            // Evoke/Passive 方法。这里订阅 AssemblyLoad，在后加载的程序集中出现
+            // 新的充能球类型时补上钩子补丁。
+            LateOrbPatchHelper.Init(harmony);
+
             // 批量 Patch 本程序集中所有带有 [HarmonyPatch] 的静态类
             // 显式传入 Assembly 确保只扫描 UltraLib 自身的 Patch
             harmony.PatchAll(typeof(MainFile).Assembly);
